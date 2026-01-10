@@ -6,6 +6,7 @@ export const WEDDING_INFO: WeddingInfo = {
     groomPrefixes: ["Toma", "Fan", "Symp", "A"],
     bride: "Jana",
     brideSuffixes: ["peňo", "konda", "tomie", "lýza"],
+    heading: "Se berem, abyste věděli",
   },
 
   date: {

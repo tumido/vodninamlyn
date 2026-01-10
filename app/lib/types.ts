@@ -48,6 +48,7 @@ export interface WeddingInfo {
     groomPrefixes: string[];
     bride: string;
     brideSuffixes: string[];
+    heading: string;
   };
   date: {
     full: Date;

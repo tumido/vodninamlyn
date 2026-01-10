@@ -10,6 +10,35 @@ export const Hero = () => {
       <div className="relative z-10 text-center w-full h-screen flex flex-col">
         {/* Centered content wrapper */}
         <div className="flex-1 flex flex-col items-center justify-center">
+          {/* Heading in half arch */}
+          <div className="mb-4 text-center">
+            <svg
+              viewBox="0 0 500 250"
+              className="w-full max-w-2xl mx-auto -mb-16"
+              style={{ height: "250px" }}
+            >
+              <defs>
+                <path
+                  id="arch-path"
+                  d="M 50,250 A 100 100 0 0 1 450,250"
+                  fill="transparent"
+                />
+              </defs>
+              <text
+                className="fill-amber-100/90 font-offside uppercase"
+                style={{ fontSize: "32px", fontWeight: 400 }}
+              >
+                <textPath
+                  href="#arch-path"
+                  startOffset="50%"
+                  textAnchor="middle"
+                >
+                  {WEDDING_INFO.couple.heading}
+                </textPath>
+              </text>
+            </svg>
+          </div>
+
           {/* Names with rotating text - using absolute positioning to center ampersand */}
           <div className="mb-8 w-full mx-auto uppercase relative font-bilbo">
             {/* Desktop layout */}

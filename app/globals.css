@@ -145,11 +145,11 @@ html {
 
 /* Animation utility classes */
 .animate-slide-in {
-  animation: slide-in-from-top 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: slide-in-from-top 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .animate-slide-out {
-  animation: slide-out-to-bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: slide-out-to-bottom 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .animate-text-rotation {
