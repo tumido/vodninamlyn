@@ -10,6 +10,9 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-fleur-de-leah: var(--font-fleur-de-leah);
+  --font-bilbo: var(--font-bilbo);
+  --font-offside: var(--font-offside);
 
   /* Pastel Blue Colors */
   --color-pastel-blue: #b8d4e8;
@@ -27,6 +30,13 @@
   --color-neutral-200: #e5e5e5;
   --color-neutral-700: #404040;
   --color-neutral-900: #171717;
+
+  /* Luxury cool tones - extends existing pastel palette */
+  --color-mauve-100: #e6e0f0;
+  --color-mauve-200: #d4cce4;
+  --color-sage-100: #e8f0e6;
+  --color-blue-gray-100: #dde5ed;
+  --color-blue-gray-200: #c8d8e4;
 }
 
 body {
@@ -50,4 +60,189 @@ html {
   stroke-dasharray: 1000;
   stroke-dashoffset: 1000;
   animation: draw-line 2s ease-out forwards;
+}
+
+/* Text rotation animations */
+@keyframes slide-in-from-top {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-out-to-bottom {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+@keyframes text-rotation {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  1% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  3% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  22% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  25% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* Floral entrance animations */
+@keyframes grow-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-50px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes grow-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(50px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes grow-from-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Animation utility classes */
+.animate-slide-in {
+  animation: slide-in-from-top 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-slide-out {
+  animation: slide-out-to-bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-text-rotation {
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  animation-name: text-rotation;
+}
+
+.animate-grow-left {
+  animation: grow-from-left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-grow-right {
+  animation: grow-from-right 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-grow-bottom {
+  animation: grow-from-bottom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Floral hover transition */
+.floral-hover-transition {
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hero gradient background */
+.hero-gradient {
+  background: linear-gradient(
+    135deg,
+    #4a1520 0%,
+    #6b1f30 25%,
+    #7a1a2e 50%,
+    #5a1825 75%,
+    #3d111a 100%
+  );
+  position: relative;
+}
+
+/* Elegant radial gradient overlays */
+.hero-gradient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      ellipse 80% 50% at 20% 30%,
+      rgba(180, 80, 100, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 70% 60% at 80% 70%,
+      rgba(140, 50, 70, 0.12) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 200, 150, 0.03) 0%,
+      transparent 60%
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Subtle texture and vignette */
+.hero-gradient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      rgba(0, 0, 0, 0.25) 100%
+    ),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence baseFrequency="0.9"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Accessibility: Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide-in,
+  .animate-slide-out,
+  .animate-text-rotation,
+  .animate-grow-left,
+  .animate-grow-right,
+  .animate-grow-bottom {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .floral-hover-transition {
+    transition: none;
+  }
 }

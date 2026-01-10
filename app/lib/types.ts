@@ -2,10 +2,10 @@
 export interface RSVPFormData {
   name: string;
   email: string;
-  attending: 'ano' | 'ne';
+  attending: "ano" | "ne";
   plusOne: boolean;
   plusOneName?: string;
-  mealPreference?: 'maso' | 'ryba' | 'vegetarian' | 'vegan';
+  mealPreference?: "maso" | "ryba" | "vegetarian" | "vegan";
   dietaryRestrictions?: string;
   message?: string;
 }
@@ -32,6 +32,7 @@ export interface Venue {
   address: Address;
   coordinates: Coordinates;
   googleMapsUrl: string;
+  web: string;
 }
 
 export interface ScheduleItem {
@@ -43,18 +44,17 @@ export interface ScheduleItem {
 
 export interface WeddingInfo {
   couple: {
-    bride: string;
     groom: string;
+    groomPrefixes: string[];
+    bride: string;
+    brideSuffixes: string[];
   };
   date: {
     full: Date;
     display: string;
     time: string;
   };
-  venue: {
-    ceremony: Venue;
-    reception: Venue;
-  };
+  venue: Venue;
   schedule: ScheduleItem[];
   rsvpDeadline: Date;
   contact: {

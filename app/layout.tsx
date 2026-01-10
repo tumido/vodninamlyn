@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Fleur_De_Leah, Bilbo, Offside } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -9,6 +9,24 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const fleurDeLeah = Fleur_De_Leah({
+  weight: "400",
+  variable: "--font-fleur-de-leah",
+  subsets: ["latin"],
+});
+
+const bilbo = Bilbo({
+  weight: "400",
+  variable: "--font-bilbo",
+  subsets: ["latin"],
+});
+
+const offside = Offside({
+  weight: "400",
+  variable: "--font-offside",
   subsets: ["latin"],
 });
 
@@ -25,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="cs">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${fleurDeLeah.variable} ${bilbo.variable} ${offside.variable} antialiased`}
       >
         {children}
       </body>
