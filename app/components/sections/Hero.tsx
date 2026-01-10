@@ -1,31 +1,8 @@
 import { WEDDING_INFO } from "@/app/lib/constants";
-import { FloatingHeart } from "../animations/FloatingHeart";
 
 export const Hero = () => {
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-b from-white to-neutral-50">
-      {/* Floating decorative elements */}
-      <FloatingHeart
-        className="absolute top-20 left-10 opacity-60"
-        size={50}
-        color="blue"
-      />
-      <FloatingHeart
-        className="absolute top-40 right-20 opacity-60"
-        size={35}
-        color="orange"
-      />
-      <FloatingHeart
-        className="absolute bottom-32 left-1/4 opacity-40"
-        size={45}
-        color="blue"
-      />
-      <FloatingHeart
-        className="absolute bottom-20 right-1/3 opacity-50"
-        size={30}
-        color="orange"
-      />
-
       {/* Main content */}
       <div className="relative z-10 text-center px-6">
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-light text-neutral-900 mb-4">
