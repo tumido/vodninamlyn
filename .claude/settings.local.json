@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__next-devtools-mcp__*",
+      "mcp__chrome-devtools__*",
+      "Bash(npm run dev)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "next-devtools-mcp",
+    "chrome-devtools"
+  ]
+}
