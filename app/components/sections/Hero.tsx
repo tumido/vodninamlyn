@@ -2,14 +2,10 @@
 
 import { WEDDING_INFO } from "@/app/lib/constants";
 import { RotatingText } from "@/app/components/animations/RotatingText";
-import { FloralBackground } from "@/app/components/animations/FloralBackground";
 
 export const Hero = () => {
   return (
     <section className="relative hero-gradient min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Floral background layer */}
-      <FloralBackground />
-
       {/* Main content */}
       <div className="relative z-10 text-center w-full h-screen flex flex-col">
         {/* Centered content wrapper */}
@@ -32,7 +28,7 @@ export const Hero = () => {
                     texts={WEDDING_INFO.couple.groomPrefixes}
                     className="text-5xl md:text-7xl lg:text-8xl font-light text-amber-50/80"
                     direction="right"
-                    delay={0}
+                    delay={2000}
                   />
                   <h1 className="text-5xl md:text-7xl lg:text-8xl text-amber-50 font-semibold">
                     {WEDDING_INFO.couple.groom}
@@ -50,7 +46,7 @@ export const Hero = () => {
                     texts={WEDDING_INFO.couple.brideSuffixes}
                     className="text-5xl md:text-7xl lg:text-8xl font-light text-amber-50/80"
                     direction="left"
-                    delay={100}
+                    delay={2100}
                   />
                 </div>
               </div>
@@ -94,7 +90,13 @@ export const Hero = () => {
           {/* Date and time */}
           <div className="mt-8 uppercase">
             <p className="text-2xl md:text-3xl text-amber-100/90 font-offside">
-              {WEDDING_INFO.date.display} · {WEDDING_INFO.venue.name}
+              <span className="animate-grow-right inline-block">
+                {WEDDING_INFO.date.display}
+              </span>{" "}
+              ·{" "}
+              <span className="animate-grow-left inline-block">
+                {WEDDING_INFO.venue.name}
+              </span>
             </p>
           </div>
         </div>
