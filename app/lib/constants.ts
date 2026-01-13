@@ -32,28 +32,64 @@ export const WEDDING_INFO: WeddingInfo = {
 
   schedule: [
     {
-      time: "14:00",
-      title: "Obřad",
-      description: "Svatební obřad v kostele",
-      icon: "💒",
+      day: "Pátek",
+      date: "17. dubna 2026",
+      items: [
+        {
+          time: "17:00",
+          title: "Příjezd",
+          description: "Příjezd prvních hostů",
+          icon: "🚗",
+        },
+        {
+          time: "18:00",
+          title: "Neformální setkání",
+          description: "Posezení u mlýna pro první hosty",
+          icon: "☕",
+        },
+      ],
     },
     {
-      time: "15:30",
-      title: "Focení",
-      description: "Společné fotografování",
-      icon: "📷",
-    },
-    {
-      time: "17:00",
-      title: "Hostina",
-      description: "Svatební hostina a oslavy",
-      icon: "🍽️",
-    },
-    {
-      time: "20:00",
-      title: "Tanec",
-      description: "První tanec a zábava",
-      icon: "💃",
+      day: "Sobota",
+      date: "18. dubna 2026",
+      items: [
+        {
+          time: "Dopoledne",
+          title: "Brunch",
+          description: "Svatební obřad",
+          icon: "💒",
+        },
+        {
+          time: "13:00",
+          title: "Obřad",
+          description: "Svatební obřad",
+          icon: "💒",
+        },
+        {
+          time: "Po obřadu",
+          title: "Focení",
+          description: "Společné fotografování",
+          icon: "📷",
+        },
+        {
+          time: "15:00",
+          title: "Přípitek",
+          description: "Společný přípitek",
+          icon: "📷",
+        },
+        {
+          time: "16:00",
+          title: "Raut",
+          description: "Svatební raut",
+          icon: "🍽️",
+        },
+        {
+          time: "20:00",
+          title: "Oheň",
+          description: "Budeme hořet, hrát a zpívat",
+          icon: "💃",
+        },
+      ],
     },
   ],
 

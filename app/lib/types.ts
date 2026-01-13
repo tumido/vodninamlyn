@@ -42,6 +42,12 @@ export interface ScheduleItem {
   icon: string;
 }
 
+export interface ScheduleDay {
+  day: string;
+  date?: string;
+  items: ScheduleItem[];
+}
+
 export interface WeddingInfo {
   couple: {
     groom: string;
@@ -56,7 +62,7 @@ export interface WeddingInfo {
     time: string;
   };
   venue: Venue;
-  schedule: ScheduleItem[];
+  schedule: ScheduleDay[];
   rsvpDeadline: Date;
   contact: {
     email: string;

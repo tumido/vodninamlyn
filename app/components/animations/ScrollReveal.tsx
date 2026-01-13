@@ -1,13 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-interface ScrollRevealProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-export const ScrollReveal = ({ children, className = '' }: ScrollRevealProps) => {
+export const ScrollReveal = ({ children }: React.PropsWithChildren) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -32,10 +27,8 @@ export const ScrollReveal = ({ children, className = '' }: ScrollRevealProps) =>
     <div
       ref={ref}
       className={`transition-all duration-700 ${
-        isVisible
-          ? 'opacity-100 translate-y-0'
-          : 'opacity-0 translate-y-10'
-      } ${className}`}
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+      }`}
     >
       {children}
     </div>

@@ -1,6 +1,5 @@
 import { WEDDING_INFO } from "@/app/lib/constants";
-import { SectionContainer } from "../ui/SectionContainer";
-import { ScrollReveal } from "../animations/ScrollReveal";
+import { Section } from "../ui/Section";
 import { AnimatedDivider } from "../animations/AnimatedDivider";
 import type { Venue } from "@/app/lib/types";
 
@@ -33,21 +32,19 @@ const VenueCard = ({ venue, title }: { venue: Venue; title: string }) => (
 
 export const WeddingDetails = () => {
   return (
-    <SectionContainer id="detaily" className="bg-neutral-50">
-      <ScrollReveal>
-        <h2 className="text-4xl md:text-5xl font-serif font-light text-center text-neutral-900 mb-4">
-          Detaily svatby
-        </h2>
-        <p className="text-center text-neutral-600 mb-12 max-w-2xl mx-auto">
-          Těšíme se, že s námi budete slavit náš velký den
-        </p>
+    <Section id="detaily" className="bg-neutral-50" animate={true}>
+      <h2 className="text-4xl md:text-5xl font-serif font-light text-center text-neutral-900 mb-4">
+        Detaily svatby
+      </h2>
+      <p className="text-center text-neutral-600 mb-12 max-w-2xl mx-auto">
+        Těšíme se, že s námi budete slavit náš velký den
+      </p>
 
-        <AnimatedDivider />
+      <AnimatedDivider />
 
-        <div className="grid md:grid-cols-2 gap-8 mt-12">
-          <VenueCard venue={WEDDING_INFO.venue} title="Obřad" />
-        </div>
-      </ScrollReveal>
-    </SectionContainer>
+      <div className="grid md:grid-cols-2 gap-8 mt-12">
+        <VenueCard venue={WEDDING_INFO.venue} title="Obřad" />
+      </div>
+    </Section>
   );
 };

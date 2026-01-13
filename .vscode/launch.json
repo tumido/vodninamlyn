@@ -9,8 +9,7 @@
       "serverReadyAction": {
         "pattern": "- Local:.+(https?://.+)",
         "action": "startDebugging",
-        "name": "Launch Chrome session",
-        "killOnServerStop": true
+        "name": "Launch Chrome session"
       }
     },
     {

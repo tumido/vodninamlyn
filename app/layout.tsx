@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Fleur_De_Leah, Bilbo, Offside } from "next/font/google";
+import { Geist_Mono, Fleur_De_Leah, Bilbo, Offside } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -41,12 +36,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="cs">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${fleurDeLeah.variable} ${bilbo.variable} ${offside.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html
+      lang="cs"
+      className={`${geistMono.variable} ${fleurDeLeah.variable} ${bilbo.variable} ${offside.variable} antialiased`}
+    >
+      <body>{children}</body>
     </html>
   );
 }
