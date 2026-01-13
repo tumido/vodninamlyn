@@ -45,17 +45,12 @@ export const Schedule = () => {
       {/* Timeline container */}
       <div className="relative">
         {/* Timeline line - vertical on mobile, horizontal on desktop */}
-        <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-pastel-blue-light md:hidden" />
+        <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-palette-dark-green md:hidden" />
 
         {/* Timeline days */}
         <div className="flex flex-col md:flex-row gap-0">
           {WEDDING_INFO.schedule.map((scheduleDay, dayIndex) => (
-            <div
-              key={dayIndex}
-              className={`flex-1 relative ${
-                dayIndex % 2 === 0 ? "" : "bg-pastel-cream/30"
-              }`}
-            >
+            <div key={dayIndex}>
               {/* Day header */}
               <div className="text-center pt-8 pb-6 md:pt-0 md:pb-8">
                 <h3 className="text-2xl md:text-3xl font-serif font-light text-pastel-blue-dark">
@@ -69,7 +64,7 @@ export const Schedule = () => {
               </div>
 
               {/* Desktop timeline line for this day section */}
-              <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-pastel-blue-light -translate-y-1/2" />
+              <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 rounded-full bg-palette-dark-green -translate-y-1/2" />
 
               {/* Timeline items */}
               <div className="flex flex-col md:flex-row md:justify-around gap-12 md:gap-8 pl-16 md:pl-0 pb-12 md:pb-0">

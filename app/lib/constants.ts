@@ -3,9 +3,7 @@ import type { WeddingInfo } from "./types";
 export const WEDDING_INFO: WeddingInfo = {
   couple: {
     groom: "Tom",
-    groomPrefixes: ["Toma", "Fan", "Symp", "A"],
     bride: "Jana",
-    brideSuffixes: ["peňo", "konda", "tomie", "lýza"],
     heading: "Se berem, abyste věděli",
   },
 
@@ -30,21 +28,55 @@ export const WEDDING_INFO: WeddingInfo = {
     googleMapsUrl: "https://goo.gl/maps/CPNmRwUxDJ7ELHR6A",
   },
 
+  details: [
+    {
+      name: "Místo",
+      icon: "globe",
+      description:
+        "Svatba proběhne na Dohnalově mlýně. Je to samota u vesnice Zástřizly, zde proběhne jak oslava, tak obřad.",
+    },
+    {
+      name: "Termín",
+      icon: "clock",
+      description:
+        "Na místě budeme od pátku 17.4. do neděle 19.4. Kamarády na výpomoc a malou rozlučku se svobodou rádi uvítáme již v pátek. Obřad bude probíhat v sobotu po poledni.",
+    },
+    {
+      name: "Doprava",
+      icon: "rocket",
+      description:
+        "Přijďte pěšky, na kole nebo autem. Odvoz vám nezajistíme, takže se odsud dostanete až po vystřízlivění.",
+    },
+    {
+      name: "Nocleh",
+      icon: "tent",
+      description:
+        "Míst pod střechou je omezené množství, budeme rádi pokud nám svůj zájem o něj dáte vědět v dotazníku. Pro ostatní zde máme spoustu místa pro stany i karavany.",
+    },
+    {
+      name: "Oblečení",
+      icon: "jacket",
+      description:
+        "Přijďte tak, jak vám s námi bude příjemně. Na obřad si prosím vemte oblečení ze společenštější části vašeho šatníku. Později se klidně převlečte do libovolného komfortního oblečení. Obzvláště k ohni to doporučujeme. Na barvy nehrajeme, jen vynechte prosím bílou u šatů. Jinak zvolte klidně všechny.",
+    },
+    {
+      name: "Dary",
+      icon: "present",
+      description:
+        "Netoužíme po věcných darech. Vaše přítomnost je pro nás dar největší. Pokud na tom ale budete trvat, budeme rádi, když nám přispějete na rekonstrukci bytu.",
+    },
+  ],
+
   schedule: [
     {
       day: "Pátek",
       date: "17. dubna 2026",
       items: [
         {
-          time: "17:00",
-          title: "Příjezd",
-          description: "Příjezd prvních hostů",
-          icon: "🚗",
-        },
-        {
-          time: "18:00",
-          title: "Neformální setkání",
-          description: "Posezení u mlýna pro první hosty",
+          time: "od 17:00",
+          title: "Posezení u ohně",
+          description:
+            "Pro kamarády, zahoříme, zazpíváme a třeba i něco nachystáme",
           icon: "☕",
         },
       ],
@@ -100,48 +132,3 @@ export const WEDDING_INFO: WeddingInfo = {
     phone: "+420 123 456 789",
   },
 } as const;
-
-export const FLORAL_POSITIONS = [
-  {
-    top: "10%",
-    left: "5%",
-    animation: "grow-left" as const,
-    delay: 0,
-    variant: "flower1",
-  },
-  {
-    top: "40%",
-    left: "8%",
-    animation: "grow-left" as const,
-    delay: 150,
-    variant: "branch1",
-  },
-  {
-    top: "15%",
-    right: "5%",
-    animation: "grow-right" as const,
-    delay: 300,
-    variant: "leaf1",
-  },
-  {
-    top: "45%",
-    right: "8%",
-    animation: "grow-right" as const,
-    delay: 450,
-    variant: "flower2",
-  },
-  {
-    bottom: "20%",
-    left: "10%",
-    animation: "grow-bottom" as const,
-    delay: 600,
-    variant: "branch2",
-  },
-  {
-    bottom: "25%",
-    right: "10%",
-    animation: "grow-bottom" as const,
-    delay: 750,
-    variant: "leaf2",
-  },
-] as const;

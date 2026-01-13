@@ -1,3 +1,5 @@
+import { IconProps } from "../components/ui/Icon";
+
 // RSVP Form Data
 export interface RSVPFormData {
   name: string;
@@ -34,6 +36,11 @@ export interface Venue {
   googleMapsUrl: string;
   web: string;
 }
+interface DetailItem {
+  name: string;
+  icon: IconProps["icon"];
+  description: string;
+}
 
 export interface ScheduleItem {
   time: string;
@@ -51,9 +58,7 @@ export interface ScheduleDay {
 export interface WeddingInfo {
   couple: {
     groom: string;
-    groomPrefixes: string[];
     bride: string;
-    brideSuffixes: string[];
     heading: string;
   };
   date: {
@@ -62,6 +67,7 @@ export interface WeddingInfo {
     time: string;
   };
   venue: Venue;
+  details: DetailItem[];
   schedule: ScheduleDay[];
   rsvpDeadline: Date;
   contact: {

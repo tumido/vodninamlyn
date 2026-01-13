@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #6b1f30;
+  --background: #ebe1d1;
   --foreground: #171717;
 }
 
@@ -277,5 +277,11 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  color: var(--color-palette-dark-green);
+}
+
+p {
+  color: var(--color-palette-green);
 }
