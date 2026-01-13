@@ -5,7 +5,7 @@ export const Hero = () => {
   return (
     <section className=" relative hero-gradient h-screen flex flex-col items-center justify-center overflow-hidden">
       {/* Main content */}
-      <div className="w-full grow flex items-center min-w-7xl max-w-7xl">
+      <div className="w-full grow flex items-center min-w-4xl max-w-7xl">
         <Mill />
       </div>
 

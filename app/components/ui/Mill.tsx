@@ -31,12 +31,12 @@ const Mill = () => {
         <path id="top" d="M 370,400 A 100 100 0 0 1 630,400" fill="black" />
         <path id="bottom" d="M 370,400 A 100 100 0 0 0 630,400" fill="black" />
       </defs>
-      <text className="fill-amber-100/90 uppercase text-lg animate-appear">
+      <text className="fill-palette-beige uppercase text-lg animate-appear  opacity-70">
         <textPath href="#top" startOffset="50%" textAnchor="middle">
           {WEDDING_INFO.couple.heading}
         </textPath>
       </text>
-      <text className="fill-amber-100/90 uppercase text-lg animate-appear">
+      <text className="fill-palette-beige uppercase text-lg animate-appear  opacity-70">
         <textPath
           href="#bottom"
           startOffset="50%"
@@ -48,12 +48,21 @@ const Mill = () => {
       </text>
       <text
         x="50%"
-        y="410"
+        y="412"
         textAnchor="middle"
-        className="text-6xl font-serif uppercase font-semibold fill-amber-50 animate-appear"
+        wordSpacing=".3em"
+        className="text-6xl font-serif uppercase font-semibold fill-amber-200"
       >
         {WEDDING_INFO.couple.groom}
-        <tspan className="fill-amber-100 text-3xl"> & </tspan>
+        <tspan
+          className="text-3xl fill-palette-beige"
+          dominantBaseline="ideographic"
+          // textLength="1.5em"
+          // style={{ padding: "1em" }}
+        >
+          {" "}
+          &{" "}
+        </tspan>
         {WEDDING_INFO.couple.bride}
       </text>
       <path
@@ -65,7 +74,7 @@ const Mill = () => {
           strokeWidth: ".1em",
           strokeDasharray: pathLength,
           strokeDashoffset: pathLength,
-          animation: `draw-line 3s cubic-bezier(0.52, 0, 0.51, 0.98) .5s forwards`,
+          animation: `draw-line 5s cubic-bezier(0.52, 0, 0.51, 0.98) .5s forwards`,
         }}
       />
     </svg>
