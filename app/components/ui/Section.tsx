@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ScrollReveal } from "../animations/ScrollReveal";
+import { ScrollReveal } from "./ScrollReveal";
 
 interface SectionProps {
   children: ReactNode;

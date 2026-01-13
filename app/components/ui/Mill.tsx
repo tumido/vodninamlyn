@@ -57,8 +57,6 @@ const Mill = () => {
         <tspan
           className="text-3xl fill-palette-beige"
           dominantBaseline="ideographic"
-          // textLength="1.5em"
-          // style={{ padding: "1em" }}
         >
           {" "}
           &{" "}
