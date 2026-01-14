@@ -14,7 +14,6 @@
     Times, serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
     Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --font-fleur-de-leah: var(--font-fleur-de-leah);
   --font-bilbo: var(--font-bilbo);
 
   --color-palette-beige: #ebe1d1;

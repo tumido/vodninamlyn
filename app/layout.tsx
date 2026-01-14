@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Fleur_De_Leah, Bilbo, Offside } from "next/font/google";
+import { Geist_Mono, Bilbo, Offside } from "next/font/google";
 import { ErrorBoundary } from "./lib/errors/ErrorBoundary";
 import "./globals.css";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const fleurDeLeah = Fleur_De_Leah({
-  weight: "400",
-  variable: "--font-fleur-de-leah",
   subsets: ["latin"],
 });
 
@@ -40,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="cs"
-      className={`${geistMono.variable} ${fleurDeLeah.variable} ${bilbo.variable} ${offside.variable} antialiased`}
+      className={`${geistMono.variable} ${bilbo.variable} ${offside.variable} antialiased`}
     >
       <body>
         <ErrorBoundary>{children}</ErrorBoundary>
