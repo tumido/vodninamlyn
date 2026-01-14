@@ -8,10 +8,10 @@ export const rsvpSchema = z.object({
   }),
   accommodation: z.enum(['roof', 'own-tent', 'no-sleep'], {
     message: 'Prosím vyberte ubytování',
-  }),
+  }).or(z.literal('')),
   drinkChoice: z.enum(['pivo', 'vino', 'nealko', 'other'], {
     message: 'Prosím vyberte nápoj',
-  }),
+  }).or(z.literal('')),
   customDrink: z.string().max(100, 'Maximálně 100 znaků').optional(),
   dietaryRestrictions: z.string().max(500, 'Maximálně 500 znaků').optional(),
   message: z.string().max(1000, 'Maximálně 1000 znaků').optional(),

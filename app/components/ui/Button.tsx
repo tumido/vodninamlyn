@@ -14,7 +14,7 @@ export const Button = ({
 }: ButtonProps) => {
   return (
     <button
-      className="w-full px-8 py-3 rounded-full font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed bg-palette-dark-green text-palette-beige hover:bg-palette-green active:scale-95"
+      className="w-full px-8 py-3 rounded-full font-medium cursor-pointer transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed bg-palette-dark-green text-palette-beige hover:bg-palette-green active:scale-95"
       disabled={disabled || isLoading}
       {...props}
     >
