@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { supabase } from "../../lib/supabase";
-import { useErrorHandler } from "../../lib/errors/useErrorHandler";
-import type { RsvpSubmission } from "../../lib/types";
+import { supabase } from "@/app/lib/supabase";
+import { useErrorHandler } from "@/app/lib/errors/useErrorHandler";
+import type { RsvpSubmission } from "@/app/lib/types";
 
 export const useRsvpData = () => {
   const [rsvps, setRsvps] = useState<RsvpSubmission[]>([]);

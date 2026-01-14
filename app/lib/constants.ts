@@ -1,4 +1,23 @@
-import type { WeddingInfo } from "./types";
+import type { WeddingInfo, AttendingStatusValue, AccommodationTypeValue, DrinkChoiceValue } from "./types";
+
+// RSVP Label mappings
+export const ATTENDING_LABELS: Record<AttendingStatusValue, string> = {
+  yes: "Dorazí",
+  no: "Nedorazí",
+} as const;
+
+export const ACCOMMODATION_LABELS: Record<AccommodationTypeValue, string> = {
+  roof: "Chce střechu",
+  "own-tent": "Stan",
+  "no-sleep": "Nespím",
+} as const;
+
+export const DRINK_LABELS: Record<DrinkChoiceValue, string> = {
+  pivo: "Pivo",
+  vino: "Víno",
+  nealko: "Nealko",
+  other: "Jiné",
+} as const;
 
 export const WEDDING_INFO: WeddingInfo = {
   couple: {

@@ -1,5 +1,5 @@
-import type { RsvpSubmission } from "../../lib/types";
-import { RsvpTableRow } from "./RsvpTableRow";
+import type { RsvpSubmission } from "@/app/lib/types";
+import { RsvpTableRow } from "@/app/components/admin/RsvpTableRow";
 
 interface RsvpTableProps {
   rsvps: RsvpSubmission[];

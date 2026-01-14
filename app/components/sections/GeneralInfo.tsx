@@ -1,5 +1,5 @@
-import { Section } from "../ui/Section";
-import Icon from "../ui/Icon";
+import { Section } from "@/app/components/ui/Section";
+import Icon from "@/app/components/ui/Icon";
 import { WEDDING_INFO } from "@/app/lib/constants";
 
 export const GeneralInfo = () => {

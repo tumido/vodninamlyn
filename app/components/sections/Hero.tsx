@@ -1,5 +1,5 @@
 "use client";
-import Mill from "../ui/Mill";
+import Mill from "@/app/components/ui/Mill";
 
 export const Hero = () => {
   return (

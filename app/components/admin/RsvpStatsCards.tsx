@@ -1,5 +1,5 @@
-import type { RsvpStats } from "../hooks/useRsvpStats";
-import { getDrinkLabel, getAccommodationLabel } from "../lib/formatters";
+import type { RsvpStats } from "@/app/hooks/useRsvpStats";
+import { getDrinkLabel, getAccommodationLabel } from "@/app/lib/formatters";
 
 interface RsvpStatsCardsProps {
   stats: RsvpStats;

@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
-import { Button } from "../components/ui/Button";
-import { useAuth } from "./hooks/useAuth";
-import { useRsvpData } from "./hooks/useRsvpData";
-import { useRsvpStats } from "./hooks/useRsvpStats";
-import { useRsvpEditor } from "./hooks/useRsvpEditor";
-import { RsvpStatsCards } from "./components/RsvpStatsCards";
-import { RsvpTable } from "./components/RsvpTable";
-import { EditRsvpModal } from "./components/EditRsvpModal";
+import { Button } from "@/app/components/ui/Button";
+import { useAuth } from "@/app/hooks/useAuth";
+import { useRsvpData } from "@/app/hooks/useRsvpData";
+import { useRsvpStats } from "@/app/hooks/useRsvpStats";
+import { useRsvpEditor } from "@/app/hooks/useRsvpEditor";
+import { RsvpStatsCards } from "@/app/components/admin/RsvpStatsCards";
+import { RsvpTable } from "@/app/components/admin/RsvpTable";
+import { EditRsvpModal } from "@/app/components/admin/EditRsvpModal";
 
 export default function AdminPage() {
   const { user, loading: authLoading, logout } = useAuth();

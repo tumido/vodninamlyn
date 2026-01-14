@@ -1,8 +1,8 @@
-import type { RsvpSubmission } from "../../lib/types";
-import { Tooltip } from "../../components/ui/Tooltip";
-import { ActionButton } from "../../components/ui/ActionButton";
-import { ATTENDING_LABELS } from "../lib/constants";
-import { formatDate, getAccommodationLabel, getDrinkLabel } from "../lib/formatters";
+import type { RsvpSubmission } from "@/app/lib/types";
+import { Tooltip } from "@/app/components/ui/Tooltip";
+import { ActionButton } from "@/app/components/ui/ActionButton";
+import { ATTENDING_LABELS } from "@/app/lib/constants";
+import { formatDate, getAccommodationLabel, getDrinkLabel } from "@/app/lib/formatters";
 
 interface RsvpTableRowProps {
   rsvp: RsvpSubmission;

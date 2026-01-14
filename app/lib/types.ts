@@ -1,4 +1,4 @@
-import { IconProps } from "../components/ui/Icon";
+import { IconProps } from "@/app/components/ui/Icon";
 
 // Error Handling
 export type ErrorType = "toast" | "inline";

@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Section } from "../ui/Section";
-import { Button } from "../ui/Button";
+import { Section } from "@/app/components/ui/Section";
+import { Button } from "@/app/components/ui/Button";
 import { rsvpSchema } from "@/app/lib/validations";
 import type { RSVPFormData } from "@/app/lib/types";
 import { ZodError } from "zod";
 import { parseZodErrors } from "@/app/lib/utils/zodHelpers";
-import Icon from "../ui/Icon";
+import Icon from "@/app/components/ui/Icon";
 import { supabase } from "@/app/lib/supabase";
-import { RSVPForm } from "../forms/RSVPForm";
+import { RSVPForm } from "@/app/components/forms/RSVPForm";
 
 export const RSVP = () => {
   const [formData, setFormData] = useState<RSVPFormData>({

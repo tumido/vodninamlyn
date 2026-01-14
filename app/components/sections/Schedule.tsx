@@ -1,9 +1,9 @@
 import { WEDDING_INFO } from "@/app/lib/constants";
-import { Section } from "../ui/Section";
-import Icon from "../ui/Icon";
-import SquigglyLine from "../ui/SquigglyLine";
+import { Section } from "@/app/components/ui/Section";
+import Icon from "@/app/components/ui/Icon";
+import SquigglyLine from "@/app/components/ui/SquigglyLine";
 import React from "react";
-import { ScrollReveal } from "../ui/ScrollReveal";
+import { ScrollReveal } from "@/app/components/ui/ScrollReveal";
 
 export const Schedule = () => {
   return (

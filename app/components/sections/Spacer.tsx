@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Section } from "../ui/Section";
+import { Section } from "@/app/components/ui/Section";
 
 export interface SpacerProps {
   delay?: number;

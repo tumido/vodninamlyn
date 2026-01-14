@@ -1,11 +1,11 @@
 "use client";
 
-import { FormField } from "../ui/FormField";
-import { ChipInput } from "../ui/ChipInput";
-import { Textarea } from "../ui/Textarea";
-import { Select } from "../ui/Select";
-import { Input } from "../ui/Input";
-import { Button } from "../ui/Button";
+import { FormField } from "@/app/components/ui/FormField";
+import { ChipInput } from "@/app/components/ui/ChipInput";
+import { Textarea } from "@/app/components/ui/Textarea";
+import { Select } from "@/app/components/ui/Select";
+import { Input } from "@/app/components/ui/Input";
+import { Button } from "@/app/components/ui/Button";
 import type { RSVPFormData } from "@/app/lib/types";
 
 interface RSVPFormProps {

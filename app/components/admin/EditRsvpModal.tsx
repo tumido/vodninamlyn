@@ -1,6 +1,6 @@
-import { Modal } from "../../components/ui/Modal";
-import { RSVPForm } from "../../components/forms/RSVPForm";
-import type { RSVPFormData } from "../../lib/types";
+import { Modal } from "@/app/components/ui/Modal";
+import { RSVPForm } from "@/app/components/forms/RSVPForm";
+import type { RSVPFormData } from "@/app/lib/types";
 
 interface EditRsvpModalProps {
   isOpen: boolean;

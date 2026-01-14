@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "../../lib/supabase";
-import { useErrorHandler } from "../../lib/errors/useErrorHandler";
-import { parseZodErrors } from "../../lib/utils/zodHelpers";
-import type { RSVPFormData } from "../../lib/types";
-import type { RsvpSubmission } from "../../lib/types";
-import { rsvpEditSchema } from "../../lib/validations";
+import { supabase } from "@/app/lib/supabase";
+import { useErrorHandler } from "@/app/lib/errors/useErrorHandler";
+import { parseZodErrors } from "@/app/lib/utils/zodHelpers";
+import type { RSVPFormData } from "@/app/lib/types";
+import type { RsvpSubmission } from "@/app/lib/types";
+import { rsvpEditSchema } from "@/app/lib/validations";
 import { ZodError } from "zod";
 
 interface EditingRow {

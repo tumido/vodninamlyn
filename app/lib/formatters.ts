@@ -1,4 +1,4 @@
-import { ACCOMMODATION_LABELS, DRINK_LABELS } from "./constants";
+import { ACCOMMODATION_LABELS, DRINK_LABELS } from "@/app/lib/constants";
 
 export const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleString("cs-CZ", {

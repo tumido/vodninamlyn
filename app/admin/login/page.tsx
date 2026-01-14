@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "../../lib/supabase";
-import { Input } from "../../components/ui/Input";
-import { Button } from "../../components/ui/Button";
-import { FormField } from "../../components/ui/FormField";
+import { supabase } from "@/app/lib/supabase";
+import { Input } from "@/app/components/ui/Input";
+import { Button } from "@/app/components/ui/Button";
+import { FormField } from "@/app/components/ui/FormField";
 
 export default function AdminLoginPage() {
   const router = useRouter();

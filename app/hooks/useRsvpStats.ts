@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import type { RsvpSubmission } from "../../lib/types";
+import type { RsvpSubmission } from "@/app/lib/types";
 
 export interface RsvpStats {
   totalAttending: number;
