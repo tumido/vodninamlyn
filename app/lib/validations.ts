@@ -1,34 +1,43 @@
 import { z } from 'zod';
 
 export const rsvpSchema = z.object({
-  name: z.string().min(2, 'Jméno musí mít alespoň 2 znaky'),
-  email: z.string().email('Neplatný email'),
-  attending: z.enum(['ano', 'ne'], {
-    required_error: 'Prosím vyberte, zda se zúčastníte',
+  names: z.array(z.string().min(2, 'Jméno musí mít alespoň 2 znaky'))
+    .min(1, 'Přidejte alespoň jedno jméno'),
+  attending: z.enum(['yes', 'no'], {
+    message: 'Prosím potvrďte, zda se zúčastníte',
   }),
-  plusOne: z.boolean().default(false),
-  plusOneName: z.string().optional(),
-  mealPreference: z.enum(['maso', 'ryba', 'vegetarian', 'vegan']).optional(),
+  accommodation: z.enum(['roof', 'own-tent', 'no-sleep'], {
+    message: 'Prosím vyberte ubytování',
+  }),
+  drinkChoice: z.enum(['pivo', 'vino', 'nealko', 'other'], {
+    message: 'Prosím vyberte nápoj',
+  }),
+  customDrink: z.string().max(100, 'Maximálně 100 znaků').optional(),
   dietaryRestrictions: z.string().max(500, 'Maximálně 500 znaků').optional(),
   message: z.string().max(1000, 'Maximálně 1000 znaků').optional(),
 }).refine((data) => {
-  // If plusOne is true, plusOneName should be provided
-  if (data.plusOne && (!data.plusOneName || data.plusOneName.trim() === '')) {
+  // If attending is "yes", validate accommodation and drinkChoice
+  if (data.attending === 'yes') {
+    if (!data.accommodation || !data.drinkChoice) {
+      return false;
+    }
+    if (data.drinkChoice === 'other' && !data.customDrink?.trim()) {
+      return false;
+    }
+  }
+  return true;
+}, {
+  message: 'Prosím vyplňte všechna povinná pole',
+  path: ['attending'],
+})
+.refine((data) => {
+  if (data.attending === 'yes' && data.drinkChoice === 'other' && !data.customDrink?.trim()) {
     return false;
   }
   return true;
 }, {
-  message: 'Prosím uveďte jméno doprovodu',
-  path: ['plusOneName'],
-}).refine((data) => {
-  // If attending 'ano', meal preference should be provided
-  if (data.attending === 'ano' && !data.mealPreference) {
-    return false;
-  }
-  return true;
-}, {
-  message: 'Prosím vyberte preferovaný oběd',
-  path: ['mealPreference'],
+  message: 'Prosím specifikujte vlastní nápoj',
+  path: ['customDrink'],
 });
 
 export type RSVPFormValues = z.infer<typeof rsvpSchema>;

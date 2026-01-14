@@ -3,20 +3,22 @@
 import { useState } from "react";
 import { Section } from "../ui/Section";
 import { FormField } from "../ui/FormField";
-import { Input } from "../ui/Input";
+import { ChipInput } from "../ui/ChipInput";
+import { Textarea } from "../ui/Textarea";
 import { Select } from "../ui/Select";
+import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { rsvpSchema } from "@/app/lib/validations";
 import type { RSVPFormData } from "@/app/lib/types";
+import { ZodError } from "zod";
 
 export const RSVP = () => {
   const [formData, setFormData] = useState<RSVPFormData>({
-    name: "",
-    email: "",
-    attending: "ano",
-    plusOne: false,
-    plusOneName: "",
-    mealPreference: undefined,
+    names: [],
+    attending: "",
+    accommodation: "",
+    drinkChoice: "",
+    customDrink: "",
     dietaryRestrictions: "",
     message: "",
   });
@@ -46,21 +48,20 @@ export const RSVP = () => {
       setSubmitStatus("success");
       // Reset form
       setFormData({
-        name: "",
-        email: "",
-        attending: "ano",
-        plusOne: false,
-        plusOneName: "",
-        mealPreference: undefined,
+        names: [],
+        attending: "",
+        accommodation: "",
+        drinkChoice: "",
+        customDrink: "",
         dietaryRestrictions: "",
         message: "",
       });
-    } catch (error: any) {
-      if (error.errors) {
+    } catch (error) {
+      if (error instanceof ZodError) {
         const formErrors: Record<string, string> = {};
-        error.errors.forEach((err: any) => {
-          if (err.path) {
-            formErrors[err.path[0]] = err.message;
+        error.issues.forEach((issue) => {
+          if (issue.path.length > 0) {
+            formErrors[issue.path[0] as string] = issue.message;
           }
         });
         setErrors(formErrors);
@@ -71,207 +72,190 @@ export const RSVP = () => {
     }
   };
 
-  const mealOptions = [
-    { value: "maso", label: "Maso" },
-    { value: "ryba", label: "Ryba" },
-    { value: "vegetarian", label: "Vegetariánské" },
-    { value: "vegan", label: "Veganské" },
-  ];
-
   return (
-    <Section id="rsvp" className="bg-neutral-50" animate={true}>
-      <h2 className="text-4xl md:text-5xl font-serif font-light text-center text-neutral-900 mb-4">
-        Potvrzení účasti
+    <Section id="rsvp" animate={true}>
+      <h2 className="text-4xl mx-auto text-center pb-12">
+        Přijdeš? Řekni nám to!
       </h2>
-      <p className="text-center text-neutral-600 mb-12 max-w-2xl mx-auto">
-        Prosíme o potvrzení vaší účasti do 1. května 2026
+      <p className=" text-xl leading-relaxed mb-12 max-w-2xl mx-auto">
+        Prosíme o potvrzení vaší účasti do 1. dubna 2026. Pomůže nám to se
+        připravit.
       </p>
 
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-sm border-2 border-neutral-100"
-      >
+      <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-8">
         <div className="space-y-6">
-          {/* Name */}
+          {/* Names - ChipInput */}
           <FormField
-            label="Jméno a příjmení"
-            error={errors.name}
+            label="Jména účastníků"
+            error={errors.names}
             required
-            htmlFor="name"
+            htmlFor="names"
           >
-            <Input
-              id="name"
-              type="text"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              error={errors.name}
-              placeholder="Jana Nováková"
+            <ChipInput
+              values={formData.names}
+              onChange={(names) => setFormData({ ...formData, names })}
+              placeholder="Zadejte jméno a stiskněte Enter"
+              error={errors.names}
             />
+            <p className="text-xs text-neutral-500 mt-1">
+              Můžete přidat více jmen - po každém jménu stiskněte Enter nebo
+              čárku
+            </p>
           </FormField>
 
-          {/* Email */}
+          {/* Attendance */}
           <FormField
-            label="Email"
-            error={errors.email}
+            label="Účast"
+            error={errors.attending}
             required
-            htmlFor="email"
+            htmlFor="attending"
           >
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              error={errors.email}
-              placeholder="jana@example.com"
-            />
-          </FormField>
-
-          {/* Attending */}
-          <FormField label="Zúčastním se" error={errors.attending} required>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="attending"
-                  value="ano"
-                  checked={formData.attending === "ano"}
-                  onChange={(e) =>
-                    setFormData({ ...formData, attending: "ano" })
-                  }
-                  className="w-4 h-4 text-pastel-blue focus:ring-pastel-blue"
-                />
-                <span>Ano</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="attending"
-                  value="ne"
-                  checked={formData.attending === "ne"}
-                  onChange={(e) =>
-                    setFormData({ ...formData, attending: "ne" })
-                  }
-                  className="w-4 h-4 text-pastel-blue focus:ring-pastel-blue"
-                />
-                <span>Ne</span>
-              </label>
-            </div>
-          </FormField>
-
-          {/* Plus One */}
-          <FormField label="Doprovodná osoba">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.plusOne}
-                onChange={(e) =>
-                  setFormData({ ...formData, plusOne: e.target.checked })
-                }
-                className="w-4 h-4 text-pastel-blue rounded focus:ring-pastel-blue"
-              />
-              <span>Přijdu s doprovodem</span>
-            </label>
-          </FormField>
-
-          {/* Plus One Name (conditional) */}
-          {formData.plusOne && (
-            <FormField
-              label="Jméno doprovodu"
-              error={errors.plusOneName}
-              required
-              htmlFor="plusOneName"
-            >
-              <Input
-                id="plusOneName"
-                type="text"
-                value={formData.plusOneName}
-                onChange={(e) =>
-                  setFormData({ ...formData, plusOneName: e.target.value })
-                }
-                error={errors.plusOneName}
-                placeholder="Petr Novák"
-              />
-            </FormField>
-          )}
-
-          {/* Meal Preference (conditional - only if attending) */}
-          {formData.attending === "ano" && (
-            <FormField
-              label="Preferovaný oběd"
-              error={errors.mealPreference}
-              required
-              htmlFor="mealPreference"
-            >
-              <Select
-                id="mealPreference"
-                value={formData.mealPreference || ""}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    mealPreference: e.target.value as any,
-                  })
-                }
-                options={mealOptions}
-                placeholder="Vyberte preferenci"
-                error={errors.mealPreference}
-              />
-            </FormField>
-          )}
-
-          {/* Dietary Restrictions */}
-          <FormField
-            label="Dietní omezení"
-            error={errors.dietaryRestrictions}
-            htmlFor="dietaryRestrictions"
-          >
-            <textarea
-              id="dietaryRestrictions"
-              value={formData.dietaryRestrictions}
+            <Select
+              id="attending"
+              value={formData.attending}
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  dietaryRestrictions: e.target.value,
+                  attending: e.target.value as RSVPFormData["attending"],
                 })
               }
-              className="w-full px-4 py-3 rounded-lg border-2 border-neutral-200 bg-white hover:border-pastel-blue-light transition-colors focus:outline-none focus:ring-2 focus:ring-pastel-blue focus:border-transparent"
-              rows={3}
-              placeholder="Alergie, vegetariánství, veganství..."
+              error={errors.attending}
+              options={[
+                { value: "yes", label: "Ano, přijdeme" },
+                { value: "no", label: "Bohužel se nemůžeme zúčastnit" },
+              ]}
+              placeholder="Zúčastníte se?"
             />
           </FormField>
 
-          {/* Message */}
+          {/* Show remaining fields only if attending */}
+          {formData.attending === "yes" && (
+            <>
+              {/* Accommodation */}
+              <FormField
+                label="Ubytování"
+                error={errors.accommodation}
+                required
+                htmlFor="accommodation"
+              >
+                <Select
+                  id="accommodation"
+                  value={formData.accommodation}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      accommodation: e.target
+                        .value as RSVPFormData["accommodation"],
+                    })
+                  }
+                  error={errors.accommodation}
+                  options={[
+                    { value: "roof", label: "Chci spát pod střechou" },
+                    { value: "own-tent", label: "Přivezu si vlastní střechu" },
+                    { value: "no-sleep", label: "Nepřespím" },
+                  ]}
+                  placeholder="Vyberte možnost ubytování"
+                />
+              </FormField>
+
+              {/* Drink Choice */}
+              <FormField
+                label="Čeho plánujete vypít nejvíc?"
+                error={errors.drinkChoice}
+                required
+                htmlFor="drinkChoice"
+              >
+                <Select
+                  id="drinkChoice"
+                  value={formData.drinkChoice}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      drinkChoice: e.target
+                        .value as RSVPFormData["drinkChoice"],
+                      customDrink:
+                        e.target.value !== "other" ? "" : formData.customDrink,
+                    })
+                  }
+                  error={errors.drinkChoice}
+                  options={[
+                    { value: "pivo", label: "Pivo" },
+                    { value: "vino", label: "Víno" },
+                    { value: "nealko", label: "Nealko" },
+                    { value: "other", label: "Něco jiného" },
+                  ]}
+                  placeholder="Vyberte si"
+                />
+              </FormField>
+
+              {/* Custom Drink - shown only when "other" is selected */}
+              {formData.drinkChoice === "other" && (
+                <FormField
+                  label="Pán je gurmán. Tož nám to řekni"
+                  error={errors.customDrink}
+                  required
+                  htmlFor="customDrink"
+                >
+                  <Input
+                    id="customDrink"
+                    type="text"
+                    value={formData.customDrink}
+                    onChange={(e) =>
+                      setFormData({ ...formData, customDrink: e.target.value })
+                    }
+                    error={errors.customDrink}
+                    placeholder="Jaký nápoj byste chtěli?"
+                  />
+                </FormField>
+              )}
+
+              {/* Dietary Restrictions */}
+              <FormField
+                label="Dietní omezení"
+                error={errors.dietaryRestrictions}
+                htmlFor="dietaryRestrictions"
+              >
+                <Textarea
+                  id="dietaryRestrictions"
+                  value={formData.dietaryRestrictions}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      dietaryRestrictions: e.target.value,
+                    })
+                  }
+                  error={errors.dietaryRestrictions}
+                  rows={3}
+                  placeholder="Máme se něčemu vyvarovat? Alergie, bez-maso..."
+                />
+              </FormField>
+            </>
+          )}
+
+          {/* Message - always shown */}
           <FormField label="Vzkaz" error={errors.message} htmlFor="message">
-            <textarea
+            <Textarea
               id="message"
               value={formData.message}
               onChange={(e) =>
                 setFormData({ ...formData, message: e.target.value })
               }
-              className="w-full px-4 py-3 rounded-lg border-2 border-neutral-200 bg-white hover:border-pastel-blue-light transition-colors focus:outline-none focus:ring-2 focus:ring-pastel-blue focus:border-transparent"
+              error={errors.message}
               rows={4}
-              placeholder="Napište nám vzkaz..."
+              placeholder="Chtěli byste nám něco napsat? Máte dotaz, prosbu, připomínku? Sem s tím!"
             />
           </FormField>
 
           {/* Submit Button */}
           <div className="pt-4">
-            <Button
-              type="submit"
-              variant="primary"
-              isLoading={isSubmitting}
-              className="w-full"
-            >
+            <Button type="submit" isLoading={isSubmitting}>
               Odeslat potvrzení
             </Button>
           </div>
 
           {/* Success Message */}
           {submitStatus === "success" && (
-            <div className="p-4 bg-green-50 border-2 border-green-200 rounded-lg text-green-800">
+            <div className="p-4 bg-palette-green/30 border-2 border-palette-dark-green rounded-lg text-palette-dark-green">
               ✓ Děkujeme za potvrzení! Těšíme se na vás.
             </div>
           )}

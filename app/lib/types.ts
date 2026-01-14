@@ -2,12 +2,11 @@ import { IconProps } from "../components/ui/Icon";
 
 // RSVP Form Data
 export interface RSVPFormData {
-  name: string;
-  email: string;
-  attending: "ano" | "ne";
-  plusOne: boolean;
-  plusOneName?: string;
-  mealPreference?: "maso" | "ryba" | "vegetarian" | "vegan";
+  names: string[];
+  attending: "yes" | "no" | "";
+  accommodation: "roof" | "own-tent" | "no-sleep" | "";
+  drinkChoice: "pivo" | "vino" | "nealko" | "other" | "";
+  customDrink?: string;
   dietaryRestrictions?: string;
   message?: string;
 }
