@@ -1,578 +1,505 @@
-# Czech Wedding Website - Development Documentation
+# Svatba - Development Documentation
 
 ## Project Overview
 
-A single-page Czech wedding website built with Next.js 16, featuring a predominantly white layout with artsy, playful animated vector art and pastel blue/orange accents.
+A Czech wedding website with RSVP functionality and admin dashboard. Built as a static site with client-side Supabase integration for data persistence.
 
 **Tech Stack:**
-- Next.js 16.1.1 (App Router)
+- Next.js 16.1.1 (App Router, static export)
 - React 19.2.3
-- TypeScript
+- TypeScript 5
 - Tailwind CSS v4
-- Zod (form validation)
-- Supabase (backend - to be configured)
+- Zod 4.3.5 (validation)
+- Supabase 2.71.3 (PostgreSQL 17, Auth)
 
 **Architecture:**
-- Client-side only (static export)
+- Static export (`output: 'export'`)
 - No Next.js API routes
-- Supabase Edge Functions for backend (planned)
-- GitHub Pages deployment (planned)
+- Direct client-to-Supabase communication
+- GitHub Actions CI/CD → GitHub Pages deployment
 
 ---
 
-## What We've Built So Far
+## Quick Start
 
-### 1. Foundation & Configuration
+### Prerequisites
+- Node.js 20+
+- Docker Desktop (for local Supabase)
 
-#### Dependencies Installed
+### Local Development
+
 ```bash
-npm install zod @supabase/supabase-js
-npm install -D supabase  # Supabase CLI
+# Install dependencies
+npm install
+
+# Start Supabase (requires Docker)
+supabase start
+
+# Start Next.js dev server
+npm run dev
 ```
 
-#### Configuration Files
+Open [http://localhost:3000](http://localhost:3000)
 
-**next.config.ts**
-- Added `output: 'export'` for static HTML generation
-- Enables deployment to GitHub Pages or any static host
+### Environment Variables
 
-**package.json**
-- Added `"export": "next build && touch out/.nojekyll"` script
-- For GitHub Pages deployment
-
-**app/globals.css**
-- Added pastel color variables:
-  - Pastel Blue: `#b8d4e8` (light: `#d9e9f3`, dark: `#8fb8d4`)
-  - Pastel Orange: `#ffd4a3` (light: `#ffe9cc`, dark: `#ffbd7a`)
-- Added CSS animation keyframes:
-  - `@keyframes float` - Vertical floating animation (3s)
-  - `@keyframes float-slow` - Slow floating with rotation (6s)
-  - `@keyframes draw-line` - SVG path drawing animation
-- Removed dark mode styles
-- Added `scroll-behavior: smooth` for smooth scrolling
-
-**app/layout.tsx**
-- Changed language from `lang="en"` to `lang="cs"`
-- Updated metadata:
-  - Title: "Naše Svatba"
-  - Description: "Srdečně vás zveme na naši svatbu"
-
-### 2. Core Library Files
-
-#### app/lib/types.ts
-TypeScript interfaces for all data structures:
-- `RSVPFormData` - RSVP form data structure
-- `RSVPSubmission` - RSVP with ID and timestamp
-- `Address` - Street, city, zip
-- `Coordinates` - Latitude/longitude
-- `Venue` - Complete venue information
-- `ScheduleItem` - Timeline event structure
-- `WeddingInfo` - Complete wedding information structure
-
-#### app/lib/constants.ts
-Wedding data configuration (currently placeholder data):
-- Couple names (bride/groom)
-- Wedding date and time
-- Venue information:
-  - Ceremony: Kostel svatého Jakuba
-  - Reception: Restaurace U Zlatého Lva
-- Schedule timeline (4 events: Obřad, Focení, Hostina, Tanec)
-- RSVP deadline
-- Contact information (email, phone)
-
-**⚠️ TODO: Replace with actual wedding data**
-
-#### app/lib/validations.ts
-Zod validation schemas:
-- `rsvpSchema` - Complete RSVP form validation
-  - Required fields: name, email, attending
-  - Conditional validation:
-    - If `plusOne` is true, `plusOneName` is required
-    - If `attending` is 'ano', `mealPreference` is required
-  - Error messages in Czech
-- Exported type: `RSVPFormValues`
-
-#### app/lib/supabase.ts
-Supabase client initialization:
-- Reads environment variables:
-  - `NEXT_PUBLIC_SUPABASE_URL`
-  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- Creates and exports Supabase client instance
-
-### 3. UI Components (app/components/ui/)
-
-All components use arrow function syntax.
-
-#### SectionContainer.tsx
-Wrapper component for consistent section spacing:
-- Responsive padding (mobile → tablet → desktop)
-- Max-width constraint (6xl)
-- Centered content
-- Optional ID for scroll anchors
-
-#### Button.tsx
-Styled button with variants:
-- Variants: `primary` (pastel blue), `secondary` (pastel orange)
-- Loading state with spinner
-- Disabled state handling
-- Hover and active animations
-
-#### Input.tsx
-Form input component:
-- Error state styling (red border/background)
-- Focus ring with pastel blue
-- Hover effects
-- Rounded corners
-
-#### Select.tsx
-Dropdown select component:
-- Options array prop
-- Optional placeholder
-- Error state styling
-- Consistent styling with Input component
-
-#### FormField.tsx
-Form field wrapper combining label, input, and error message:
-- Required field indicator (*)
-- Error message display
-- Accessible label with `htmlFor`
-
-### 4. Animation Components (app/components/animations/)
-
-#### ScrollReveal.tsx
-Client-side component using Intersection Observer:
-- Fades in and slides up when element enters viewport
-- 700ms transition duration
-- 10% threshold for triggering
-- Cleanup on unmount
-
-#### FloatingHeart.tsx
-Animated SVG heart decoration:
-- Size prop (default: 40px)
-- Color variants: blue/orange
-- Uses `animate-float-slow` class
-- SVG heart path with customizable fill color
-
-#### AnimatedDivider.tsx
-Decorative section separator:
-- Animated curved line (SVG path)
-- Floating dot at center
-- Uses both `animate-draw` and `animate-float` animations
-- Pastel blue line, orange dot
-
-### 5. Section Components (app/components/sections/)
-
-#### Hero.tsx
-Full-screen landing section:
-- Gradient background (white → neutral-50)
-- Floating decorative hearts (4 hearts with varied positioning)
-- Couple names with elegant typography
-- Wedding date and time display
-- Animated scroll indicator arrow
-- Data from `WEDDING_INFO.couple` and `WEDDING_INFO.date`
-
-#### WeddingDetails.tsx
-Venue information section:
-- Two venue cards (ceremony and reception)
-- Venue name, address display
-- Google Maps links
-- Scroll reveal animation
-- Animated divider separator
-- Data from `WEDDING_INFO.venue`
-
-#### Schedule.tsx
-Timeline of the day:
-- Responsive grid (1 → 2 → 4 columns)
-- Each item shows: icon (emoji), time, title, description
-- Centered card layout
-- Data from `WEDDING_INFO.schedule`
-
-#### RSVP.tsx (Most Complex Component)
-Full RSVP form with validation:
-
-**Form Fields:**
-- Jméno a příjmení (name) - required
-- Email - required
-- Zúčastním se (attending) - radio buttons (ano/ne) - required
-- Doprovodná osoba (plus one) - checkbox
-- Jméno doprovodu (plus one name) - conditional, shown if plus one checked
-- Preferovaný oběd (meal preference) - select (maso/ryba/vegetarian/vegan) - conditional, shown if attending 'ano'
-- Dietní omezení (dietary restrictions) - textarea, optional
-- Vzkaz (message) - textarea, optional
-
-**Form Features:**
-- Client-side validation with Zod
-- Real-time error display
-- Conditional field rendering
-- Loading state during submission
-- Success/error messages
-- Form reset on successful submission
-
-**Current State:**
-- Form submits to console (simulated delay of 1.5s)
-- TODO: Integrate with Supabase Edge Function
-
-#### Footer.tsx
-Site footer:
-- Dark background (neutral-900)
-- Couple names display
-- Contact information (email, phone)
-- Decorative floating hearts
-- Wedding date reminder
-
-### 6. Main Page Assembly (app/page.tsx)
-
-Simple composition of all sections:
-```tsx
-<Hero />
-<WeddingDetails />
-<Schedule />
-<RSVP />
-<Footer />
+Create `.env.local`:
+```bash
+NEXT_PUBLIC_SUPABASE_URL=<your_supabase_url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your_anon_key>
+NEXT_PUBLIC_ADMIN_USER=<admin_email>
 ```
 
-All sections flow vertically in order.
+For local development with `supabase start`, use the credentials from `supabase status`.
 
-### 7. Static Export Configuration
+---
 
-#### public/.nojekyll
-Empty file that prevents GitHub Pages from ignoring Next.js files starting with underscore.
+## Architecture
 
-#### .env.local.example
-Template for environment variables:
+### Static Export Model
+
+The app compiles to static HTML/CSS/JS (`next.config.ts` has `output: 'export'`). This means:
+- No server-side rendering at runtime
+- No Next.js API routes
+- All data fetching happens client-side via Supabase
+- Deployable to any static host (GitHub Pages, Netlify, etc.)
+
+### Data Flow
+
 ```
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+Frontend (React)
+    ↓
+Supabase Client (@supabase/supabase-js)
+    ↓
+Supabase REST API / RPC / Auth
+    ↓
+PostgreSQL 17 Database
 ```
 
-**⚠️ TODO: Create actual `.env.local` file with real credentials when Supabase is set up**
+All database operations go through:
+1. **RPC Functions** - `submit_rsvp()` for public RSVP submissions
+2. **REST API** - Direct table queries for admin dashboard (auth required)
+3. **Auth** - Password-based admin authentication
+
+---
+
+## Database Schema
+
+### Table: `rsvps`
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | UUID | PK | Auto-generated |
+| `created_at` | TIMESTAMPTZ | NOT NULL | Submission timestamp |
+| `updated_at` | TIMESTAMPTZ | NOT NULL | Auto-updated by trigger |
+| `name` | TEXT | NOT NULL, MIN 2 chars | Guest name |
+| `primary_rsvp_id` | UUID | FK → rsvps(id) | NULL for primary guest, references primary for additional guests |
+| `attending` | TEXT | NOT NULL, 'yes'\|'no' | Attendance status |
+| `accommodation` | TEXT | 'roof'\|'own-tent'\|'no-sleep' | Lodging preference |
+| `drink_choice` | TEXT | 'pivo'\|'vino'\|'nealko'\|'other' | Beverage choice |
+| `custom_drink` | TEXT | MAX 100 chars | Custom drink if `drink_choice='other'` |
+| `dietary_restrictions` | TEXT | MAX 500 chars | Dietary needs |
+| `message` | TEXT | MAX 1000 chars | Guest message |
+
+**Indexes:**
+- `idx_rsvps_created_at` - Submission date sorting
+- `idx_rsvps_attending` - Filter by attendance
+- `idx_rsvps_primary_id` - Group by submission
+
+**Row-Level Security:**
+- Public: INSERT (anyone can submit)
+- Authenticated: SELECT, UPDATE, DELETE (admin only)
+
+### View: `rsvp_submissions`
+
+Formatted view for admin display. Each row is one attendee with computed fields:
+- `attendee_id`, `attendee_name`
+- `primary_rsvp_id`, `primary_name`, `is_primary`
+- All form data duplicated for each guest in a submission
+
+### Function: `submit_rsvp()`
+
+Public RPC function for RSVP submission.
+
+**Parameters:**
+- `names` TEXT[] - Array of guest names
+- `attending` TEXT - 'yes' or 'no'
+- `accommodation` TEXT - Optional lodging choice
+- `drinkChoice` TEXT - Optional drink preference
+- `customDrink` TEXT - Optional custom drink
+- `dietaryRestrictions` TEXT - Optional dietary info
+- `message` TEXT - Optional message
+
+**Logic:**
+1. Creates primary record for first name
+2. Creates additional guest records for remaining names
+3. All guests reference primary via `primary_rsvp_id`
+4. All guests duplicate form data
+5. Returns primary UUID
+
+**Usage:**
+```typescript
+const { data, error } = await supabase.rpc('submit_rsvp', {
+  names: ['Jan Novák', 'Anna Nováková'],
+  attending: 'yes',
+  accommodation: 'roof',
+  drinkChoice: 'pivo',
+  // ...
+});
+```
 
 ---
 
 ## Project Structure
 
 ```
-svatba/
-├── app/
-│   ├── components/
-│   │   ├── animations/
-│   │   │   ├── AnimatedDivider.tsx
-│   │   │   ├── FloatingHeart.tsx
-│   │   │   └── ScrollReveal.tsx
-│   │   ├── sections/
-│   │   │   ├── Footer.tsx
-│   │   │   ├── Hero.tsx
-│   │   │   ├── RSVP.tsx
-│   │   │   ├── Schedule.tsx
-│   │   │   └── WeddingDetails.tsx
-│   │   └── ui/
-│   │       ├── Button.tsx
-│   │       ├── FormField.tsx
-│   │       ├── Input.tsx
-│   │       ├── SectionContainer.tsx
-│   │       └── Select.tsx
-│   ├── lib/
-│   │   ├── constants.ts      (customize with real data!)
-│   │   ├── supabase.ts
-│   │   ├── types.ts
-│   │   └── validations.ts
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx
-├── supabase/
-│   ├── migrations/
-│   │   └── 20260107193342_create_rsvps_table.sql
-│   ├── config.toml
-│   └── .gitignore
-├── public/
-│   └── .nojekyll
-├── .env.local.example
-├── next.config.ts
-├── package.json
-└── DEVELOPMENT.md (this file)
+app/
+├── components/
+│   ├── admin/              # Admin dashboard components
+│   │   ├── RsvpStatsCards.tsx
+│   │   ├── RsvpTable.tsx
+│   │   ├── RsvpTableRow.tsx
+│   │   └── EditRsvpModal.tsx
+│   ├── forms/
+│   │   └── RSVPForm.tsx    # Main RSVP form (used on public page and admin edit)
+│   ├── sections/           # Public page sections
+│   │   ├── Hero.tsx
+│   │   ├── GeneralInfo.tsx
+│   │   ├── Schedule.tsx
+│   │   ├── RSVP.tsx
+│   │   ├── Footer.tsx
+│   │   └── Spacer.tsx
+│   └── ui/                 # Reusable primitives
+│       ├── Button.tsx
+│       ├── Input.tsx
+│       ├── Select.tsx
+│       ├── Textarea.tsx
+│       ├── FormField.tsx
+│       ├── ChipInput.tsx   # For name array input
+│       ├── Icon.tsx
+│       ├── Section.tsx
+│       ├── Mill.tsx        # Animated SVG mill
+│       ├── ScrollReveal.tsx
+│       ├── SquigglyLine.tsx
+│       ├── Tooltip.tsx
+│       ├── Modal.tsx
+│       └── ActionButton.tsx
+├── hooks/
+│   ├── useAuth.ts          # Auth state management
+│   ├── useRsvpData.ts      # Fetch/delete RSVPs
+│   ├── useRsvpStats.ts     # Calculate statistics
+│   └── useRsvpEditor.ts    # Edit RSVP modal logic
+├── lib/
+│   ├── errors/
+│   │   ├── ErrorBoundary.tsx
+│   │   └── useErrorHandler.ts
+│   ├── utils/
+│   │   └── zodHelpers.ts
+│   ├── supabase.ts         # Supabase client init
+│   ├── types.ts            # TypeScript types
+│   ├── constants.ts        # Wedding data & labels
+│   ├── validations.ts      # Zod schemas
+│   └── formatters.ts       # Data formatting utilities
+├── admin/
+│   ├── page.tsx            # Admin dashboard
+│   └── login/
+│       └── page.tsx        # Admin login
+├── layout.tsx              # Root layout
+├── page.tsx                # Public homepage
+└── globals.css             # Tailwind + custom styles
+
+supabase/
+├── migrations/
+│   └── 20260114155913_create_rsvps_table.sql
+├── seed.sql
+└── config.toml
 ```
 
 ---
 
-## Current Status
+## Key Files
 
-✅ **Completed:**
-- Foundation setup and configuration
-- All core library files
-- All UI components
-- All animation components
-- All page sections
-- Main page assembly
-- Static export configuration
-- Dev server running successfully
-- **Supabase CLI installed and initialized**
-- **Database migration created** (`rsvps` table with constraints and indexes)
+### [app/lib/types.ts](app/lib/types.ts)
+All TypeScript type definitions:
+- `AttendingStatus`, `AccommodationType`, `DrinkChoice` enums
+- `RSVPFormData` - Form submission data
+- `RsvpSubmission` - Database record from view
+- `WeddingInfo` - Wedding information structure
 
-🔄 **In Progress / TODO:**
-- Customize wedding data in `constants.ts`
-- Create custom SVG assets (heart, rings, flower)
-- Set up Supabase project (production)
-- Link local project to Supabase
-- Push migration to production database
-- Create Supabase Edge Function for RSVP
-- Add environment variables (.env.local)
-- Update RSVP component to call Edge Function
-- Test form submission end-to-end
-- Deploy to GitHub Pages
-
----
-
-## How to Run
-
-### Development Server
-```bash
-npm run dev
-```
-Opens at [http://localhost:3000](http://localhost:3000)
-
-### Build for Production
-```bash
-npm run build
-# or
-npm run export  # includes .nojekyll file creation
-```
-
-Output will be in the `out/` directory.
-
----
-
-## Next Steps
-
-### 1. Customize Wedding Data
-
-Edit [app/lib/constants.ts](app/lib/constants.ts) and replace placeholder data:
-- Bride and groom names
-- Wedding date and time
-- Venue names and addresses
+### [app/lib/constants.ts](app/lib/constants.ts)
+Wedding data constants:
+- Couple names, wedding date
+- Venue details with coordinates
 - Schedule timeline
-- Contact information
+- Czech label mappings for UI
 
-### 2. Set Up Supabase
+### [app/lib/validations.ts](app/lib/validations.ts)
+Zod validation schemas:
+- `baseRsvpSchema` - Shared validation with conditional logic
+- `rsvpSchema` - Public form (includes names array)
+- `rsvpEditSchema` - Admin editing (single record)
 
-#### Supabase CLI Setup ✅
+### [app/lib/supabase.ts](app/lib/supabase.ts)
+Supabase client initialization:
+```typescript
+import { createClient } from '@supabase/supabase-js';
 
-We've installed and initialized Supabase CLI locally:
-
-```bash
-npm install -D supabase    # Installed
-npx supabase init          # Initialized - created supabase/ directory
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 ```
 
-#### Database Migration Created ✅
+### [app/components/forms/RSVPForm.tsx](app/components/forms/RSVPForm.tsx)
+Main RSVP form component:
+- Conditional field rendering based on attendance
+- Dynamic drink field (custom option)
+- Name management via ChipInput
+- Edit mode support for admin
+- Zod validation with real-time error display
 
-**Migration file:** `supabase/migrations/20260107193342_create_rsvps_table.sql`
+---
 
-This migration creates the `rsvps` table with:
+## Component Patterns
 
-**Columns:**
-- `id` - UUID primary key (auto-generated)
-- `created_at` - Timestamp of submission
-- `name` - Guest's full name (required)
-- `email` - Guest's email address (required)
-- `attending` - 'ano' or 'ne' (yes/no in Czech, required)
-- `plus_one` - Boolean for bringing a guest
-- `plus_one_name` - Name of the plus one (required if plus_one is true)
-- `meal_preference` - 'maso', 'ryba', 'vegetarian', or 'vegan' (required if attending 'ano')
-- `dietary_restrictions` - Optional text field
-- `message` - Optional message from guest
+### Server vs Client Components
 
-**Constraints:**
-- Plus one name is required when `plus_one` is true
-- Meal preference is required when `attending` is 'ano'
-- Attending must be 'ano' or 'ne'
-- Meal preference must be one of: maso, ryba, vegetarian, vegan
+- **Server Components (default):** All pages and static sections
+- **Client Components (`"use client"`):** Interactive UI requiring hooks/state
+  - Forms, modals, tables
+  - Hooks: useAuth, useRsvpData, etc.
+  - UI components with state: ChipInput, Modal, etc.
 
-**Indexes** (for performance):
-- `idx_rsvps_email` - For looking up RSVPs by email
-- `idx_rsvps_created_at` - For sorting by submission date (DESC)
-- `idx_rsvps_attending` - For filtering by attendance status
+### Form Validation
 
-#### Local Development with Supabase (Optional)
+All forms use Zod schemas with TypeScript types inferred:
+```typescript
+const schema = z.object({
+  name: z.string().min(2, "Jméno musí mít alespoň 2 znaky"),
+  // ...
+});
 
-To test locally:
-
-**Prerequisites:**
-- Docker Desktop must be installed and running
-
-**Commands:**
-```bash
-npx supabase start   # Start local instance (runs migrations automatically)
-npx supabase stop    # Stop local instance
-npx supabase status  # Check status and get local URLs
+type FormData = z.infer<typeof schema>;
 ```
 
-#### Production Deployment Steps
-
-##### 1. Create Supabase Project
-1. Go to [https://supabase.com](https://supabase.com)
-2. Create a new project
-3. Wait for project to be provisioned
-
-##### 2. Link Your Local Project
-```bash
-npx supabase link --project-ref your-project-ref
+Conditional validation example:
+```typescript
+.refine(
+  (data) => data.attending !== 'yes' || data.accommodation,
+  { message: "Vyberte možnost noclegu", path: ['accommodation'] }
+)
 ```
 
-Find your project ref in: Supabase Dashboard → Settings → General
+### Error Handling
 
-##### 3. Push Migration to Production
-```bash
-npx supabase db push
+Use `useErrorHandler` hook for consistent error display:
+```typescript
+const { handleError, showSuccess } = useErrorHandler();
+
+try {
+  // operation
+  showSuccess('Úspěch!');
+} catch (error) {
+  handleError(error, 'Chyba');
+}
 ```
 
-This applies the migration from `supabase/migrations/` to your production database.
+---
 
-##### 4. Get API Credentials
-From Supabase Dashboard → Settings → API:
-- Copy **Project URL**
-- Copy **anon** public key
+## Authentication
 
-Add to `.env.local`:
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_project_url_here
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
-```
-
-#### Create Edge Function
-
-Create `supabase/functions/rsvp/index.ts`:
+Admin authentication uses Supabase Auth with password-based login:
 
 ```typescript
-// TODO: Implement Edge Function
-// - Validate request body with Zod
-// - Insert into rsvps table
-// - Send email notification via Resend
-// - Return success/error response
+// Login
+const { error } = await supabase.auth.signInWithPassword({
+  email: process.env.NEXT_PUBLIC_ADMIN_USER,
+  password: userPassword,
+});
+
+// Get current user
+const { data: { user } } = await supabase.auth.getUser();
+
+// Logout
+await supabase.auth.signOut();
 ```
 
-Deploy with:
-```bash
-supabase functions deploy rsvp
-```
-
-Add secrets:
-```bash
-supabase secrets set RESEND_API_KEY=xxx WEDDING_EMAIL=xxx
-```
-
-#### Add Environment Variables
-
-Create `.env.local`:
-```
-NEXT_PUBLIC_SUPABASE_URL=your_actual_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_actual_key
-```
-
-#### Update RSVP Component
-
-In [app/components/sections/RSVP.tsx](app/components/sections/RSVP.tsx), replace the TODO section with actual Supabase Edge Function call.
-
-### 3. Create Custom SVG Assets
-
-Create wedding-themed SVGs in `/public`:
-- `heart.svg` - Heart shape
-- `rings.svg` - Wedding rings
-- `flower.svg` - Floral decorations
-
-Update animation components to use these custom SVGs.
-
-### 4. Deploy to GitHub Pages
-
-#### Option A: Manual Deployment
-```bash
-npm run export
-# Push out/ directory to gh-pages branch
-```
-
-#### Option B: GitHub Actions (Recommended)
-
-Create `.github/workflows/deploy.yml`:
-
-```yaml
-name: Deploy to GitHub Pages
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out
-```
-
-Add secrets in GitHub: Settings → Secrets and variables → Actions
+Protected admin routes check auth state and redirect to `/admin/login` if not authenticated.
 
 ---
 
-## Design Guidelines
+## Styling
 
-### Color Palette
-- **Background**: White (#ffffff)
-- **Pastel Blue**: #b8d4e8 (primary accent)
-- **Pastel Orange**: #ffd4a3 (secondary accent)
-- **Text**: Neutral shades (#171717 to #404040)
+### Tailwind CSS v4
 
-### Typography
-- **Headings**: Font-serif, light weight
-- **Body**: Geist Sans (modern, clean)
-- **Sizes**: Responsive (mobile → desktop)
+Using `@tailwindcss/postcss` v4 with `@import "tailwindcss"` in [app/globals.css](app/globals.css).
+
+### Custom Theme
+
+**Colors:**
+- Beige: `#ebe1d1` (primary background)
+- Green: `#41644a` (accent, buttons)
+- Orange: `#e9762b` (secondary accent)
+- Amber: `#fbbf24` (highlights)
+
+**Typography:**
+- Default Sans: `var(--font-offside)` (Offside Google Font)
+- Serif: `var(--font-bilbo)` (Bilbo)
+- Mono: `var(--font-geist-mono)` (Geist Mono)
 
 ### Animations
-- **Subtle and playful**, not overwhelming
-- Float animations for decorative elements
-- Scroll reveal for content sections
-- Smooth transitions (200-700ms)
 
-### Responsive Breakpoints
-- Mobile: 320px+
-- Tablet: 768px+
-- Desktop: 1280px+
+```css
+@keyframes appear {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes draw-line {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+```
+
+ScrollReveal component for viewport-triggered animations.
+
+---
+
+## Deployment
+
+### GitHub Actions Workflow
+
+[.github/workflows/deploy.yml](.github/workflows/deploy.yml):
+
+1. **Detect Changes** - Filter changed files (app/ vs supabase/)
+2. **Build** - If app files changed:
+   - Build Next.js with Supabase env vars
+   - Upload to GitHub Pages artifact
+3. **Migrate** - If supabase files changed:
+   - Link to Supabase project
+   - Push migrations via `supabase db push`
+4. **Deploy** - Deploy artifact to GitHub Pages
+
+**Required GitHub Secrets:**
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_ACCESS_TOKEN`
+- `SUPABASE_PROJECT_ID`
+
+### Build Commands
+
+```bash
+# Development
+npm run dev
+
+# Production build
+npm run build
+
+# Static export
+npm run export  # Adds .nojekyll file
+
+# Lint
+npm run lint
+```
+
+Output directory: `out/`
+
+---
+
+## Database Development
+
+### Local Supabase
+
+```bash
+# Start local instance (requires Docker)
+supabase start
+
+# Stop
+supabase stop
+
+# Check status
+supabase status
+
+# Reset database
+supabase db reset
+```
+
+Local endpoints:
+- API: http://localhost:54321
+- DB: postgresql://postgres:postgres@localhost:54322/postgres
+- Studio: http://localhost:54323
+
+### Migrations
+
+```bash
+# Create migration
+supabase migration new migration_name
+
+# Apply locally
+supabase db push
+
+# Push to production (requires link)
+supabase link --project-ref <project-ref>
+supabase db push
+```
+
+Migration files: [supabase/migrations/](supabase/migrations/)
+
+### Seed Data
+
+[supabase/seed.sql](supabase/seed.sql) contains test data. Runs automatically on `supabase db reset`.
+
+---
+
+## Common Tasks
+
+### Adding a New Form Field
+
+1. Update TypeScript type in [app/lib/types.ts](app/lib/types.ts)
+2. Add Zod validation in [app/lib/validations.ts](app/lib/validations.ts)
+3. Add database column via migration
+4. Update [app/components/forms/RSVPForm.tsx](app/components/forms/RSVPForm.tsx)
+5. Update admin table/edit modal if needed
+
+### Adding a New Admin Feature
+
+1. Create component in [app/components/admin/](app/components/admin/)
+2. Add custom hook in [app/hooks/](app/hooks/) if needed
+3. Update [app/admin/page.tsx](app/admin/page.tsx)
+4. Ensure RLS policies allow authenticated access
+
+### Customizing Wedding Data
+
+Edit [app/lib/constants.ts](app/lib/constants.ts):
+- `WEDDING_INFO.couple` - Names
+- `WEDDING_INFO.date` - Date and time
+- `WEDDING_INFO.venue` - Ceremony and reception details
+- `WEDDING_INFO.schedule` - Timeline events
+- Label mappings for Czech translations
 
 ---
 
 ## Troubleshooting
 
-### Dev Server Won't Start
-If you get a "lock" error:
-1. Kill any running Next.js processes
-2. Delete `.next` directory: `rm -rf .next`
-3. Restart: `npm run dev`
-
-### Tailwind Classes Not Working
-Ensure custom colors are defined in `globals.css` under `@theme inline` block.
-
-### Form Validation Not Working
-Check Zod schema in `app/lib/validations.ts` and ensure error messages are in Czech.
-
 ### Supabase Connection Issues
-Verify environment variables are set correctly and Supabase client is initialized.
+- Check `.env.local` variables
+- Verify Supabase project is running
+- Check browser console for CORS errors
+
+### Build Failures
+- Clear `.next`: `rm -rf .next`
+- Delete `node_modules` and reinstall: `rm -rf node_modules && npm install`
+- Check TypeScript errors: `npm run build`
+
+### Database Migration Errors
+- Check migration SQL syntax
+- Verify local Supabase is running
+- Reset local DB: `supabase db reset`
+
+### GitHub Actions Deployment Failures
+- Verify all secrets are set in GitHub
+- Check workflow logs for specific errors
+- Ensure Supabase project is accessible
 
 ---
 
@@ -582,12 +509,3 @@ Verify environment variables are set correctly and Supabase client is initialize
 - [Tailwind CSS v4 Documentation](https://tailwindcss.com/docs)
 - [Supabase Documentation](https://supabase.com/docs)
 - [Zod Documentation](https://zod.dev)
-- [Original Plan](/.claude/plans/curious-fluttering-frog.md)
-
----
-
-## License
-
-Private project for personal use.
-
-**Built with ❤️ using Next.js 16 and Tailwind CSS v4**
