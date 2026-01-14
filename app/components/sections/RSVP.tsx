@@ -12,6 +12,7 @@ import { rsvpSchema } from "@/app/lib/validations";
 import type { RSVPFormData } from "@/app/lib/types";
 import { ZodError } from "zod";
 import Icon from "../ui/Icon";
+import { supabase } from "@/app/lib/supabase";
 
 export const RSVP = () => {
   const [formData, setFormData] = useState<RSVPFormData>({
@@ -41,11 +42,23 @@ export const RSVP = () => {
       // Validate form data
       const validated = rsvpSchema.parse(formData);
 
-      // TODO: Submit to Supabase Edge Function
-      // For now, just simulate submission
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Submit to Supabase via the submit_rsvp function
+      const { data, error } = await supabase.rpc("submit_rsvp", {
+        p_names: validated.names,
+        p_attending: validated.attending,
+        p_accommodation: validated.accommodation || null,
+        p_drink_choice: validated.drinkChoice || null,
+        p_custom_drink: validated.customDrink || null,
+        p_dietary_restrictions: validated.dietaryRestrictions || null,
+        p_message: validated.message || null,
+      });
 
-      console.log("RSVP Data:", validated);
+      if (error) {
+        console.error("Supabase error:", error);
+        throw new Error(error.message);
+      }
+
+      console.log("RSVP submitted successfully. Primary ID:", data);
 
       setSubmitStatus("success");
       setShowForm(false);
@@ -68,6 +81,8 @@ export const RSVP = () => {
           }
         });
         setErrors(formErrors);
+      } else {
+        console.error("Submission error:", error);
       }
       setSubmitStatus("error");
     } finally {
