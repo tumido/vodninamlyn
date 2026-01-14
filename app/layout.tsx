@@ -29,6 +29,7 @@ const offside = Offside({
 export const metadata: Metadata = {
   title: "Naše Svatba",
   description: "Srdečně vás zveme na naši svatbu",
+  robots: "noindex, nofollow",
 };
 
 export default function RootLayout({
