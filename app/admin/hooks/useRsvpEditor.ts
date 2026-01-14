@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
+import { useErrorHandler } from "../../lib/errors/useErrorHandler";
+import { parseZodErrors } from "../../lib/utils/zodHelpers";
 import type { RSVPFormData } from "../../lib/types";
-import type { RsvpSubmission } from "../lib/types";
+import type { RsvpSubmission } from "../../lib/types";
 import { rsvpEditSchema } from "../../lib/validations";
 import { ZodError } from "zod";
 
@@ -15,7 +17,10 @@ interface EditingRow {
 export const useRsvpEditor = (onSuccess: () => void) => {
   const [editingRow, setEditingRow] = useState<EditingRow | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
+  const { error, showError, clearError } = useErrorHandler();
 
   const startEditing = (rsvp: RsvpSubmission) => {
     setEditingRow({
@@ -23,14 +28,15 @@ export const useRsvpEditor = (onSuccess: () => void) => {
       formData: {
         names: [],
         attending: rsvp.attending,
-        accommodation: (rsvp.accommodation || "") as RSVPFormData["accommodation"],
-        drinkChoice: (rsvp.drinkChoice || "") as RSVPFormData["drinkChoice"],
+        accommodation: (rsvp.accommodation as RSVPFormData["accommodation"]) || "",
+        drinkChoice: (rsvp.drinkChoice as RSVPFormData["drinkChoice"]) || "",
         customDrink: rsvp.customDrink || "",
         dietaryRestrictions: rsvp.dietaryRestrictions || "",
         message: "",
       },
     });
     setValidationErrors({});
+    clearError();
   };
 
   const cancelEditing = () => {
@@ -59,13 +65,7 @@ export const useRsvpEditor = (onSuccess: () => void) => {
       return {};
     } catch (error) {
       if (error instanceof ZodError) {
-        const errors: Record<string, string> = {};
-        error.issues.forEach((issue) => {
-          if (issue.path.length > 0) {
-            errors[issue.path[0] as string] = issue.message;
-          }
-        });
-        return errors;
+        return parseZodErrors(error);
       }
       throw error;
     }
@@ -102,14 +102,15 @@ export const useRsvpEditor = (onSuccess: () => void) => {
       dietary_restrictions: editingRow.formData.dietaryRestrictions || null,
     };
 
-    const { error } = await supabase
+    // Update the base rsvps TABLE (not the view) using attendee_id
+    const { error: updateError } = await supabase
       .from("rsvps")
       .update(updateData)
       .eq("id", editingRow.attendeeId);
 
-    if (error) {
-      console.error("Error updating RSVP:", error);
-      alert("Chyba při ukládání: " + error.message);
+    if (updateError) {
+      console.error("Error updating RSVP:", updateError);
+      showError("Chyba při ukládání: " + updateError.message, "toast");
     } else {
       onSuccess();
       setEditingRow(null);
@@ -123,10 +124,12 @@ export const useRsvpEditor = (onSuccess: () => void) => {
     editingRow,
     isSaving,
     validationErrors,
+    error,
     startEditing,
     cancelEditing,
     updateEditingRow,
     validateEditingRow,
     handleEditSubmit,
+    clearError,
   };
 };

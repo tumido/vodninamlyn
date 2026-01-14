@@ -1,19 +1,67 @@
 import { IconProps } from "../components/ui/Icon";
 
-// RSVP Form Data
+// Error Handling
+export type ErrorType = "toast" | "inline";
+
+export interface AppError {
+  message: string;
+  type: ErrorType;
+  timestamp: number;
+}
+
+// RSVP Enums - Single source of truth
+export const AttendingStatus = {
+  YES: 'yes',
+  NO: 'no',
+} as const;
+
+export const AccommodationType = {
+  ROOF: 'roof',
+  OWN_TENT: 'own-tent',
+  NO_SLEEP: 'no-sleep',
+} as const;
+
+export const DrinkChoice = {
+  PIVO: 'pivo',
+  VINO: 'vino',
+  NEALKO: 'nealko',
+  OTHER: 'other',
+} as const;
+
+// Derived types from enums
+export type AttendingStatusValue = typeof AttendingStatus[keyof typeof AttendingStatus];
+export type AccommodationTypeValue = typeof AccommodationType[keyof typeof AccommodationType];
+export type DrinkChoiceValue = typeof DrinkChoice[keyof typeof DrinkChoice];
+
+// Base RSVP data - shared fields between form and database
+export interface BaseRsvpData {
+  attending: AttendingStatusValue;
+  accommodation: AccommodationTypeValue | null;
+  drinkChoice: DrinkChoiceValue | null;
+  customDrink: string | null;
+  dietaryRestrictions: string | null;
+}
+
+// RSVP Form Data - extends base with form-specific fields
 export interface RSVPFormData {
   names: string[];
-  attending: "yes" | "no" | "";
-  accommodation: "roof" | "own-tent" | "no-sleep" | "";
-  drinkChoice: "pivo" | "vino" | "nealko" | "other" | "";
+  attending: AttendingStatusValue | "";
+  accommodation: AccommodationTypeValue | "";
+  drinkChoice: DrinkChoiceValue | "";
   customDrink?: string;
   dietaryRestrictions?: string;
   message?: string;
 }
 
-export interface RSVPSubmission extends RSVPFormData {
-  id: string;
-  submittedAt: Date;
+// Database view type - represents a single attendee from rsvp_submissions view
+export interface RsvpSubmission extends BaseRsvpData {
+  attendee_id: string;
+  attendee_name: string;
+  created_at: string;
+  primary_rsvp_id: string;
+  primary_name: string;
+  message: string | null;
+  is_primary: boolean;
 }
 
 // Wedding Information
@@ -35,7 +83,7 @@ export interface Venue {
   googleMapsUrl: string;
   web: string;
 }
-interface DetailItem {
+export interface DetailItem {
   name: string;
   icon: IconProps["icon"];
   description: string;

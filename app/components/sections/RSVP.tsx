@@ -6,6 +6,7 @@ import { Button } from "../ui/Button";
 import { rsvpSchema } from "@/app/lib/validations";
 import type { RSVPFormData } from "@/app/lib/types";
 import { ZodError } from "zod";
+import { parseZodErrors } from "@/app/lib/utils/zodHelpers";
 import Icon from "../ui/Icon";
 import { supabase } from "@/app/lib/supabase";
 import { RSVPForm } from "../forms/RSVPForm";
@@ -70,13 +71,7 @@ export const RSVP = () => {
       });
     } catch (error) {
       if (error instanceof ZodError) {
-        const formErrors: Record<string, string> = {};
-        error.issues.forEach((issue) => {
-          if (issue.path.length > 0) {
-            formErrors[issue.path[0] as string] = issue.message;
-          }
-        });
-        setErrors(formErrors);
+        setErrors(parseZodErrors(error));
       } else {
         console.error("Submission error:", error);
       }

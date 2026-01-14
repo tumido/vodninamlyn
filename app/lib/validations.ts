@@ -1,14 +1,15 @@
 import { z } from 'zod';
+import { AttendingStatus, AccommodationType, DrinkChoice } from './types';
 
 // Base schema with shared RSVP fields and validation logic
 const baseRsvpSchema = z.object({
-  attending: z.enum(['yes', 'no'], {
+  attending: z.enum([AttendingStatus.YES, AttendingStatus.NO], {
     message: 'Prosím potvrďte, zda se zúčastníte',
   }),
-  accommodation: z.enum(['roof', 'own-tent', 'no-sleep'], {
+  accommodation: z.enum([AccommodationType.ROOF, AccommodationType.OWN_TENT, AccommodationType.NO_SLEEP], {
     message: 'Prosím vyberte ubytování',
   }).or(z.literal('')),
-  drinkChoice: z.enum(['pivo', 'vino', 'nealko', 'other'], {
+  drinkChoice: z.enum([DrinkChoice.PIVO, DrinkChoice.VINO, DrinkChoice.NEALKO, DrinkChoice.OTHER], {
     message: 'Prosím vyberte nápoj',
   }).or(z.literal('')),
   customDrink: z.string().max(100, 'Maximálně 100 znaků').optional(),

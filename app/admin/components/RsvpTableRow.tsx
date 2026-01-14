@@ -1,4 +1,4 @@
-import type { RsvpSubmission } from "../lib/types";
+import type { RsvpSubmission } from "../../lib/types";
 import { Tooltip } from "../../components/ui/Tooltip";
 import { ActionButton } from "../../components/ui/ActionButton";
 import { ATTENDING_LABELS } from "../lib/constants";
@@ -75,8 +75,8 @@ export const RsvpTableRow = ({
           {rsvp.is_primary && (
             <ActionButton
               name="delete"
-              onClick={() => onDelete(rsvp.primary_rsvp_id)}
-              disabled={deletingId === rsvp.primary_rsvp_id}
+              onClick={() => onDelete(rsvp.attendee_id)}
+              disabled={deletingId === rsvp.attendee_id}
             />
           )}
         </div>

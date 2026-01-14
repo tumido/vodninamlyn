@@ -1,4 +1,4 @@
-import type { RsvpSubmission } from "../lib/types";
+import type { RsvpSubmission } from "../../lib/types";
 import { RsvpTableRow } from "./RsvpTableRow";
 
 interface RsvpTableProps {

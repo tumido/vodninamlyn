@@ -2,24 +2,31 @@
 
 import { useState, useCallback } from "react";
 import { supabase } from "../../lib/supabase";
-import type { RsvpSubmission } from "../lib/types";
+import { useErrorHandler } from "../../lib/errors/useErrorHandler";
+import type { RsvpSubmission } from "../../lib/types";
 
 export const useRsvpData = () => {
   const [rsvps, setRsvps] = useState<RsvpSubmission[]>([]);
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const { error, showError, clearError } = useErrorHandler();
 
   const fetchRsvps = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase.from("rsvp_submissions").select("*");
+    clearError();
+    // Fetch from the rsvp_submissions VIEW for formatted display data
+    const { data, error: fetchError } = await supabase
+      .from("rsvp_submissions")
+      .select("*");
 
-    if (error) {
-      console.error("Error fetching RSVPs:", error);
+    if (fetchError) {
+      console.error("Error fetching RSVPs:", fetchError);
+      showError("Chyba při načítání RSVP odpovědí: " + fetchError.message, "toast");
     } else {
       setRsvps(data || []);
     }
     setLoading(false);
-  }, []);
+  }, [clearError, showError]);
 
   const deleteRsvp = async (id: string) => {
     if (!confirm("Opravdu chcete smazat tuto RSVP odpověď?")) {
@@ -27,16 +34,22 @@ export const useRsvpData = () => {
     }
 
     setDeletingId(id);
-    const { error } = await supabase.from("rsvps").delete().eq("id", id);
+    clearError();
+    // Delete from the base rsvps TABLE (not the view)
+    // This will cascade delete all associated guests due to ON DELETE CASCADE
+    const { error: deleteError } = await supabase
+      .from("rsvps")
+      .delete()
+      .eq("id", id);
 
-    if (error) {
-      console.error("Error deleting RSVP:", error);
-      alert("Chyba při mazání RSVP: " + error.message);
+    if (deleteError) {
+      console.error("Error deleting RSVP:", deleteError);
+      showError("Chyba při mazání RSVP: " + deleteError.message, "toast");
     } else {
       await fetchRsvps();
     }
     setDeletingId(null);
   };
 
-  return { rsvps, loading, deletingId, fetchRsvps, deleteRsvp };
+  return { rsvps, loading, deletingId, error, fetchRsvps, deleteRsvp, clearError };
 };
