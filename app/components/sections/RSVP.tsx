@@ -104,10 +104,8 @@ export const RSVP = () => {
 
   return (
     <Section id="rsvp" animate={true}>
-      <h2 className="text-4xl mx-auto text-center pb-12">
-        Přijdeš? Řekni nám to!
-      </h2>
-      <p className="text-xl leading-relaxed mb-12 max-w-2xl mx-auto">
+      <h2 className="pb-12">Přijdeš? Řekni nám to!</h2>
+      <p className="text-xl leading-relaxed mb-12 max-w-2x">
         Prosíme o potvrzení vaší účasti do 1. dubna 2026. Pomůže nám to se
         připravit.
       </p>
@@ -117,7 +115,7 @@ export const RSVP = () => {
           <div className="h-24 w-24 mx-auto">
             <Icon icon="heart" />
           </div>
-          <h3 className="text-2xl mb-2">Děkujeme za potvrzení!</h3>
+          <h3 className="mb-2">Děkujeme za potvrzení!</h3>
           <p className="text-lg">Těšíme se na vás.</p>
           <Button onClick={handleNewSubmission}>Odeslat další odpověď</Button>
         </div>

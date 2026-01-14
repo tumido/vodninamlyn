@@ -134,8 +134,23 @@ h6 {
   font-family: var(--font-sans);
   text-transform: uppercase;
   color: var(--color-palette-dark-green);
+  margin-inline: auto;
+  text-align: center;
+}
+
+h2 {
+  font-size: var(--text-4xl);
+  line-height: var(--tw-leading, var(--text-4xl--line-height));
+  padding-bottom: calc(var(--spacing) * 12);
+}
+h3 {
+  font-size: var(--text-3xl);
+  line-height: var(--tw-leading, var(--text-3xl--line-height));
+  padding-bottom: calc(var(--spacing) * 12);
 }
 
 p {
   color: var(--color-palette-green);
+  margin-inline: auto;
+  text-align: center;
 }
