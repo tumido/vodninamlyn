@@ -98,6 +98,13 @@ CREATE POLICY "Allow authenticated users to view RSVPs"
   TO authenticated
   USING (true);
 
+-- Create policy to allow authenticated users to delete RSVPs
+CREATE POLICY "Allow authenticated users to delete RSVPs"
+  ON public.rsvps
+  FOR DELETE
+  TO authenticated
+  USING (true);
+
 -- Create function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
 RETURNS TRIGGER AS $$
@@ -114,13 +121,17 @@ CREATE TRIGGER set_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_updated_at();
 
--- Create a view to easily get primary submissions with their additional guests
+-- Create a view to show each attendee as a separate row
+-- Primary attendees and additional guests all get their own row,
+-- with attributes from the primary submission copied to all rows
 CREATE VIEW public.rsvp_submissions
 WITH (security_invoker = true)
 AS
 SELECT
-  p.id,
-  p.created_at,
+  r.id AS attendee_id,
+  r.name AS attendee_name,
+  r.created_at,
+  COALESCE(r.primary_rsvp_id, r.id) AS primary_rsvp_id,
   p.name AS primary_name,
   p.attending,
   p.accommodation,
@@ -128,19 +139,10 @@ SELECT
   p.custom_drink,
   p.dietary_restrictions,
   p.message,
-  COALESCE(
-    json_agg(
-      json_build_object('id', a.id, 'name', a.name)
-      ORDER BY a.created_at
-    ) FILTER (WHERE a.id IS NOT NULL),
-    '[]'::json
-  ) AS additional_guests
-FROM public.rsvps p
-LEFT JOIN public.rsvps a ON a.primary_rsvp_id = p.id
-WHERE p.primary_rsvp_id IS NULL
-GROUP BY p.id, p.created_at, p.name, p.attending,
-         p.accommodation, p.drink_choice, p.custom_drink,
-         p.dietary_restrictions, p.message;
+  (r.primary_rsvp_id IS NULL) AS is_primary
+FROM public.rsvps r
+LEFT JOIN public.rsvps p ON p.id = COALESCE(r.primary_rsvp_id, r.id)
+WHERE p.primary_rsvp_id IS NULL;
 
 -- Create function to submit RSVP with multiple names
 -- This function takes the form data and creates one row per name,
@@ -225,5 +227,5 @@ GRANT EXECUTE ON FUNCTION public.submit_rsvp TO anon;
 -- Add comments
 COMMENT ON TABLE public.rsvps IS 'Wedding RSVP responses - each guest has their own row, with additional guests referencing the primary submission';
 COMMENT ON COLUMN public.rsvps.primary_rsvp_id IS 'NULL for primary guest, references primary guest ID for additional guests in the same submission';
-COMMENT ON VIEW public.rsvp_submissions IS 'View of primary RSVP submissions with their additional guests aggregated';
+COMMENT ON VIEW public.rsvp_submissions IS 'View showing each attendee as a separate row with primary submission attributes. Includes attendee_id, attendee_name, primary_rsvp_id (pointer to primary), and is_primary flag.';
 COMMENT ON FUNCTION public.submit_rsvp IS 'Submit an RSVP with multiple names. Creates one primary record and additional guest records as needed. Returns the primary record ID.';
