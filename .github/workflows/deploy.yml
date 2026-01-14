@@ -16,8 +16,36 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      supabase: ${{ steps.filter.outputs.supabase || github.event_name == 'workflow_dispatch' }}
+      app: ${{ steps.filter.outputs.app || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for file changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        if: github.event_name == 'push'
+        with:
+          filters: |
+            supabase:
+              - 'supabase/**'
+            app:
+              - 'app/**'
+              - 'public/**'
+              - '*.config.js'
+              - '*.config.ts'
+              - '*.config.mjs'
+              - 'package.json'
+              - 'package-lock.json'
+
   build:
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.app == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,6 +64,7 @@ jobs:
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_ADMIN_USER: ${{ secrets.NEXT_PUBLIC_ADMIN_USER }}
 
       - name: Add .nojekyll file
         run: touch out/.nojekyll
@@ -47,7 +76,8 @@ jobs:
 
   migrate:
     runs-on: ubuntu-latest
-    needs: build
+    needs: changes
+    if: needs.changes.outputs.supabase == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -78,7 +108,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: [changes, build]
+    if: needs.changes.outputs.app == 'true' && needs.build.result == 'success'
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
