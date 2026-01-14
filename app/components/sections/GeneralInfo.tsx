@@ -6,7 +6,7 @@ export const GeneralInfo = () => {
   return (
     <Section id="o-svatbe" className="flex flex-col" animate={true}>
       <h2>Slavíme spolu</h2>
-      <p className="text-xl leading-relaxed mb-12 max-w-2xl">
+      <p className="text-xl leading-relaxed mb-12 max-w-2xl text-center mx-auto">
         Jak již víte, rozhodli jsme se, že od 18. dubna 2026 budeme manželé. Prý
         to není samo sebou! Je k tomu potřeba svatba. Tak budiž. Našli jsme
         krásné místo a pozvali vás - naše rodiny a kamarády. Budeme rádi, když

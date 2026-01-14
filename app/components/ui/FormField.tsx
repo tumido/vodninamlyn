@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
 interface FormFieldProps {
   label: string;
@@ -8,17 +8,24 @@ interface FormFieldProps {
   htmlFor?: string;
 }
 
-export const FormField = ({ label, error, children, required, htmlFor }: FormFieldProps) => {
+export const FormField = ({
+  label,
+  error,
+  children,
+  required,
+  htmlFor,
+}: FormFieldProps) => {
   return (
     <div className="space-y-2">
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-neutral-700">
+      <label
+        htmlFor={htmlFor}
+        className="block text-sm font-medium text-neutral-700"
+      >
         {label}
-        {required && <span className="text-pastel-orange-dark ml-1">*</span>}
+        {required && <span className="text-palette-orange ml-1">*</span>}
       </label>
       {children}
-      {error && (
-        <p className="text-sm text-red-600 mt-1">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
     </div>
   );
 };

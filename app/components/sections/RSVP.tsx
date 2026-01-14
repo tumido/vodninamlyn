@@ -105,7 +105,7 @@ export const RSVP = () => {
   return (
     <Section id="rsvp" animate={true}>
       <h2 className="pb-12">Přijdeš? Řekni nám to!</h2>
-      <p className="text-xl leading-relaxed mb-12 max-w-2x">
+      <p className="text-xl leading-relaxed mb-12 max-w-2x text-center">
         Prosíme o potvrzení vaší účasti do 1. dubna 2026. Pomůže nám to se
         připravit.
       </p>
@@ -303,7 +303,7 @@ export const RSVP = () => {
                 isLoading={isSubmitting}
                 disabled={!isFormValid()}
               >
-                Odeslat potvrzení
+                Odeslat
               </Button>
             </div>
 

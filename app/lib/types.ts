@@ -44,14 +44,9 @@ interface DetailItem {
 export interface ScheduleItem {
   time: string;
   title: string;
-  description: string;
+  description?: string;
   icon: string;
-}
-
-export interface ScheduleDay {
-  day: string;
-  date?: string;
-  items: ScheduleItem[];
+  highlight?: boolean;
 }
 
 export interface WeddingInfo {
@@ -67,7 +62,7 @@ export interface WeddingInfo {
   };
   venue: Venue;
   details: DetailItem[];
-  schedule: ScheduleDay[];
+  schedule: ScheduleItem[];
   rsvpDeadline: Date;
   contact: {
     email: string;

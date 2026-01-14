@@ -69,59 +69,39 @@ export const WEDDING_INFO: WeddingInfo = {
 
   schedule: [
     {
-      day: "Pátek",
-      date: "17. dubna 2026",
-      items: [
-        {
-          time: "od 17:00",
-          title: "Posezení u ohně",
-          description:
-            "Pro kamarády, zahoříme, zazpíváme a třeba i něco nachystáme",
-          icon: "☕",
-        },
-      ],
+      time: "Pátek od 17:00",
+      title: "Malá rozlučka",
+      description:
+        "Pro kamarády, zahoříme, zazpíváme a třeba i svatbu nachystáme",
+      icon: "☕",
     },
     {
-      day: "Sobota",
-      date: "18. dubna 2026",
-      items: [
-        {
-          time: "Dopoledne",
-          title: "Brunch",
-          description: "Svatební obřad",
-          icon: "💒",
-        },
-        {
-          time: "13:00",
-          title: "Obřad",
-          description: "Svatební obřad",
-          icon: "💒",
-        },
-        {
-          time: "Po obřadu",
-          title: "Focení",
-          description: "Společné fotografování",
-          icon: "📷",
-        },
-        {
-          time: "15:00",
-          title: "Přípitek",
-          description: "Společný přípitek",
-          icon: "📷",
-        },
-        {
-          time: "16:00",
-          title: "Raut",
-          description: "Svatební raut",
-          icon: "🍽️",
-        },
-        {
-          time: "20:00",
-          title: "Oheň",
-          description: "Budeme hořet, hrát a zpívat",
-          icon: "💃",
-        },
-      ],
+      time: "Sobota 11:00",
+      title: "Příjezd hostů",
+      description: "",
+      icon: "💒",
+    },
+    {
+      time: "13:00",
+      title: "Obřad",
+      icon: "💒",
+      highlight: true,
+    },
+    {
+      time: "Po obřadu",
+      title: "Focení",
+      icon: "📷",
+    },
+    {
+      time: "16:00",
+      title: "Raut",
+      icon: "🍽️",
+    },
+    {
+      time: "20:00",
+      title: "Oheň",
+      description: "Budeme hořet, hrát a zpívat",
+      icon: "💃",
     },
   ],
 
