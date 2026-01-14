@@ -2,17 +2,13 @@
 
 import { useState } from "react";
 import { Section } from "../ui/Section";
-import { FormField } from "../ui/FormField";
-import { ChipInput } from "../ui/ChipInput";
-import { Textarea } from "../ui/Textarea";
-import { Select } from "../ui/Select";
-import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { rsvpSchema } from "@/app/lib/validations";
 import type { RSVPFormData } from "@/app/lib/types";
 import { ZodError } from "zod";
 import Icon from "../ui/Icon";
 import { supabase } from "@/app/lib/supabase";
+import { RSVPForm } from "../forms/RSVPForm";
 
 export const RSVP = () => {
   const [formData, setFormData] = useState<RSVPFormData>({
@@ -44,13 +40,13 @@ export const RSVP = () => {
 
       // Submit to Supabase via the submit_rsvp function
       const { data, error } = await supabase.rpc("submit_rsvp", {
-        p_names: validated.names,
-        p_attending: validated.attending,
-        p_accommodation: validated.accommodation || null,
-        p_drink_choice: validated.drinkChoice || null,
-        p_custom_drink: validated.customDrink || null,
-        p_dietary_restrictions: validated.dietaryRestrictions || null,
-        p_message: validated.message || null,
+        names: validated.names,
+        attending: validated.attending,
+        accommodation: validated.accommodation || null,
+        drinkChoice: validated.drinkChoice || null,
+        customDrink: validated.customDrink || null,
+        dietaryRestrictions: validated.dietaryRestrictions || null,
+        message: validated.message || null,
       });
 
       if (error) {
@@ -135,202 +131,15 @@ export const RSVP = () => {
           <Button onClick={handleNewSubmission}>Odeslat další odpověď</Button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-8">
-          <div className="space-y-6">
-            {/* Names - ChipInput */}
-            <FormField
-              label="Jména těch, za které formulář vyplňujete"
-              error={errors.names}
-              required
-              htmlFor="names"
-            >
-              <ChipInput
-                values={formData.names}
-                onChange={(names) => setFormData({ ...formData, names })}
-                placeholder="Zadejte jméno"
-                error={errors.names}
-              />
-              <p className="text-xs text-neutral-500 mt-1">
-                Můžete přidat více jmen - po každém jménu stiskněte Enter nebo
-                napište čárku
-              </p>
-            </FormField>
-
-            {/* Attendance */}
-            <FormField
-              label="Uvidíme se na svatbě?"
-              error={errors.attending}
-              required
-              htmlFor="attending"
-            >
-              <Select
-                id="attending"
-                value={formData.attending}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    attending: e.target.value as RSVPFormData["attending"],
-                  })
-                }
-                error={errors.attending}
-                options={[
-                  { value: "yes", label: "Ano, přijdeme" },
-                  { value: "no", label: "Bohužel se nemůžeme zúčastnit" },
-                ]}
-                placeholder="Zúčastníte se?"
-              />
-            </FormField>
-
-            {/* Show remaining fields only if attending */}
-            {formData.attending === "yes" && (
-              <>
-                {/* Accommodation */}
-                <FormField
-                  label="Ubytování"
-                  error={errors.accommodation}
-                  required
-                  htmlFor="accommodation"
-                >
-                  <Select
-                    id="accommodation"
-                    value={formData.accommodation}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        accommodation: e.target
-                          .value as RSVPFormData["accommodation"],
-                      })
-                    }
-                    error={errors.accommodation}
-                    options={[
-                      { value: "roof", label: "Chci spát pod střechou" },
-                      {
-                        value: "own-tent",
-                        label: "Přivezu si vlastní střechu",
-                      },
-                      { value: "no-sleep", label: "Nepřespím" },
-                    ]}
-                    placeholder="Vyberte možnost ubytování"
-                  />
-                </FormField>
-
-                {/* Drink Choice */}
-                <FormField
-                  label="Čeho plánujete vypít nejvíc?"
-                  error={errors.drinkChoice}
-                  required
-                  htmlFor="drinkChoice"
-                >
-                  <Select
-                    id="drinkChoice"
-                    value={formData.drinkChoice}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        drinkChoice: e.target
-                          .value as RSVPFormData["drinkChoice"],
-                        customDrink:
-                          e.target.value !== "other"
-                            ? ""
-                            : formData.customDrink,
-                      })
-                    }
-                    error={errors.drinkChoice}
-                    options={[
-                      { value: "pivo", label: "Pivo" },
-                      { value: "vino", label: "Víno" },
-                      { value: "nealko", label: "Nealko" },
-                      { value: "other", label: "Něco jiného" },
-                    ]}
-                    placeholder="Vyberte si"
-                  />
-                </FormField>
-
-                {/* Custom Drink - shown only when "other" is selected */}
-                {formData.drinkChoice === "other" && (
-                  <FormField
-                    label="Pán je gurmán. Tož nám to řekni"
-                    error={errors.customDrink}
-                    required
-                    htmlFor="customDrink"
-                  >
-                    <Input
-                      id="customDrink"
-                      type="text"
-                      value={formData.customDrink}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          customDrink: e.target.value,
-                        })
-                      }
-                      error={errors.customDrink}
-                      placeholder="Jaký nápoj byste chtěli?"
-                    />
-                  </FormField>
-                )}
-
-                {/* Dietary Restrictions */}
-                <FormField
-                  label="Dietní omezení"
-                  error={errors.dietaryRestrictions}
-                  htmlFor="dietaryRestrictions"
-                >
-                  <Textarea
-                    id="dietaryRestrictions"
-                    value={formData.dietaryRestrictions}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        dietaryRestrictions: e.target.value,
-                      })
-                    }
-                    error={errors.dietaryRestrictions}
-                    rows={3}
-                    placeholder="Máme se něčemu vyvarovat? Alergie, bez-maso..."
-                  />
-                </FormField>
-              </>
-            )}
-
-            {/* Message - always shown */}
-            <FormField
-              label="Dotaz, prosba, připomínka? Sem s tím!"
-              error={errors.message}
-              htmlFor="message"
-            >
-              <Textarea
-                id="message"
-                value={formData.message}
-                onChange={(e) =>
-                  setFormData({ ...formData, message: e.target.value })
-                }
-                error={errors.message}
-                rows={4}
-                placeholder="Chtěli byste nám něco napsat? Políčko pro ty, co musí mít vždy poslední slovo."
-              />
-            </FormField>
-
-            {/* Submit Button */}
-            <div className="pt-4">
-              <Button
-                type="submit"
-                isLoading={isSubmitting}
-                disabled={!isFormValid()}
-              >
-                Odeslat
-              </Button>
-            </div>
-
-            {/* Error Message */}
-            {submitStatus === "error" && (
-              <div className="p-4 bg-red-50 border-2 border-red-200 rounded-lg text-red-800">
-                Něco se pokazilo. Zkontrolujte prosím formulář a zkuste to
-                znovu.
-              </div>
-            )}
-          </div>
-        </form>
+        <RSVPForm
+          formData={formData}
+          errors={errors}
+          isSubmitting={isSubmitting}
+          submitStatus={submitStatus}
+          onSubmit={handleSubmit}
+          onChange={setFormData}
+          onValidate={isFormValid}
+        />
       )}
     </Section>
   );
