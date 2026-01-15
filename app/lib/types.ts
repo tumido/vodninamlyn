@@ -105,6 +105,11 @@ export interface FAQItem {
   answer: string;
 }
 
+export interface AccommodationOption {
+  title: string;
+  content: string;
+}
+
 export interface WeddingInfo {
   couple: {
     groom: string;
@@ -122,6 +127,11 @@ export interface WeddingInfo {
   details: DetailItem[];
   schedule: ScheduleItem[];
   faq: FAQItem[];
+  accommodation: {
+    heading: string;
+    description: string;
+    options: AccommodationOption[];
+  };
   rsvpDeadline: string;
   contact: {
     email: string;

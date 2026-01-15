@@ -7,6 +7,7 @@ import { ThankYou } from "./components/sections/ThankYou";
 import Spacer from "./components/sections/Spacer";
 import { KeyInfo } from "./components/sections/KeyInfo";
 import { AdditionalInfo } from "./components/sections/AdditionalInfo";
+import { Accommodation } from "./components/sections/Accommodation";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <KeyInfo />
       <Spacer />
       <AdditionalInfo />
+      <Accommodation />
       <Schedule />
       <FAQ />
       <RSVP />

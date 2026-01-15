@@ -42,7 +42,7 @@ export const Accordion = ({ items, className = "" }: AccordionProps) => {
           </button>
 
           {openIndex === index && (
-            <div className="mt-4 mb-8 text-lg leading-relaxed text-neutral-700 animate-in fade-in duration-200">
+            <div className="mt-4 mb-8 text-lg leading-relaxed text-palette-dark-green animate-in fade-in duration-200">
               {item.content}
             </div>
           )}

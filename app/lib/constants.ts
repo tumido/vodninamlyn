@@ -79,14 +79,8 @@ export const WEDDING_INFO: WeddingInfo = {
       name: "Doprava",
       icon: "rocket",
       description:
-        "Přijďte pěšky, na kole nebo autem. Odvoz vám nezajistíme, takže se odsud dostanete až po vystřízlivění.",
+        "Přijďte pěšky, na kole nebo autem. Míst k parkování je opravdu hodně, ale i tak vás prosíme, abyste parkovali slušně a neplýtvali místem. Odvoz vám nezajistíme, takže se odsud dostanete až po vystřízlivění.",
     },
-    // {
-    //   name: "Nocleh",
-    //   icon: "tent",
-    //   description:
-    //     "Míst pod střechou je omezené množství, budeme rádi pokud nám svůj zájem o něj dáte vědět v dotazníku. Pro ostatní zde máme spoustu místa pro stany i karavany.",
-    // },
     {
       name: "Oblečení",
       icon: "jacket",
@@ -197,6 +191,34 @@ export const WEDDING_INFO: WeddingInfo = {
         "Pokud nám chcete přispět na rekonstrukci bytu, budeme vděční. Pro dary v hotovosti budeme mít kasičku a pro jinou formu finančního plnění se nás zeptejte osobně. Úpisy k fyzické práci vyřizujeme přednostně.",
     },
   ],
+
+  accommodation: {
+    heading: "Nocleh",
+    description:
+      "Míst pro přespání je dost, ale liší se kvalitou spánku a zážitku. Budeme rádi pokud nám svůj zájem o jednotlivé možnosti dáte vědět v dotazníku.",
+    options: [
+      {
+        title: "Pod střechou",
+        content:
+          "Míst pod střechou je omezené množství. Primárně je vyhrazujeme pro rodiny nevěsty a ženicha, rodiny s dětmi a civilizace navyklé hosty. Prostory jsou sdílené a jednoduché, ale poskytují základní komfort a ochranu před nepřízní počasí. Jde o pokoje přímo v prostorách mlýna, takže vám místo zimy může hrozit hluk ze svatby. 22 míst.",
+      },
+      {
+        title: "Glampingové stany",
+        content:
+          "Máme k dispozici tři velké glampingové jurtoidní stany. Nachází se na louce daleko od hluku a ruchu svatby, takže jsou obzvláště vhodné pro táboření navyklé rodiny nebo ty, co nechtějí stavět vlastní stan. 12 míst.",
+      },
+      {
+        title: "Vlastní stan nebo bydlík",
+        content:
+          "Louka s glampingovými stany je rozlehlá a je přímo určená pro stany nebo bydlíky. Můžete si přivézt vlastní vybavení a rozložit se zde.",
+      },
+      {
+        title: "Přespání v autě",
+        content:
+          "Ano, je možné přespat ve vlastním autě, nikomu to vadit nebude.",
+      },
+    ],
+  },
 
   rsvpDeadline: "1. dubna 2026",
 
