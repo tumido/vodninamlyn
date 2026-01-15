@@ -3,6 +3,8 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import { supabaseIntegration } from "@supabase/sentry-js-integration";
+import { supabase } from "./app/lib/supabase";
 
 // Only initialize Sentry in production environment
 if (process.env.NODE_ENV === "production") {
@@ -19,6 +21,11 @@ if (process.env.NODE_ENV === "production") {
       //Capture console.log, console.warn, and console.error calls as structured logs.
       Sentry.consoleLoggingIntegration({
         levels: ["log", "warn", "error"],
+      }),
+      supabaseIntegration(supabase, Sentry, {
+        tracing: true,
+        breadcrumbs: true,
+        errors: true,
       }),
     ],
 
