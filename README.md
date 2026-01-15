@@ -2,8 +2,6 @@
 
 A Czech wedding website with RSVP functionality and admin dashboard.
 
-**Live:** [svatba.tcoufal.cz](https://svatba.tcoufal.cz) (GitHub Pages)
-
 ---
 
 ## Features
@@ -71,7 +69,7 @@ cp .env.local.example .env.local
 # Edit .env.local with your Supabase credentials
 
 # Start local Supabase instance (requires Docker)
-supabase start
+npx supabase start
 
 # Start development server
 npm run dev
@@ -81,15 +79,13 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Environment Variables
 
-Create a `.env.local` file with:
+Edit the `.env.local` file with:
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-NEXT_PUBLIC_ADMIN_USER=admin@example.com
 ```
 
-For local development with `supabase start`, get credentials from `supabase status`.
+For local development with `npx supabase start`, get credentials from `supabase status -o env`.
 
 ---
 
@@ -133,11 +129,10 @@ npm run export       # Build static site with .nojekyll
 ### Database
 
 ```bash
-supabase start       # Start local Supabase
-supabase stop        # Stop local Supabase
-supabase status      # View local endpoints
-supabase db reset    # Reset database with migrations
-supabase db push     # Push migrations to production
+npx supabase start       # Start local Supabase
+npx supabase stop        # Stop local Supabase
+npx supabase status      # View local endpoints
+npx supabase db reset    # Reset database with migrations
 ```
 
 ### Adding Custom Wedding Data
@@ -201,13 +196,15 @@ Configure in repository settings → Secrets and variables → Actions:
 
 - `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anon key
+- `NEXT_PUBLIC_ADMIN_USER` - Your Supabase admin user
 - `SUPABASE_ACCESS_TOKEN` - Supabase access token
 - `SUPABASE_PROJECT_ID` - Supabase project ID
+- `SUPABASE_DB_PASSWORD` - Supabase DB password
 
 ### Manual Deployment
 
 ```bash
-npm run export
+npm run build
 # Upload ./out directory to your static host
 ```
 
@@ -216,8 +213,7 @@ npm run export
 ## Admin Access
 
 1. Navigate to `/admin/login`
-2. Enter admin email (set in `NEXT_PUBLIC_ADMIN_USER`)
-3. Enter password (configured in Supabase Auth)
+2. Enter password (configured in Supabase Auth)
 
 Admin features:
 
@@ -266,7 +262,7 @@ This is a private wedding website project. If you're building your own wedding s
 
 ## License
 
-Private project for personal use.
+Private project for personal use. [MIT license](./LICENSE)
 
 ---
 
