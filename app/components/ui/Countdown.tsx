@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Icon from "./Icon";
 
 interface CountdownProps {
   targetDate: Date;
@@ -20,7 +21,8 @@ interface FlipDigitProps {
 
 const FlipDigit = ({ value, prevValue }: FlipDigitProps) => {
   const shouldAnimate = prevValue !== value;
-  const digitClasses = "absolute inset-0 flex items-center justify-center text-4xl md:text-5xl font-bold text-palette-green";
+  const digitClasses =
+    "absolute inset-0 flex items-center justify-center text-4xl md:text-5xl font-bold text-palette-green";
 
   return (
     <div className="relative w-8 h-16 overflow-hidden">
@@ -55,6 +57,7 @@ export const Countdown = ({ targetDate }: CountdownProps) => {
     minutes: 0,
     seconds: 0,
   });
+  const [isPast, setIsPast] = useState(false);
 
   useEffect(() => {
     const calculateTimeRemaining = () => {
@@ -76,11 +79,13 @@ export const Countdown = ({ targetDate }: CountdownProps) => {
           setPrevTimeRemaining(prev);
           return { days, hours, minutes, seconds };
         });
+        setIsPast(false);
       } else {
         setTimeRemaining((prev) => {
           setPrevTimeRemaining(prev);
           return { days: 0, hours: 0, minutes: 0, seconds: 0 };
         });
+        setIsPast(true);
       }
     };
 
@@ -117,30 +122,40 @@ export const Countdown = ({ targetDate }: CountdownProps) => {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
-      {timeUnits.map((unit, index) => {
-        const digits = unit.value.toString().padStart(2, "0").split("");
-        const prevDigits = unit.prevValue.toString().padStart(2, "0").split("");
-        return (
-          <div
-            key={index}
-            className="flex flex-col items-center justify-center p-6 bg-palette-beige/20 rounded-lg"
-          >
-            <div className="flex gap-1 md:gap-2 mb-2">
-              {digits.map((digit, digitIndex) => (
-                <FlipDigit
-                  key={digitIndex}
-                  value={parseInt(digit)}
-                  prevValue={parseInt(prevDigits[digitIndex])}
-                />
-              ))}
+    <div className="flex flex-col items-center gap-6 max-w-2xl mx-auto">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
+        {timeUnits.map((unit, index) => {
+          const digits = unit.value.toString().padStart(2, "0").split("");
+          const prevDigits = unit.prevValue
+            .toString()
+            .padStart(2, "0")
+            .split("");
+          return (
+            <div
+              key={index}
+              className="flex flex-col items-center justify-center p-6  rounded-lg"
+            >
+              <div className="flex gap-1 md:gap-2 mb-2">
+                {digits.map((digit, digitIndex) => (
+                  <FlipDigit
+                    key={digitIndex}
+                    value={parseInt(digit)}
+                    prevValue={parseInt(prevDigits[digitIndex])}
+                  />
+                ))}
+              </div>
+              <div className="text-sm md:text-base text-neutral-600 uppercase tracking-wider">
+                {unit.label}
+              </div>
             </div>
-            <div className="text-sm md:text-base text-neutral-600 uppercase tracking-wider">
-              {unit.label}
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
+      {isPast && (
+        <div className="w-80 h-24 mb-12">
+          <Icon icon="arrow-heart" />
+        </div>
+      )}
     </div>
   );
 };
