@@ -23,6 +23,7 @@ export const useIntersectionObserver = (
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
+          observer.disconnect();
         }
       },
       { threshold, rootMargin }
