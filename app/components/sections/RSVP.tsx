@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Section } from "@/app/components/ui/Section";
 import { Button } from "@/app/components/ui/Button";
 import { rsvpSchema } from "@/app/lib/validations";
@@ -11,6 +11,12 @@ import Icon from "@/app/components/ui/Icon";
 import { supabase } from "@/app/lib/supabase";
 import { RSVPForm } from "@/app/components/forms/RSVPForm";
 import { WEDDING_INFO } from "@/app/lib/constants";
+
+const SUCCESS_ICONS = ["ufo", "fox", "clover"] as const;
+
+const getRandomIcon = () => {
+  return SUCCESS_ICONS[Math.floor(Math.random() * SUCCESS_ICONS.length)];
+};
 
 export const RSVP = () => {
   const [formData, setFormData] = useState<RSVPFormData>({
@@ -29,6 +35,12 @@ export const RSVP = () => {
     "idle" | "success" | "error"
   >("idle");
   const [showForm, setShowForm] = useState(true);
+  const [successIcon, setSuccessIcon] =
+    useState<(typeof SUCCESS_ICONS)[number]>("fox");
+
+  useEffect(() => {
+    setSuccessIcon(getRandomIcon());
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,6 +69,9 @@ export const RSVP = () => {
       }
 
       console.log("RSVP submitted successfully. Primary ID:", data);
+
+      // Randomly select a success icon
+      setSuccessIcon(getRandomIcon());
 
       setSubmitStatus("success");
       setShowForm(false);
@@ -120,8 +135,12 @@ export const RSVP = () => {
 
       {submitStatus === "success" && !showForm ? (
         <div className="max-w-2xl mx-auto p-8 text-center space-y-12">
-          <div className="h-24 w-24 mx-auto">
-            <Icon icon="flame" />
+          <div
+            className={`h-24 mx-auto ${
+              successIcon === "fox" ? "aspect-20/9" : "w-24"
+            }`}
+          >
+            <Icon icon={successIcon} />
           </div>
           <h3 className="mb-2">Děkujeme za potvrzení!</h3>
           <p className="text-lg">Těšíme se na vás.</p>

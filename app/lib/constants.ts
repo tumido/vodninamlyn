@@ -200,12 +200,14 @@ export const WEDDING_INFO: WeddingInfo = {
       {
         title: "Pod střechou",
         content:
-          "Míst pod střechou je omezené množství. Primárně je vyhrazujeme pro rodiny nevěsty a ženicha, rodiny s dětmi a civilizace navyklé hosty. Prostory jsou sdílené a jednoduché, ale poskytují základní komfort a ochranu před nepřízní počasí. Jde o pokoje přímo v prostorách mlýna, takže vám místo zimy může hrozit hluk ze svatby. 22 míst.",
+          "Míst pod střechou je omezené množství. Primárně je vyhrazujeme pro rodiny nevěsty a ženicha, rodiny s dětmi a civilizace navyklé hosty. Prostory jsou sdílené a jednoduché, ale poskytují základní komfort a ochranu před nepřízní počasí. Jde o pokoje přímo v prostorách mlýna, takže vám místo zimy může hrozit hluk ze svatby.",
+        beds: 22,
       },
       {
         title: "Glampingové stany",
         content:
-          "Máme k dispozici tři velké glampingové jurtoidní stany. Nachází se na louce daleko od hluku a ruchu svatby, takže jsou obzvláště vhodné pro táboření navyklé rodiny nebo ty, co nechtějí stavět vlastní stan. 12 míst.",
+          "Máme k dispozici tři velké glampingové jurtoidní stany. Nachází se na louce daleko od hluku a ruchu svatby, takže jsou obzvláště vhodné pro táboření navyklé rodiny nebo ty, co nechtějí stavět vlastní stan.",
+        beds: 12,
       },
       {
         title: "Vlastní stan nebo bydlík",
@@ -224,6 +226,6 @@ export const WEDDING_INFO: WeddingInfo = {
 
   contact: {
     email: "tumi-a-jana@vodninamlyn.cz",
-    phone: "+420 123 456 789",
+    other: "Nebo pište přímo nevěstě a ženichovi",
   },
 } as const;

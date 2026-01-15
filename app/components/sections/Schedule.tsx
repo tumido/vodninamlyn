@@ -15,7 +15,7 @@ export const Schedule = () => {
         </div>
         <div className="grid lg:grid-cols-[1fr_10px_4fr] grid-cols-[1fr_10px_3fr]">
           <div className="row-start-1 row-end-10 col-start-2">
-            <Icon icon="vertical-line" />
+            <Icon icon="vertical-line" preserveAspectRatio={false} />
           </div>
           {WEDDING_INFO.schedule.map((item) => (
             <React.Fragment key={item.title}>

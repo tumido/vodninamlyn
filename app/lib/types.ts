@@ -108,6 +108,7 @@ export interface FAQItem {
 export interface AccommodationOption {
   title: string;
   content: string;
+  beds?: number;
 }
 
 export interface WeddingInfo {
@@ -135,6 +136,6 @@ export interface WeddingInfo {
   rsvpDeadline: string;
   contact: {
     email: string;
-    phone: string;
+    other: string;
   };
 }

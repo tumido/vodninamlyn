@@ -145,7 +145,10 @@ html {
 /* Accessibility: Respect user motion preferences */
 @media (prefers-reduced-motion: reduce) {
   .animate-draw,
-  .animate-appear {
+  .animate-appear,
+  .animate-slide-in-from-left,
+  .animate-slide-up,
+  .animate-slide-down {
     animation: none;
     opacity: 1;
     transform: none;

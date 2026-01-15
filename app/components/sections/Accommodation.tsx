@@ -6,7 +6,9 @@ import { WEDDING_INFO } from "@/app/lib/constants";
 export const Accommodation = () => {
   const accommodationItems = WEDDING_INFO.accommodation.options.map(
     (option) => ({
-      title: option.title,
+      title: option.beds
+        ? `${option.title} (${option.beds} míst)`
+        : option.title,
       content: option.content,
     })
   );
@@ -24,7 +26,7 @@ export const Accommodation = () => {
           </p>
         </div>
         <div className="w-8 h-full hidden md:block self-center">
-          <Icon icon="bracket" />
+          <Icon icon="bracket" preserveAspectRatio={false} />
         </div>
 
         <div className=" pt-12">
