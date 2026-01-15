@@ -10,8 +10,8 @@ export const Schedule = () => {
     <Section id="program" className="" animate={true}>
       <h2 className="text-4xl mb-16">Tohle vše se stane</h2>
 
-      <div className="flex flex-col lg:grid grid-cols-[2fr_3fr] items-center">
-        <div className="h-128 w-128 lg:ml-auto">
+      <div className="lg:grid grid-cols-[2fr_3fr] items-center">
+        <div className="lg:h-128 lg:w-lg lg:mr-0 w-56 h-56 mx-auto mb-24 lg:mb-0">
           <Icon icon="mill" />
         </div>
         <div className="grid grid-cols-[1fr_10px_4fr]">
