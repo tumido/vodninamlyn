@@ -65,15 +65,6 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-palette-beige">
       <nav className="flex justify-end ml-auto gap-4 py-2 pr-2 sm:pr-6 lg:pr-8">
-        <div className="h-16 items-center gap-4">
-          <Button
-            onClick={() => {
-              throw new Error("Sentry Test Error");
-            }}
-          >
-            Test error
-          </Button>
-        </div>
         <div className="justify-end h-16 items-center gap-4">
           <Button onClick={logout}>Odhlásit se</Button>
         </div>
