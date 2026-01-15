@@ -1,5 +1,6 @@
 "use client";
 import Mill from "@/app/components/ui/Mill";
+import Icon from "../ui/Icon";
 
 export const Hero = () => {
   return (
@@ -10,18 +11,8 @@ export const Hero = () => {
       </div>
 
       {/* Scroll indicator */}
-      <div className="mb-8 animate-bounce absolute bottom-0">
-        <svg
-          className="w-6 h-6 mx-auto text-amber-200"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-        </svg>
+      <div className="mb-8 animate-bounce absolute bottom-0 w-8">
+        <Icon icon="arrow-down" animate={false} className="stroke-amber-200" />
       </div>
     </section>
   );

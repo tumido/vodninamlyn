@@ -148,6 +148,59 @@ export const WEDDING_INFO: WeddingInfo = {
     },
   ],
 
+  faq: [
+    {
+      question: "Můžu si přivést partnera/partnerku?",
+      answer:
+        "Budeme rádi, když přijedou pouze výslovně pozvaní hosté. Pokud máte pochybnosti, kontaktujte nás prosím.",
+    },
+    {
+      question: "Jsou vítány děti a jiná zvířátka?",
+      answer:
+        "Ano, děti i pejsci (a jim podobní) jsou vítáni! Prostoru je dost a chceme vás tam komplet. Jen nám to prosím dejte vědět v dotazníku.",
+    },
+    {
+      question: "Co když se zpozdím?",
+      answer:
+        "Obřad začíná v 13:00. Zkuste být prosím na místě okolo 11. hodiny. Pokud víte, že nestíháte, dejte nám prosím vědět.",
+    },
+    {
+      question: "Jaké bude v dubnu počasí? Jak se nachystat?",
+      answer:
+        "V dubnu můžeme očekávat sníh i tropická vedra. My doufáme v příjemných 20°C. Doporučujeme vzít si s sebou teplé oblečení, zejména na večer u ohně. Většina oslav bude venku, ale máme i krytý prostor. Pro noční vybavení si přečtěte sekci o možnostech přespání.",
+    },
+    {
+      question: "Je na místě Wi-Fi?",
+      answer:
+        "Ano, Wi-Fi je k dispozici. Heslo vám sdělíme na místě. Ale doporučujeme na chvíli se od telefonů odpojit a užít si přítomnost společně s námi.",
+    },
+    {
+      question: "Můžu přespat ve vlastním autě/karavanu?",
+      answer:
+        "Ano, je to možné. Máme dostatek prostoru pro parkování a přespání v karavanech či autech. V dotazníku je na to přímo kolonka.",
+    },
+    {
+      question: "Budou nějaká omezení ohledně alkoholu?",
+      answer:
+        "Alkoholické nápoje budou samozřejmě k dispozici. Protože ale bude potřeba po vystřízlivění dojet domů vlastními silami, doporučujeme pít s rozumem.",
+    },
+    {
+      question: "Co když mám speciální dietu nebo alergii?",
+      answer:
+        "V dotazníku je pole pro dietní omezení. Pokud máte alergie nebo speciální požadavky, určitě nám dejte vědět a postaráme se o vás nebo se s vámi domluvíme individuálně.",
+    },
+    {
+      question: "Můžu fotit během obřadu?",
+      answer:
+        "Budeme mít profesionálního fotografa, ale samozřejmě můžete fotit i vy. Jen prosíme, abyste během obřadu byli přítomní a nezakrývali výhled ostatním.",
+    },
+    {
+      question: "Jak funguje dar na byt?",
+      answer:
+        "Pokud nám chcete přispět na rekonstrukci bytu, budeme vděční. Pro dary v hotovosti budeme mít kasičku a pro jinou formu finančního plnění se nás zeptejte osobně. Úpisy k fyzické práci vyřizujeme přednostně.",
+    },
+  ],
+
   rsvpDeadline: "1. dubna 2026",
 
   contact: {

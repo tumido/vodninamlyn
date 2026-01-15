@@ -97,6 +97,11 @@ export interface ScheduleItem {
   highlight?: boolean;
 }
 
+export interface FAQItem {
+  question: string;
+  answer: string;
+}
+
 export interface WeddingInfo {
   couple: {
     groom: string;
@@ -111,6 +116,7 @@ export interface WeddingInfo {
   venue: Venue;
   details: DetailItem[];
   schedule: ScheduleItem[];
+  faq: FAQItem[];
   rsvpDeadline: string;
   contact: {
     email: string;

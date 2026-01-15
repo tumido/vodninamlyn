@@ -3,6 +3,7 @@ import { Schedule } from "./components/sections/Schedule";
 import { RSVP } from "./components/sections/RSVP";
 import { Footer } from "./components/sections/Footer";
 import { GeneralInfo } from "./components/sections/GeneralInfo";
+import { FAQ } from "./components/sections/FAQ";
 import { ThankYou } from "./components/sections/ThankYou";
 import Spacer from "./components/sections/Spacer";
 
@@ -13,6 +14,7 @@ export default function Home() {
       <GeneralInfo />
       <Spacer />
       <Schedule />
+      <FAQ />
       <RSVP />
       <ThankYou />
       <Footer />
