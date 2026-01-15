@@ -9,6 +9,7 @@ interface ChipInputProps {
   error?: string;
   maxChips?: number;
   maxLength?: number;
+  id?: string;
 }
 
 export const ChipInput = ({
@@ -18,6 +19,7 @@ export const ChipInput = ({
   error,
   maxChips = 10,
   maxLength = 50,
+  id,
 }: ChipInputProps) => {
   const [inputValue, setInputValue] = useState("");
   const [inlineError, setInlineError] = useState("");
@@ -195,6 +197,7 @@ export const ChipInput = ({
         <input
           ref={inputRef}
           type="text"
+          id={id}
           value={inputValue}
           onChange={(e) => {
             setInputValue(e.target.value);

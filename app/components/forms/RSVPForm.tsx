@@ -59,6 +59,7 @@ export const RSVPForm = ({
             htmlFor="names"
           >
             <ChipInput
+              id="names"
               values={formData.names}
               onChange={(names) => handleFieldChange("names", names)}
               placeholder="Zadejte jméno"
