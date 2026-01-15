@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useIntersectionObserver } from "@/app/hooks/useIntersectionObserver";
 
 interface IconItem {
   path: string;
@@ -65,31 +66,14 @@ export interface IconProps {
   icon: keyof typeof PATH;
   delay?: number;
   animate?: boolean;
+  duration?: number;
 }
 
-const Icon = ({ icon, delay = 0.1, animate = true }: IconProps) => {
+const Icon = ({ icon, delay = 0.1, animate = true, duration = 1 }: IconProps) => {
   const pathRef = React.useRef<SVGPathElement>(null);
   const [pathLength, setPathLength] = React.useState(0);
   const [strokeWidthMultiplier, setStrokeWidthMultiplier] = React.useState(0);
-  const [isVisible, setIsVisible] = React.useState(false);
-  const ref = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  const { ref, isVisible } = useIntersectionObserver({ threshold: 0.1 });
 
   React.useEffect(() => {
     if (pathRef.current) {
@@ -100,7 +84,7 @@ const Icon = ({ icon, delay = 0.1, animate = true }: IconProps) => {
       const strokeWidthMultiplier = PATH[icon].width / ref.current.clientWidth;
       setStrokeWidthMultiplier(strokeWidthMultiplier);
     }
-  }, [icon]);
+  }, [icon, ref]);
 
   return (
     <div ref={ref}>
@@ -127,7 +111,7 @@ const Icon = ({ icon, delay = 0.1, animate = true }: IconProps) => {
             strokeDashoffset: pathLength,
             animation:
               animate && isVisible
-                ? `draw-line 1s cubic-bezier(0.52, 0, 0.51, 0.98) ${delay}s forwards`
+                ? `draw-line ${duration}s cubic-bezier(0.52, 0, 0.51, 0.98) ${delay}s forwards`
                 : "",
           }}
         />

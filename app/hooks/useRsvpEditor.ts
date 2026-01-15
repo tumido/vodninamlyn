@@ -4,6 +4,7 @@ import { useState } from "react";
 import { supabase } from "@/app/lib/supabase";
 import { useErrorHandler } from "@/app/lib/errors/useErrorHandler";
 import { parseZodErrors } from "@/app/lib/utils/zodHelpers";
+import { handleSupabaseError } from "@/app/lib/utils/errorHandling";
 import type { RSVPFormData } from "@/app/lib/types";
 import type { RsvpSubmission } from "@/app/lib/types";
 import { rsvpEditSchema } from "@/app/lib/validations";
@@ -109,8 +110,12 @@ export const useRsvpEditor = (onSuccess: () => void) => {
       .eq("id", editingRow.attendeeId);
 
     if (updateError) {
-      console.error("Error updating RSVP:", updateError);
-      showError("Chyba při ukládání: " + updateError.message, "toast");
+      const errorMessage = handleSupabaseError(
+        updateError,
+        "Error updating RSVP",
+        "Chyba při ukládání"
+      );
+      showError(errorMessage, "toast");
     } else {
       onSuccess();
       setEditingRow(null);

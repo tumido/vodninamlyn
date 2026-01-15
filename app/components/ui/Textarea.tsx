@@ -1,4 +1,9 @@
 import type { TextareaHTMLAttributes } from "react";
+import {
+  BASE_INPUT_CLASSES,
+  ERROR_CLASSES,
+  NORMAL_CLASSES,
+} from "@/app/lib/utils/formStyles";
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   error?: string;
@@ -9,15 +14,11 @@ export const Textarea = ({
   className = "",
   ...props
 }: TextareaProps) => {
-  const baseClasses =
-    "w-full px-4 py-3 rounded-lg border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-palette-green/50 focus:border-transparent";
-  const errorClasses = error
-    ? "border-red-300 bg-red-50"
-    : "border-palette-green/20 bg-white/40 hover:border-palette-green";
+  const errorClasses = error ? ERROR_CLASSES : NORMAL_CLASSES;
 
   return (
     <textarea
-      className={`${baseClasses} ${errorClasses} ${className}`}
+      className={`${BASE_INPUT_CLASSES} ${errorClasses} ${className}`}
       {...props}
     />
   );

@@ -22,6 +22,7 @@
   --color-palette-orange: #e9762b;
 
   --animate-appear: appear 3s ease-in-out forwards;
+  --animate-slide-in-from-left: slide-in-from-left 0.5s ease-out backwards;
 
   @keyframes appear {
     from {
@@ -29,6 +30,11 @@
     }
     to {
       opacity: 1;
+    }
+  }
+  @keyframes slide-in-from-left {
+    from {
+      width: 0;
     }
   }
 }

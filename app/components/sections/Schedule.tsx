@@ -12,7 +12,7 @@ export const Schedule = () => {
 
       <div className="lg:grid grid-cols-[2fr_3fr] items-center">
         <div className="lg:h-128 lg:w-lg lg:mr-0 w-56 h-56 mx-auto mb-24 lg:mb-0">
-          <Icon icon="mill" />
+          <Icon icon="mill" duration={2} />
         </div>
         <div className="grid grid-cols-[1fr_10px_4fr]">
           <div className="row-start-1 row-end-10 col-start-2">

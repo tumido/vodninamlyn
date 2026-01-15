@@ -19,6 +19,25 @@ export const DRINK_LABELS: Record<DrinkChoiceValue, string> = {
   other: "Jiné",
 } as const;
 
+// Form select options derived from label mappings
+export const ATTENDING_OPTIONS = [
+  { value: "yes", label: "Ano, přijdeme" },
+  { value: "no", label: "Bohužel se nemůžeme zúčastnit" },
+] as const;
+
+export const ACCOMMODATION_OPTIONS = [
+  { value: "roof", label: "Chci spát pod střechou" },
+  { value: "own-tent", label: "Přivezu si vlastní střechu" },
+  { value: "no-sleep", label: "Nepřespím" },
+] as const;
+
+export const DRINK_OPTIONS = [
+  { value: "pivo", label: "Pivo" },
+  { value: "vino", label: "Víno" },
+  { value: "nealko", label: "Nealko" },
+  { value: "other", label: "Něco jiného" },
+] as const;
+
 export const WEDDING_INFO: WeddingInfo = {
   couple: {
     groom: "Tom",

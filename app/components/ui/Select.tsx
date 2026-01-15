@@ -1,8 +1,9 @@
 import type { SelectHTMLAttributes } from "react";
+import { ERROR_CLASSES, NORMAL_CLASSES } from "@/app/lib/utils/formStyles";
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   error?: string;
-  options: { value: string; label: string }[];
+  options: readonly { value: string; label: string }[];
   placeholder?: string;
 }
 
@@ -13,11 +14,10 @@ export const Select = ({
   className = "",
   ...props
 }: SelectProps) => {
+  // Select has different padding (pr-10 for dropdown arrow) and needs appearance-none
   const baseClasses =
     "w-full pl-4 pr-10 py-3 rounded-lg border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-palette-green/50 focus:border-transparent bg-white appearance-none";
-  const errorClasses = error
-    ? "border-red-300 bg-red-50"
-    : "border-palette-green/20 bg-white/40 hover:border-palette-green";
+  const errorClasses = error ? ERROR_CLASSES : NORMAL_CLASSES;
   const placeholderClasses =
     !props.value || props.value === "" ? "text-neutral-500/90" : "";
 

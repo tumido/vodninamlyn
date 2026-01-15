@@ -8,6 +8,17 @@ interface RsvpTableProps {
   deletingId: string | null;
 }
 
+const TABLE_HEADERS = [
+  { label: "Jméno účastníka", className: "px-6" },
+  { label: "Účast", className: "px-6" },
+  { label: "Ubytování", className: "px-6" },
+  { label: "Nápoj", className: "px-6" },
+  { label: "Omezení", className: "px-4" },
+  { label: "Zpráva", className: "px-4" },
+  { label: "Datum", className: "px-6" },
+  { label: "Akce", className: "px-2" },
+] as const;
+
 export const RsvpTable = ({
   rsvps,
   onEdit,
@@ -20,30 +31,14 @@ export const RsvpTable = ({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Jméno účastníka
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Účast
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Ubytování
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Nápoj
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Omezení
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Zpráva
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Datum
-              </th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Akce
-              </th>
+              {TABLE_HEADERS.map((header) => (
+                <th
+                  key={header.label}
+                  className={`text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-3 ${header.className}`}
+                >
+                  {header.label}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">

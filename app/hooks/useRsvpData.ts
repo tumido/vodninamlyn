@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { supabase } from "@/app/lib/supabase";
 import { useErrorHandler } from "@/app/lib/errors/useErrorHandler";
+import { handleSupabaseError } from "@/app/lib/utils/errorHandling";
 import type { RsvpSubmission } from "@/app/lib/types";
 
 export const useRsvpData = () => {
@@ -20,8 +21,12 @@ export const useRsvpData = () => {
       .select("*");
 
     if (fetchError) {
-      console.error("Error fetching RSVPs:", fetchError);
-      showError("Chyba při načítání RSVP odpovědí: " + fetchError.message, "toast");
+      const errorMessage = handleSupabaseError(
+        fetchError,
+        "Error fetching RSVPs",
+        "Chyba při načítání RSVP odpovědí"
+      );
+      showError(errorMessage, "toast");
     } else {
       setRsvps(data || []);
     }
@@ -43,8 +48,12 @@ export const useRsvpData = () => {
       .eq("id", id);
 
     if (deleteError) {
-      console.error("Error deleting RSVP:", deleteError);
-      showError("Chyba při mazání RSVP: " + deleteError.message, "toast");
+      const errorMessage = handleSupabaseError(
+        deleteError,
+        "Error deleting RSVP",
+        "Chyba při mazání RSVP"
+      );
+      showError(errorMessage, "toast");
     } else {
       await fetchRsvps();
     }

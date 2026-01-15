@@ -6,6 +6,11 @@ import { Textarea } from "@/app/components/ui/Textarea";
 import { Select } from "@/app/components/ui/Select";
 import { Input } from "@/app/components/ui/Input";
 import { Button } from "@/app/components/ui/Button";
+import {
+  ATTENDING_OPTIONS,
+  ACCOMMODATION_OPTIONS,
+  DRINK_OPTIONS,
+} from "@/app/lib/constants";
 import type { RSVPFormData } from "@/app/lib/types";
 
 interface RSVPFormProps {
@@ -88,10 +93,7 @@ export const RSVPForm = ({
             value={formData.attending}
             onChange={(e) => handleFieldChange("attending", e.target.value)}
             error={errors.attending}
-            options={[
-              { value: "yes", label: "Ano, přijdeme" },
-              { value: "no", label: "Bohužel se nemůžeme zúčastnit" },
-            ]}
+            options={ATTENDING_OPTIONS}
             placeholder="Zúčastníte se?"
           />
         </FormField>
@@ -113,14 +115,7 @@ export const RSVPForm = ({
                   handleFieldChange("accommodation", e.target.value)
                 }
                 error={errors.accommodation}
-                options={[
-                  { value: "roof", label: "Chci spát pod střechou" },
-                  {
-                    value: "own-tent",
-                    label: "Přivezu si vlastní střechu",
-                  },
-                  { value: "no-sleep", label: "Nepřespím" },
-                ]}
+                options={ACCOMMODATION_OPTIONS}
                 placeholder="Vyberte možnost ubytování"
               />
             </FormField>
@@ -146,12 +141,7 @@ export const RSVPForm = ({
                   });
                 }}
                 error={errors.drinkChoice}
-                options={[
-                  { value: "pivo", label: "Pivo" },
-                  { value: "vino", label: "Víno" },
-                  { value: "nealko", label: "Nealko" },
-                  { value: "other", label: "Něco jiného" },
-                ]}
+                options={DRINK_OPTIONS}
                 placeholder="Vyberte si"
               />
             </FormField>
