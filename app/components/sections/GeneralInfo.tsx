@@ -1,6 +1,7 @@
 import { Section } from "@/app/components/ui/Section";
 import Icon from "@/app/components/ui/Icon";
 import { WEDDING_INFO } from "@/app/lib/constants";
+import { Countdown } from "@/app/components/ui/Countdown";
 
 export const GeneralInfo = () => {
   return (
@@ -12,6 +13,10 @@ export const GeneralInfo = () => {
         krásné místo a pozvali vás - naše rodiny a kamarády. Budeme rádi, když
         budete tento čas trávit a slavit s námi.
       </p>
+
+      <div className="mb-16">
+        <Countdown targetDate={WEDDING_INFO.date.full} />
+      </div>
 
       <div className="grid md:grid-cols-2 gap-12 mt-24 max-w-5xl">
         {WEDDING_INFO.details.map((detail) => (

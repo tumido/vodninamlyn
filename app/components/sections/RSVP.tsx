@@ -121,7 +121,7 @@ export const RSVP = () => {
       {submitStatus === "success" && !showForm ? (
         <div className="max-w-2xl mx-auto p-8 text-center space-y-12">
           <div className="h-24 w-24 mx-auto">
-            <Icon icon="heart" />
+            <Icon icon="flame" />
           </div>
           <h3 className="mb-2">Děkujeme za potvrzení!</h3>
           <p className="text-lg">Těšíme se na vás.</p>

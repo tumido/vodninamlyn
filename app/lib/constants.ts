@@ -51,9 +51,9 @@ export const WEDDING_INFO: WeddingInfo = {
   },
 
   date: {
-    full: new Date("2026-04-18T14:00:00"),
+    full: new Date("2026-04-18T13:00:00"),
     display: "18. dubna 2026",
-    time: "14:00",
+    time: "13:00",
   },
 
   venue: {
