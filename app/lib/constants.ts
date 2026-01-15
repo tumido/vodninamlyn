@@ -148,7 +148,7 @@ export const WEDDING_INFO: WeddingInfo = {
     },
   ],
 
-  rsvpDeadline: new Date("2026-05-01"),
+  rsvpDeadline: "1. dubna 2026",
 
   contact: {
     email: "tumi-a-jana@vodninamlyn.cz",

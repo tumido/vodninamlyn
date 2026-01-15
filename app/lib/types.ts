@@ -111,7 +111,7 @@ export interface WeddingInfo {
   venue: Venue;
   details: DetailItem[];
   schedule: ScheduleItem[];
-  rsvpDeadline: Date;
+  rsvpDeadline: string;
   contact: {
     email: string;
     phone: string;
