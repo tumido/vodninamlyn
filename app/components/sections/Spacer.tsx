@@ -6,7 +6,7 @@ import Icon from "../ui/Icon";
 const Spacer = () => {
   return (
     <Section>
-      <div className="mx-auto lg:pb-32 flex items-center">
+      <div className="mx-auto flex items-center">
         <div className="h-40 w-full max-w-2xl mx-auto">
           <Icon icon="rings" />
         </div>

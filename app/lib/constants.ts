@@ -47,15 +47,17 @@ export const WEDDING_INFO: WeddingInfo = {
   couple: {
     groom: "Tom",
     bride: "Jana",
-    heading: "Se berem, abyste věděli",
+    heading: "Bereme se, abyste věděli",
   },
 
   date: {
     full: new Date("2026-04-18T13:00:00"),
     display: "18. dubna 2026",
     time: "13:00",
+    text: "Na místě budeme od pátku 17.4. do neděle 19.4. Kamarády na výpomoc a malou rozlučku se svobodou rádi uvítáme již v pátek. Obřad bude probíhat v sobotu od 13h.",
   },
-
+  leading:
+    "Jak již víte, rozhodli jsme se, že od 18. dubna 2026 budeme manželé. Prý to není samo sebou! Je k tomu potřeba svatba. Tak budiž. Našli jsme krásné místo a pozvali vás - naše rodiny a kamarády. Budeme rádi, když budete tento čas trávit a slavit s námi.",
   venue: {
     name: "Dohnalův mlýn",
     address: {
@@ -69,38 +71,33 @@ export const WEDDING_INFO: WeddingInfo = {
     },
     web: "https://www.dohnaluvmlyn.cz/",
     googleMapsUrl: "https://goo.gl/maps/CPNmRwUxDJ7ELHR6A",
+    text: "Svatba proběhne na Dohnalově mlýně. Je to samota u vesnice Zástřizly, zde proběhne jak oslava, tak obřad.",
   },
 
   details: [
-    {
-      name: "Místo",
-      icon: "globe",
-      description:
-        "Svatba proběhne na Dohnalově mlýně. Je to samota u vesnice Zástřizly, zde proběhne jak oslava, tak obřad.",
-    },
-    {
-      name: "Termín",
-      icon: "clock",
-      description:
-        "Na místě budeme od pátku 17.4. do neděle 19.4. Kamarády na výpomoc a malou rozlučku se svobodou rádi uvítáme již v pátek. Obřad bude probíhat v sobotu po poledni.",
-    },
     {
       name: "Doprava",
       icon: "rocket",
       description:
         "Přijďte pěšky, na kole nebo autem. Odvoz vám nezajistíme, takže se odsud dostanete až po vystřízlivění.",
     },
-    {
-      name: "Nocleh",
-      icon: "tent",
-      description:
-        "Míst pod střechou je omezené množství, budeme rádi pokud nám svůj zájem o něj dáte vědět v dotazníku. Pro ostatní zde máme spoustu místa pro stany i karavany.",
-    },
+    // {
+    //   name: "Nocleh",
+    //   icon: "tent",
+    //   description:
+    //     "Míst pod střechou je omezené množství, budeme rádi pokud nám svůj zájem o něj dáte vědět v dotazníku. Pro ostatní zde máme spoustu místa pro stany i karavany.",
+    // },
     {
       name: "Oblečení",
       icon: "jacket",
       description:
         "Přijďte tak, jak vám s námi bude příjemně. Na obřad si prosím vemte oblečení ze společenštější části vašeho šatníku. Později se klidně převlečte do libovolného komfortního oblečení. Obzvláště k ohni to doporučujeme. Na barvy nehrajeme, jen vynechte prosím bílou u šatů. Jinak zvolte klidně všechny.",
+    },
+    {
+      name: "Táborák",
+      icon: "flame",
+      description:
+        "Večer hodláme zakončit u táboráku, proto buďte připraveni se všemi svými hudebními nástroji. Budeme rádi, když si společně zazpíváme a zahrajeme. Prosíme vás o jediné, pro dnešní den se vyvarujme písní, které se na svatbu úplně nehodí. Neradi bychom z toho měli cirkus.",
     },
     {
       name: "Dary",

@@ -11,27 +11,29 @@ export interface AppError {
 
 // RSVP Enums - Single source of truth
 export const AttendingStatus = {
-  YES: 'yes',
-  NO: 'no',
+  YES: "yes",
+  NO: "no",
 } as const;
 
 export const AccommodationType = {
-  ROOF: 'roof',
-  OWN_TENT: 'own-tent',
-  NO_SLEEP: 'no-sleep',
+  ROOF: "roof",
+  OWN_TENT: "own-tent",
+  NO_SLEEP: "no-sleep",
 } as const;
 
 export const DrinkChoice = {
-  PIVO: 'pivo',
-  VINO: 'vino',
-  NEALKO: 'nealko',
-  OTHER: 'other',
+  PIVO: "pivo",
+  VINO: "vino",
+  NEALKO: "nealko",
+  OTHER: "other",
 } as const;
 
 // Derived types from enums
-export type AttendingStatusValue = typeof AttendingStatus[keyof typeof AttendingStatus];
-export type AccommodationTypeValue = typeof AccommodationType[keyof typeof AccommodationType];
-export type DrinkChoiceValue = typeof DrinkChoice[keyof typeof DrinkChoice];
+export type AttendingStatusValue =
+  (typeof AttendingStatus)[keyof typeof AttendingStatus];
+export type AccommodationTypeValue =
+  (typeof AccommodationType)[keyof typeof AccommodationType];
+export type DrinkChoiceValue = (typeof DrinkChoice)[keyof typeof DrinkChoice];
 
 // Base RSVP data - shared fields between form and database
 export interface BaseRsvpData {
@@ -82,6 +84,7 @@ export interface Venue {
   coordinates: Coordinates;
   googleMapsUrl: string;
   web: string;
+  text: string;
 }
 export interface DetailItem {
   name: string;
@@ -108,10 +111,12 @@ export interface WeddingInfo {
     bride: string;
     heading: string;
   };
+  leading: string;
   date: {
     full: Date;
     display: string;
     time: string;
+    text: string;
   };
   venue: Venue;
   details: DetailItem[];

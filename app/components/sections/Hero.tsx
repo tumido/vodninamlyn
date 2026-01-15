@@ -4,7 +4,7 @@ import Icon from "../ui/Icon";
 
 export const Hero = () => {
   return (
-    <section className=" relative hero-gradient h-screen flex flex-col items-center justify-center overflow-hidden">
+    <section className="relative hero-gradient h-screen flex flex-col items-center justify-center overflow-hidden">
       {/* Main content */}
       <div className="w-full grow flex items-center min-w-6xl max-w-7xl">
         <Mill />

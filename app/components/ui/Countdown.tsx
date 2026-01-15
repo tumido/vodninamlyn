@@ -123,7 +123,7 @@ export const Countdown = ({ targetDate }: CountdownProps) => {
 
   return (
     <div className="flex flex-col items-center gap-6 max-w-2xl mx-auto">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
+      <div className="grid grid-cols-4 md:gap-6 gap-0 w-full">
         {timeUnits.map((unit, index) => {
           const digits = unit.value.toString().padStart(2, "0").split("");
           const prevDigits = unit.prevValue
@@ -133,7 +133,7 @@ export const Countdown = ({ targetDate }: CountdownProps) => {
           return (
             <div
               key={index}
-              className="flex flex-col items-center justify-center p-6  rounded-lg"
+              className="flex flex-col items-center justify-center py-6 rounded-lg"
             >
               <div className="flex gap-1 md:gap-2 mb-2">
                 {digits.map((digit, digitIndex) => (
