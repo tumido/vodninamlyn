@@ -64,8 +64,17 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-palette-beige">
-      <nav className="max-w-64 ml-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-end h-16 items-center gap-4">
+      <nav className="flex justify-end ml-auto gap-4 py-2 pr-2 sm:pr-6 lg:pr-8">
+        <div className="h-16 items-center gap-4">
+          <Button
+            onClick={() => {
+              throw new Error("Sentry Test Error");
+            }}
+          >
+            Test error
+          </Button>
+        </div>
+        <div className="justify-end h-16 items-center gap-4">
           <Button onClick={logout}>Odhlásit se</Button>
         </div>
       </nav>
@@ -85,7 +94,9 @@ export default function AdminPage() {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="text-sm text-red-800">{currentError.message}</span>
+              <span className="text-sm text-red-800">
+                {currentError.message}
+              </span>
             </div>
             <button
               onClick={clearCurrentError}
@@ -130,15 +141,17 @@ export default function AdminPage() {
       <EditRsvpModal
         isOpen={!!editingRow}
         rsvpName={getEditingRsvpName()}
-        formData={editingRow?.formData || {
-          names: [],
-          attending: "",
-          accommodation: "",
-          drinkChoice: "",
-          customDrink: "",
-          dietaryRestrictions: "",
-          message: "",
-        }}
+        formData={
+          editingRow?.formData || {
+            names: [],
+            attending: "",
+            accommodation: "",
+            drinkChoice: "",
+            customDrink: "",
+            dietaryRestrictions: "",
+            message: "",
+          }
+        }
         errors={validationErrors}
         isSaving={isSaving}
         onClose={cancelEditing}

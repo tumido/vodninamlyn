@@ -16,14 +16,20 @@ export default function AdminLoginPage() {
 
   useEffect(() => {
     async function checkAuth() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
-      if (user) {
-        router.replace("/admin");
-      } else {
-        setIsCheckingAuth(false);
+        if (user) {
+          router.replace("/admin");
+        } else {
+          setIsCheckingAuth(false);
+        }
+      } catch (error) {
+        console.error("Auth check failed:", error);
+        // Re-throw so Sentry captures auth check failures
+        throw error;
       }
     }
 
@@ -35,24 +41,30 @@ export default function AdminLoginPage() {
     setError("");
     setIsSubmitting(true);
 
-    const adminUser = process.env.NEXT_PUBLIC_ADMIN_USER;
+    try {
+      const adminUser = process.env.NEXT_PUBLIC_ADMIN_USER;
 
-    if (!adminUser) {
-      setError("Admin user is not configured");
-      setIsSubmitting(false);
-      return;
-    }
+      if (!adminUser) {
+        setError("Admin user is not configured");
+        setIsSubmitting(false);
+        return;
+      }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: adminUser,
-      password,
-    });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: adminUser,
+        password,
+      });
 
-    if (error) {
-      setError(error.message);
-      setIsSubmitting(false);
-    } else if (data.user) {
-      router.replace("/admin");
+      if (error) {
+        setError(error.message);
+        setIsSubmitting(false);
+      } else if (data.user) {
+        router.replace("/admin");
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      // Re-throw so Sentry captures login failures
+      throw error;
     }
   }
 

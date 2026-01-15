@@ -13,6 +13,7 @@
     "export": "next build && touch out/.nojekyll"
   },
   "dependencies": {
+    "@sentry/nextjs": "^10.34.0",
     "@supabase/supabase-js": "^2.90.0",
     "next": "16.1.1",
     "react": "19.2.3",

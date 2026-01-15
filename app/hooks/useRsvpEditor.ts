@@ -95,34 +95,42 @@ export const useRsvpEditor = (onSuccess: () => void) => {
 
     setIsSaving(true);
 
-    const updateData: Record<string, string | null> = {
-      attending: editingRow.formData.attending,
-      accommodation: editingRow.formData.accommodation || null,
-      drink_choice: editingRow.formData.drinkChoice || null,
-      custom_drink: editingRow.formData.customDrink || null,
-      dietary_restrictions: editingRow.formData.dietaryRestrictions || null,
-    };
+    try {
+      const updateData: Record<string, string | null> = {
+        attending: editingRow.formData.attending,
+        accommodation: editingRow.formData.accommodation || null,
+        drink_choice: editingRow.formData.drinkChoice || null,
+        custom_drink: editingRow.formData.customDrink || null,
+        dietary_restrictions: editingRow.formData.dietaryRestrictions || null,
+      };
 
-    // Update the base rsvps TABLE (not the view) using attendee_id
-    const { error: updateError } = await supabase
-      .from("rsvps")
-      .update(updateData)
-      .eq("id", editingRow.attendeeId);
+      // Update the base rsvps TABLE (not the view) using attendee_id
+      const { error: updateError } = await supabase
+        .from("rsvps")
+        .update(updateData)
+        .eq("id", editingRow.attendeeId);
 
-    if (updateError) {
-      const errorMessage = handleSupabaseError(
-        updateError,
-        "Error updating RSVP",
-        "Chyba při ukládání"
-      );
-      showError(errorMessage, "toast");
-    } else {
-      onSuccess();
-      setEditingRow(null);
-      setValidationErrors({});
+      if (updateError) {
+        const errorMessage = handleSupabaseError(
+          updateError,
+          "Error updating RSVP",
+          "Chyba při ukládání"
+        );
+        showError(errorMessage, "toast");
+        // Re-throw Supabase errors so Sentry captures them
+        throw new Error(errorMessage);
+      } else {
+        onSuccess();
+        setEditingRow(null);
+        setValidationErrors({});
+      }
+    } catch (error) {
+      console.error("Network error during update:", error);
+      // Re-throw network errors so Sentry captures them
+      throw error;
+    } finally {
+      setIsSaving(false);
     }
-
-    setIsSaving(false);
   };
 
   return {

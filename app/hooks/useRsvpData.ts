@@ -15,22 +15,32 @@ export const useRsvpData = () => {
   const fetchRsvps = useCallback(async () => {
     setLoading(true);
     clearError();
-    // Fetch from the rsvp_submissions VIEW for formatted display data
-    const { data, error: fetchError } = await supabase
-      .from("rsvp_submissions")
-      .select("*");
 
-    if (fetchError) {
-      const errorMessage = handleSupabaseError(
-        fetchError,
-        "Error fetching RSVPs",
-        "Chyba při načítání RSVP odpovědí"
-      );
-      showError(errorMessage, "toast");
-    } else {
-      setRsvps(data || []);
+    try {
+      // Fetch from the rsvp_submissions VIEW for formatted display data
+      const { data, error: fetchError } = await supabase
+        .from("rsvp_submissions")
+        .select("*");
+
+      if (fetchError) {
+        const errorMessage = handleSupabaseError(
+          fetchError,
+          "Error fetching RSVPs",
+          "Chyba při načítání RSVP odpovědí"
+        );
+        showError(errorMessage, "toast");
+        // Re-throw Supabase errors so Sentry captures them
+        throw new Error(errorMessage);
+      } else {
+        setRsvps(data || []);
+      }
+    } catch (error) {
+      // This catches both network errors and re-thrown Supabase errors
+      console.error("Fetch operation failed:", error);
+      throw error;
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [clearError, showError]);
 
   const deleteRsvp = async (id: string) => {
@@ -40,24 +50,34 @@ export const useRsvpData = () => {
 
     setDeletingId(id);
     clearError();
-    // Delete from the base rsvps TABLE (not the view)
-    // This will cascade delete all associated guests due to ON DELETE CASCADE
-    const { error: deleteError } = await supabase
-      .from("rsvps")
-      .delete()
-      .eq("id", id);
 
-    if (deleteError) {
-      const errorMessage = handleSupabaseError(
-        deleteError,
-        "Error deleting RSVP",
-        "Chyba při mazání RSVP"
-      );
-      showError(errorMessage, "toast");
-    } else {
-      await fetchRsvps();
+    try {
+      // Delete from the base rsvps TABLE (not the view)
+      // This will cascade delete all associated guests due to ON DELETE CASCADE
+      const { error: deleteError } = await supabase
+        .from("rsvps")
+        .delete()
+        .eq("id", id);
+
+      if (deleteError) {
+        const errorMessage = handleSupabaseError(
+          deleteError,
+          "Error deleting RSVP",
+          "Chyba při mazání RSVP"
+        );
+        showError(errorMessage, "toast");
+        // Re-throw Supabase errors so Sentry captures them
+        throw new Error(errorMessage);
+      } else {
+        await fetchRsvps();
+      }
+    } catch (error) {
+      // This catches both network errors and re-thrown Supabase errors
+      console.error("Delete operation failed:", error);
+      throw error;
+    } finally {
+      setDeletingId(null);
     }
-    setDeletingId(null);
   };
 
   return { rsvps, loading, deletingId, error, fetchRsvps, deleteRsvp, clearError };

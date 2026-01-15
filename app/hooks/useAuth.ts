@@ -24,7 +24,13 @@ export const useAuth = () => {
       }
     };
 
-    supabase.auth.getUser().then(({ data: { user } }) => handleAuth(user));
+    supabase.auth.getUser()
+      .then(({ data: { user } }) => handleAuth(user))
+      .catch((error) => {
+        console.error("Failed to get user:", error);
+        // Re-throw so Sentry captures auth failures
+        throw error;
+      });
 
     const {
       data: { subscription },
@@ -39,8 +45,14 @@ export const useAuth = () => {
   }, [router]);
 
   const logout = async () => {
-    await supabase.auth.signOut();
-    router.replace("/admin/login");
+    try {
+      await supabase.auth.signOut();
+      router.replace("/admin/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Re-throw so Sentry captures logout failures
+      throw error;
+    }
   };
 
   return { user, loading, logout };

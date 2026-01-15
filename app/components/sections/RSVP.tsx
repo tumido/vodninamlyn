@@ -72,10 +72,11 @@ export const RSVP = () => {
     } catch (error) {
       if (error instanceof ZodError) {
         setErrors(parseZodErrors(error));
+        setSubmitStatus("error");
       } else {
-        console.error("Submission error:", error);
+        // Re-throw non-validation errors so they're caught by Sentry
+        throw error;
       }
-      setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
     }

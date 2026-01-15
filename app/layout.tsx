@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Bilbo, Offside } from "next/font/google";
-import { ErrorBoundary } from "./lib/errors/ErrorBoundary";
 import "./globals.css";
 import { WEDDING_INFO } from "./lib/constants";
 
@@ -77,9 +76,7 @@ export default function RootLayout({
       lang="cs"
       className={`${geistMono.variable} ${bilbo.variable} ${offside.variable} antialiased`}
     >
-      <body>
-        <ErrorBoundary>{children}</ErrorBoundary>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
