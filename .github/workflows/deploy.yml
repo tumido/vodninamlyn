@@ -36,11 +36,10 @@ jobs:
             app:
               - 'app/**'
               - 'public/**'
-              - '*.config.js'
-              - '*.config.ts'
-              - '*.config.mjs'
-              - 'package.json'
-              - 'package-lock.json'
+              - '*.js'
+              - '*.ts'
+              - '*.mjs'
+              - '*.json'
 
   build:
     runs-on: ubuntu-latest
@@ -62,14 +61,16 @@ jobs:
       - name: Build Next.js app
         run: npm run build
         env:
+          NEXT_PUBLIC_ADMIN_USER: ${{ secrets.NEXT_PUBLIC_ADMIN_USER }}
+
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          NEXT_PUBLIC_ADMIN_USER: ${{ secrets.NEXT_PUBLIC_ADMIN_USER }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+
           NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
           SENTRY_ORG: ${{ vars.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+          SENTRY_PROJECT_ID: ${{ vars.SENTRY_PROJECT_ID }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
 
       - name: Add .nojekyll file
         run: touch out/.nojekyll

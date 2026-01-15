@@ -10,7 +10,17 @@ if (process.env.NODE_ENV === "production") {
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
     // Add optional integrations for additional features
-    integrations: [Sentry.replayIntegration()],
+    integrations: [
+      Sentry.replayIntegration({
+        // NOTE: This will disable built-in masking
+        maskAllText: false,
+        blockAllMedia: false,
+      }),
+      //Capture console.log, console.warn, and console.error calls as structured logs.
+      Sentry.consoleLoggingIntegration({
+        levels: ["log", "warn", "error"],
+      }),
+    ],
 
     // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
     tracesSampleRate: 1,
