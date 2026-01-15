@@ -41,11 +41,19 @@ export const Accordion = ({ items, className = "" }: AccordionProps) => {
             </span>
           </button>
 
-          {openIndex === index && (
-            <div className="mt-4 mb-8 text-lg leading-relaxed text-palette-dark-green animate-in fade-in duration-200">
-              {item.content}
+          <div
+            className={`grid transition-all duration-300 ease-in-out ${
+              openIndex === index
+                ? "grid-rows-[1fr] opacity-100"
+                : "grid-rows-[0fr] opacity-0"
+            }`}
+          >
+            <div className="overflow-hidden">
+              <div className="mt-4 mb-8 text-lg leading-relaxed text-palette-dark-green">
+                {item.content}
+              </div>
             </div>
-          )}
+          </div>
         </div>
       ))}
     </div>

@@ -6,10 +6,8 @@ import Icon from "../ui/Icon";
 const Spacer = () => {
   return (
     <Section>
-      <div className="mx-auto flex items-center">
-        <div className="h-40 w-full max-w-2xl mx-auto">
-          <Icon icon="rings" />
-        </div>
+      <div className="h-20 md:h-40 max-w-2xl mx-auto aspect-20/4">
+        <Icon icon="rings" />
       </div>
     </Section>
   );

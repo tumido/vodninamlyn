@@ -23,7 +23,11 @@ export const Footer = () => {
             </div>
           </div>
           <div className="w-52 h-52 m-4">
-            <Icon icon="mill" className="stroke-palette-beige/50" />
+            <Icon
+              icon="mill"
+              duration={3}
+              className="stroke-palette-beige/50"
+            />
           </div>
           <div className="space-y-2">
             <a

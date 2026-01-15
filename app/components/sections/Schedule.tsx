@@ -1,26 +1,25 @@
 import { WEDDING_INFO } from "@/app/lib/constants";
 import { Section } from "@/app/components/ui/Section";
 import Icon from "@/app/components/ui/Icon";
-import SquigglyLine from "@/app/components/ui/SquigglyLine";
 import React from "react";
 import { ScrollReveal } from "@/app/components/ui/ScrollReveal";
 
 export const Schedule = () => {
   return (
     <Section id="program" className="" animate={true}>
-      <h2 className="text-4xl mb-16">Tohle vše se stane</h2>
+      <h2 className="text-4xl lg:mb-16">Tohle vše se stane</h2>
 
       <div className="lg:grid grid-cols-[2fr_3fr] items-center">
-        <div className="lg:h-128 lg:w-lg lg:mr-0 aspect-square w-full mx-auto mb-24 lg:mb-0">
-          <Icon icon="mill" duration={2} />
+        <div className="lg:h-128 lg:w-lg lg:mr-0 aspect-square w-full md:w-1/2 mx-auto mb-24 md:mb-0">
+          <Icon icon="mill" duration={3} />
         </div>
-        <div className="grid grid-cols-[1fr_10px_4fr]">
+        <div className="grid lg:grid-cols-[1fr_10px_4fr] grid-cols-[1fr_10px_3fr]">
           <div className="row-start-1 row-end-10 col-start-2">
-            <SquigglyLine />
+            <Icon icon="vertical-line" />
           </div>
           {WEDDING_INFO.schedule.map((item) => (
             <React.Fragment key={item.title}>
-              <div className="text-lg text-right pr-8 py-8 text-palette-green">
+              <div className="md:text-lg text-right pr-8 py-8 text-palette-green">
                 <ScrollReveal>{item.time}</ScrollReveal>
               </div>
               <div className="space-y-2 pl-8 py-8 col-start-3 relative">

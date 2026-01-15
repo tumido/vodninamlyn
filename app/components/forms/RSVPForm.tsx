@@ -48,7 +48,7 @@ export const RSVPForm = ({
   };
 
   return (
-    <form onSubmit={onSubmit} className="max-w-2xl mx-auto p-8">
+    <form onSubmit={onSubmit} className="max-w-2xl mx-auto md:p-8 p-4">
       <div className="space-y-6">
         {/* Names - ChipInput (in regular mode) or immutable field (in edit mode) */}
         {!editMode ? (

@@ -27,7 +27,7 @@ export const Accommodation = () => {
           <Icon icon="bracket" />
         </div>
 
-        <div className="flex-1 pt-12">
+        <div className=" pt-12">
           <Accordion items={accommodationItems} />
         </div>
       </div>
