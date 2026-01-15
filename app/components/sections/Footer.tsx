@@ -1,38 +1,44 @@
-import { WEDDING_INFO } from '@/app/lib/constants';
+import { WEDDING_INFO } from "@/app/lib/constants";
+import Icon from "../ui/Icon";
 
 export const Footer = () => {
   return (
-    <footer className="relative bg-neutral-900 text-white py-16 overflow-hidden">
-      <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-        <h3 className="text-3xl font-serif font-light mb-4">
-          {WEDDING_INFO.couple.bride} & {WEDDING_INFO.couple.groom}
-        </h3>
+    <footer className="bg-neutral-900 text-white py-16 overflow-hidden">
+      <div className="z-10 max-w-4xl mx-auto px-6 text-center">
+        <div className="flex items-center justify-center gap-4">
+          <div className="space-y-2">
+            <h3>
+              <span className="text-amber-200/40 text-3xl font-semibold font-serif [word-spacing:.3em]">
+                {WEDDING_INFO.couple.groom}
+                <span className="text-xl text-palette-beige/50 align-middle">
+                  {" "}
+                  &{" "}
+                </span>
+                {WEDDING_INFO.couple.bride}
+              </span>
+            </h3>
 
-        <p className="text-neutral-400 mb-6">
-          Těšíme se, že s námi budete slavit náš velký den!
-        </p>
-
-        <div className="space-y-2 text-neutral-300">
-          <p>
+            <div className="text-palette-beige/50">
+              {WEDDING_INFO.date.display}
+            </div>
+          </div>
+          <div className="w-52 h-52 m-4">
+            <Icon icon="mill" className="stroke-palette-beige/50" />
+          </div>
+          <div className="space-y-2">
             <a
               href={`mailto:${WEDDING_INFO.contact.email}`}
-              className="hover:text-pastel-blue transition-colors"
+              className="hover:text-palette-orange text-palette-beige/50 transition-colors block"
             >
               {WEDDING_INFO.contact.email}
             </a>
-          </p>
-          <p>
             <a
-              href={`tel:${WEDDING_INFO.contact.phone.replace(/\s/g, '')}`}
-              className="hover:text-pastel-orange transition-colors"
+              href={`tel:${WEDDING_INFO.contact.phone.replace(/\s/g, "")}`}
+              className="hover:text-palette-orange text-palette-beige/50 transition-colors block"
             >
               {WEDDING_INFO.contact.phone}
             </a>
-          </p>
-        </div>
-
-        <div className="mt-8 pt-8 border-t border-neutral-800 text-sm text-neutral-500">
-          <p>{WEDDING_INFO.date.display}</p>
+          </div>
         </div>
       </div>
     </footer>

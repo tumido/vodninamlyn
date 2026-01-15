@@ -50,6 +50,11 @@ const PATH = {
     width: 128,
     path: "m 58.663729,114.7254 c 0,0 -55.3767707,-34.499453 -54.7074058,-75.624938 C 4.6047716,-0.65734174 36.339366,1.3003895 38.550715,1.2879896 40.762064,1.2755947 65.990501,-0.30174292 72.340578,38.295941 74.351066,50.513394 57.899426,43.547852 58.663729,35.882378 59.101395,31.504979 69.998616,2.6790053 97.280714,3.7015515 124.56363,4.7232933 123.07285,30.711724 123.8299,38.295941 127.7793,77.82205 77.281141,120.59276 60.272773,127.59774",
   },
+  phone: {
+    height: 128,
+    width: 128,
+    path: "M 68.165371,126.51016 C 70.214855,127.43698 4.9116207,131.05656 0.96917048,65.869688 -1.9686146,17.287655 36.965848,0.97946514 67.345905,1.1318858 94.453836,1.2679171 126.06309,19.927154 127.16692,65.050222 128.07652,102.22611 98.266811,114.19277 90.290949,116.67657 47.88523,129.88309 16.674234,32.469899 50.137122,16.701737 62.969138,10.654899 68.692288,27.961198 67.345905,33.91052 c -2.276476,10.061401 -15.221578,1.015318 -16.389317,7.375192 -1.162002,6.329555 7.045768,54.375657 18.847715,48.348486 11.801947,-6.027171 12.728763,-6.511476 17.208783,2.458398 4.017022,8.042234 0.786687,17.210424 -13.111454,14.750384",
+  },
   mill: {
     height: 128,
     width: 128,
@@ -67,9 +72,17 @@ export interface IconProps {
   delay?: number;
   animate?: boolean;
   duration?: number;
+
+  className?: string;
 }
 
-const Icon = ({ icon, delay = 0.1, animate = true, duration = 1 }: IconProps) => {
+const Icon = ({
+  icon,
+  delay = 0.1,
+  animate = true,
+  duration = 1,
+  className = "stroke-palette-dark-green",
+}: IconProps) => {
   const pathRef = React.useRef<SVGPathElement>(null);
   const [pathLength, setPathLength] = React.useState(0);
   const [strokeWidthMultiplier, setStrokeWidthMultiplier] = React.useState(0);
@@ -103,7 +116,7 @@ const Icon = ({ icon, delay = 0.1, animate = true, duration = 1 }: IconProps) =>
         <path
           ref={pathRef}
           d={PATH[icon].path}
-          className="stroke-palette-dark-green"
+          className={className}
           style={{
             fill: "none",
             strokeWidth: `calc(${strokeWidthMultiplier} * .1rem)`,

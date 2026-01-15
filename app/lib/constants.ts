@@ -1,4 +1,9 @@
-import type { WeddingInfo, AttendingStatusValue, AccommodationTypeValue, DrinkChoiceValue } from "./types";
+import type {
+  WeddingInfo,
+  AttendingStatusValue,
+  AccommodationTypeValue,
+  DrinkChoiceValue,
+} from "./types";
 
 // RSVP Label mappings
 export const ATTENDING_LABELS: Record<AttendingStatusValue, string> = {
@@ -146,7 +151,7 @@ export const WEDDING_INFO: WeddingInfo = {
   rsvpDeadline: new Date("2026-05-01"),
 
   contact: {
-    email: "svatba@example.cz",
+    email: "tumi-a-jana@vodninamlyn.cz",
     phone: "+420 123 456 789",
   },
 } as const;
