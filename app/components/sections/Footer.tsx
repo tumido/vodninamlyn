@@ -5,7 +5,7 @@ export const Footer = () => {
   return (
     <footer className="bg-neutral-900 text-white py-16 overflow-hidden">
       <div className="z-10 max-w-4xl mx-auto px-6 text-center">
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4">
           <div className="space-y-2">
             <h3>
               <span className="text-amber-200/40 text-3xl font-semibold font-serif [word-spacing:.3em]">
