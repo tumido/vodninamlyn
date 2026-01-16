@@ -6,9 +6,13 @@ import { supabase } from "@/app/lib/supabase";
 import { Input } from "@/app/components/ui/Input";
 import { Button } from "@/app/components/ui/Button";
 import { FormField } from "@/app/components/ui/FormField";
-import { logInfo, logError } from "@/app/lib/utils/logger";
-import { measureAsync, OperationType } from "@/app/lib/utils/performance";
-import { trackAdminOperation, MetricEvent, metrics } from "@/app/lib/utils/metrics";
+import {
+  logger,
+  performance,
+  metrics,
+  OperationType,
+  MetricEvent
+} from "@/app/lib/monitoring";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -30,7 +34,7 @@ export default function AdminLoginPage() {
           setIsCheckingAuth(false);
         }
       } catch (error) {
-        logError("Auth check failed", error instanceof Error ? error : new Error(String(error)), {
+        logger.error("Auth check failed", error instanceof Error ? error : new Error(String(error)), {
           component: 'AdminLoginPage',
           operation: 'checkAuth',
         });
@@ -59,7 +63,7 @@ export default function AdminLoginPage() {
         setError("Admin user is not configured");
         setIsSubmitting(false);
 
-        logError("Admin user not configured", undefined, {
+        logger.error("Admin user not configured", undefined, {
           component: 'AdminLoginPage',
           operation: 'handleLogin',
         });
@@ -67,7 +71,7 @@ export default function AdminLoginPage() {
         return;
       }
 
-      const result = await measureAsync(
+      const result = await performance.measureAsync(
         OperationType.AUTH_LOGIN,
         'auth_sign_in',
         async () => {
@@ -87,18 +91,18 @@ export default function AdminLoginPage() {
         setError(error.message);
         setIsSubmitting(false);
 
-        logError("Login failed", error, {
+        logger.error("Login failed", error, {
           component: 'AdminLoginPage',
           operation: 'handleLogin',
         });
 
         // Track login failure
-        trackAdminOperation('login', false, {
+        metrics.trackAdminOperation('login', false, {
           component: 'AdminLoginPage',
           errorMessage: error.message,
         });
       } else if (data.user) {
-        logInfo("Login successful", {
+        logger.info("Login successful", {
           component: 'AdminLoginPage',
           operation: 'handleLogin',
           metadata: {
@@ -107,7 +111,7 @@ export default function AdminLoginPage() {
         });
 
         // Track successful login
-        trackAdminOperation('login', true, {
+        metrics.trackAdminOperation('login', true, {
           component: 'AdminLoginPage',
           userId: data.user.id,
         });
@@ -115,13 +119,13 @@ export default function AdminLoginPage() {
         router.replace("/admin");
       }
     } catch (error) {
-      logError("Login failed", error instanceof Error ? error : new Error(String(error)), {
+      logger.error("Login failed", error instanceof Error ? error : new Error(String(error)), {
         component: 'AdminLoginPage',
         operation: 'handleLogin',
       });
 
       // Track login failure
-      trackAdminOperation('login', false, {
+      metrics.trackAdminOperation('login', false, {
         component: 'AdminLoginPage',
       });
 

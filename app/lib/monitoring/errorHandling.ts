@@ -1,5 +1,9 @@
-import type { PostgrestError } from "@supabase/supabase-js";
-import { logError } from "./logger";
+/**
+ * Error handling utilities for common error scenarios
+ */
+
+import type { PostgrestError } from '@supabase/supabase-js';
+import * as logger from './core/logger';
 
 /**
  * Unified error handler for Supabase errors
@@ -10,7 +14,7 @@ export function handleSupabaseError(
   context: string,
   userMessage: string
 ): string {
-  logError(`Supabase error in ${context}`, new Error(error.message), {
+  logger.error(`Supabase error in ${context}`, new Error(error.message), {
     operation: context,
     metadata: {
       code: error.code,

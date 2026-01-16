@@ -1,11 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
-import { logWarn } from "./utils/logger";
+import { logger } from "./monitoring";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  logWarn("Supabase environment variables are not set", {
+  logger.warn("Supabase environment variables are not set", {
     operation: 'supabase_init',
     metadata: {
       hasUrl: !!supabaseUrl,

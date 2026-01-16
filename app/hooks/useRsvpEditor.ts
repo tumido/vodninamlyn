@@ -4,14 +4,17 @@ import { useState } from "react";
 import { supabase } from "@/app/lib/supabase";
 import { useErrorHandler } from "@/app/lib/errors/useErrorHandler";
 import { parseZodErrors } from "@/app/lib/utils/zodHelpers";
-import { handleSupabaseError } from "@/app/lib/utils/errorHandling";
 import type { RSVPFormData } from "@/app/lib/types";
 import type { RsvpSubmission } from "@/app/lib/types";
 import { rsvpEditSchema } from "@/app/lib/validations";
 import { ZodError } from "zod";
-import { logInfo, logError } from "@/app/lib/utils/logger";
-import { measureAsync, OperationType } from "@/app/lib/utils/performance";
-import { trackAdminOperation } from "@/app/lib/utils/metrics";
+import {
+  handleSupabaseError,
+  logger,
+  performance,
+  metrics,
+  OperationType
+} from "@/app/lib/monitoring";
 
 interface EditingRow {
   attendeeId: string;
@@ -114,7 +117,7 @@ export const useRsvpEditor = (onSuccess: () => void) => {
       };
 
       // Update the base rsvps TABLE (not the view) using attendee_id with performance tracking
-      const result = await measureAsync(
+      const result = await performance.measureAsync(
         OperationType.RSVP_UPDATE,
         'update_rsvp',
         async () => {
@@ -141,7 +144,7 @@ export const useRsvpEditor = (onSuccess: () => void) => {
           "Chyba při ukládání"
         );
 
-        logError("Failed to update RSVP", updateError, {
+        logger.error("Failed to update RSVP", updateError, {
           component: 'useRsvpEditor',
           operation: 'handleEditSubmit',
           metadata: { attendeeId: editingRow.attendeeId },
@@ -150,7 +153,7 @@ export const useRsvpEditor = (onSuccess: () => void) => {
         showError(errorMessage, "toast");
 
         // Track admin operation failure
-        trackAdminOperation('edit', false, {
+        metrics.trackAdminOperation('edit', false, {
           component: 'useRsvpEditor',
           attendeeId: editingRow.attendeeId,
           errorMessage,
@@ -159,7 +162,7 @@ export const useRsvpEditor = (onSuccess: () => void) => {
         // Re-throw Supabase errors so Sentry captures them
         throw new Error(errorMessage);
       } else {
-        logInfo("RSVP updated successfully", {
+        logger.info("RSVP updated successfully", {
           component: 'useRsvpEditor',
           operation: 'handleEditSubmit',
           metadata: {
@@ -169,7 +172,7 @@ export const useRsvpEditor = (onSuccess: () => void) => {
         });
 
         // Track successful edit
-        trackAdminOperation('edit', true, {
+        metrics.trackAdminOperation('edit', true, {
           component: 'useRsvpEditor',
           attendeeId: editingRow.attendeeId,
           attending: editingRow.formData.attending,
@@ -180,7 +183,7 @@ export const useRsvpEditor = (onSuccess: () => void) => {
         setValidationErrors({});
       }
     } catch (error) {
-      logError("Network error during update", error instanceof Error ? error : new Error(String(error)), {
+      logger.error("Network error during update", error instanceof Error ? error : new Error(String(error)), {
         component: 'useRsvpEditor',
         operation: 'handleEditSubmit',
         metadata: { attendeeId: editingRow.attendeeId },

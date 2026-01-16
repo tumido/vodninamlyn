@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import type { User } from "@supabase/supabase-js";
-import { logInfo, logError } from "@/app/lib/utils/logger";
-import { measureAsync, OperationType } from "@/app/lib/utils/performance";
-import { trackAdminOperation } from "@/app/lib/utils/metrics";
+import {
+  logger,
+  performance,
+  metrics,
+  OperationType
+} from "@/app/lib/monitoring";
 
 export const useAuth = () => {
   const router = useRouter();
@@ -27,7 +30,7 @@ export const useAuth = () => {
       }
     };
 
-    measureAsync(
+    performance.measureAsync(
       OperationType.AUTH_CHECK,
       'auth_get_user',
       async () => {
@@ -40,7 +43,7 @@ export const useAuth = () => {
     )
       .then((user) => {
         handleAuth(user);
-        logInfo("Auth check completed", {
+        logger.info("Auth check completed", {
           component: 'useAuth',
           operation: 'getUser',
           metadata: {
@@ -49,7 +52,7 @@ export const useAuth = () => {
         });
       })
       .catch((error) => {
-        logError("Failed to get user", error, {
+        logger.error("Failed to get user", error, {
           component: 'useAuth',
           operation: 'getUser',
         });
@@ -71,7 +74,7 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
-      await measureAsync(
+      await performance.measureAsync(
         OperationType.AUTH_LOGOUT,
         'auth_sign_out',
         async () => {
@@ -85,7 +88,7 @@ export const useAuth = () => {
         }
       );
 
-      logInfo("User logged out successfully", {
+      logger.info("User logged out successfully", {
         component: 'useAuth',
         operation: 'logout',
         metadata: {
@@ -94,14 +97,14 @@ export const useAuth = () => {
       });
 
       // Track admin logout
-      trackAdminOperation('logout', true, {
+      metrics.trackAdminOperation('logout', true, {
         component: 'useAuth',
         userId: user?.id,
       });
 
       router.replace("/admin/login");
     } catch (error) {
-      logError("Logout failed", error instanceof Error ? error : new Error(String(error)), {
+      logger.error("Logout failed", error instanceof Error ? error : new Error(String(error)), {
         component: 'useAuth',
         operation: 'logout',
         metadata: {
@@ -110,7 +113,7 @@ export const useAuth = () => {
       });
 
       // Track logout failure
-      trackAdminOperation('logout', false, {
+      metrics.trackAdminOperation('logout', false, {
         component: 'useAuth',
         userId: user?.id,
       });

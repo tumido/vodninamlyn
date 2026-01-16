@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
-import { trackPageView } from '@/app/lib/utils/metrics';
+import { metrics } from '@/app/lib/monitoring';
 
 /**
  * Hook to track page views and time spent on page
@@ -15,7 +15,7 @@ export const usePageTracking = () => {
     // Track new page view
     pageStartTimeRef.current = Date.now();
 
-    trackPageView(pathname, {
+    metrics.trackPageView(pathname, {
       component: 'usePageTracking',
     });
 
@@ -25,7 +25,7 @@ export const usePageTracking = () => {
 
       // Only track if user spent more than 1 second on page
       if (timeSpentMs > 1000) {
-        trackPageView(pathname, {
+        metrics.trackPageView(pathname, {
           component: 'usePageTracking',
           timeSpentMs,
           leaving: true,

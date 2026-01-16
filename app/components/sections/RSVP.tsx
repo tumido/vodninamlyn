@@ -11,9 +11,13 @@ import Icon from "@/app/components/ui/Icon";
 import { supabase } from "@/app/lib/supabase";
 import { RSVPForm } from "@/app/components/forms/RSVPForm";
 import { WEDDING_INFO } from "@/app/lib/constants";
-import { logInfo, logError, logWarn } from "@/app/lib/utils/logger";
-import { measureAsync, OperationType } from "@/app/lib/utils/performance";
-import { metrics, trackRsvpSubmission, trackValidationError, MetricEvent } from "@/app/lib/utils/metrics";
+import {
+  logger,
+  performance,
+  metrics,
+  OperationType,
+  MetricEvent
+} from "@/app/lib/monitoring";
 
 const SUCCESS_ICONS = ["ufo", "fox", "clover"] as const;
 
@@ -122,7 +126,7 @@ export const RSVP = () => {
       const validated = rsvpSchema.parse(formData);
 
       // Submit to Supabase with performance tracking
-      const { data, error } = await measureAsync(
+      const { data, error } = await performance.measureAsync(
         OperationType.RSVP_SUBMIT,
         'submit_rsvp',
         async () => {
@@ -148,13 +152,13 @@ export const RSVP = () => {
       );
 
       if (error) {
-        logError("RSVP submission failed", error, {
+        logger.error("RSVP submission failed", error, {
           component: 'RSVP',
           operation: 'submit_rsvp',
         });
 
         // Track failure
-        trackRsvpSubmission(false, {
+        metrics.trackRsvpSubmission(false, {
           component: 'RSVP',
           errorMessage: error.message,
         });
@@ -162,7 +166,7 @@ export const RSVP = () => {
         throw new Error(error.message);
       }
 
-      logInfo("RSVP submitted successfully", {
+      logger.info("RSVP submitted successfully", {
         component: 'RSVP',
         operation: 'submit_rsvp',
         metadata: {
@@ -173,7 +177,7 @@ export const RSVP = () => {
       });
 
       // Track success
-      trackRsvpSubmission(true, {
+      metrics.trackRsvpSubmission(true, {
         component: 'RSVP',
         attending: validated.attending,
         guestCount: validated.names.length,
@@ -204,14 +208,14 @@ export const RSVP = () => {
 
         // Track validation errors
         Object.entries(parsedErrors).forEach(([field, message]) => {
-          trackValidationError(
+          metrics.trackValidationError(
             field,
             'validation_error',
             message
           );
         });
 
-        logWarn("RSVP validation failed", {
+        logger.warn("RSVP validation failed", {
           component: 'RSVP',
           metadata: {
             errorCount: Object.keys(parsedErrors).length,

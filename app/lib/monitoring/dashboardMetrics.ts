@@ -3,7 +3,7 @@
  * Provides helpers for tracking RSVP statistics, user engagement, and system health.
  */
 
-import { setGauge } from './performance';
+import { setGauge } from './core/performance';
 import type { RsvpSubmission } from '../types';
 
 /**
