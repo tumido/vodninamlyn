@@ -11,6 +11,7 @@ A Czech wedding website with RSVP functionality and admin dashboard. Built as a 
 - Tailwind CSS v4
 - Zod 4.3.5 (validation)
 - Supabase 2.71.3 (PostgreSQL 17, Auth)
+- Sentry (error tracking, performance monitoring, session replay)
 
 **Architecture:**
 - Static export (`output: 'export'`)
@@ -45,9 +46,16 @@ Open [http://localhost:3000](http://localhost:3000)
 
 Create `.env.local`:
 ```bash
+# Supabase
 NEXT_PUBLIC_SUPABASE_URL=<your_supabase_url>
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<your_anon_key>
 NEXT_PUBLIC_ADMIN_USER=<admin_email>
+
+# Sentry (optional - for error tracking)
+NEXT_PUBLIC_SENTRY_DSN=<your_sentry_dsn>
+NEXT_PUBLIC_SENTRY_ORG=<your_sentry_org>
+NEXT_PUBLIC_SENTRY_PROJECT_ID=<your_sentry_project_id>
+SENTRY_AUTH_TOKEN=<your_sentry_auth_token>
 ```
 
 For local development with `supabase start`, use the credentials from `supabase status`.
@@ -99,6 +107,8 @@ All database operations go through:
 | `drink_choice` | TEXT | 'pivo'\|'vino'\|'nealko'\|'other' | Beverage choice |
 | `custom_drink` | TEXT | MAX 100 chars | Custom drink if `drink_choice='other'` |
 | `dietary_restrictions` | TEXT | MAX 500 chars | Dietary needs |
+| `children_count` | INTEGER | DEFAULT 0, 0-99 | Number of children |
+| `pets_count` | INTEGER | DEFAULT 0, 0-99 | Number of pets |
 | `message` | TEXT | MAX 1000 chars | Guest message |
 
 **Indexes:**
@@ -128,6 +138,8 @@ Public RPC function for RSVP submission.
 - `drinkChoice` TEXT - Optional drink preference
 - `customDrink` TEXT - Optional custom drink
 - `dietaryRestrictions` TEXT - Optional dietary info
+- `childrenCount` INTEGER - Optional number of children (default 0)
+- `petsCount` INTEGER - Optional number of pets (default 0)
 - `message` TEXT - Optional message
 
 **Logic:**
@@ -164,9 +176,13 @@ app/
 │   │   └── RSVPForm.tsx    # Main RSVP form (used on public page and admin edit)
 │   ├── sections/           # Public page sections
 │   │   ├── Hero.tsx
-│   │   ├── GeneralInfo.tsx
+│   │   ├── KeyInfo.tsx
+│   │   ├── AdditionalInfo.tsx
+│   │   ├── Accommodation.tsx
 │   │   ├── Schedule.tsx
+│   │   ├── FAQ.tsx
 │   │   ├── RSVP.tsx
+│   │   ├── ThankYou.tsx
 │   │   ├── Footer.tsx
 │   │   └── Spacer.tsx
 │   └── ui/                 # Reusable primitives
@@ -188,12 +204,27 @@ app/
 │   ├── useAuth.ts          # Auth state management
 │   ├── useRsvpData.ts      # Fetch/delete RSVPs
 │   ├── useRsvpStats.ts     # Calculate statistics
-│   └── useRsvpEditor.ts    # Edit RSVP modal logic
+│   ├── useRsvpEditor.ts    # Edit RSVP modal logic
+│   ├── usePageTracking.ts  # Page view tracking
+│   ├── useSectionTracking.ts  # Section visibility tracking
+│   └── useIntersectionObserver.ts  # Intersection observer utility
 ├── lib/
+│   ├── monitoring/         # Comprehensive monitoring system
+│   │   ├── core/
+│   │   │   ├── logger.ts   # Structured logging with Sentry
+│   │   │   ├── performance.ts  # Performance measurement with spans
+│   │   │   └── metrics.ts  # Event tracking and business metrics
+│   │   ├── dashboardMetrics.ts  # Dashboard-specific gauge metrics
+│   │   ├── errorHandling.ts  # Supabase error handling
+│   │   ├── types.ts        # Monitoring type definitions
+│   │   └── index.ts        # Unified export
 │   ├── errors/
 │   │   ├── ErrorBoundary.tsx
 │   │   └── useErrorHandler.ts
 │   ├── utils/
+│   │   ├── businessMetrics.ts
+│   │   ├── formStyles.ts
+│   │   ├── stats.ts
 │   │   └── zodHelpers.ts
 │   ├── supabase.ts         # Supabase client init
 │   ├── types.ts            # TypeScript types
@@ -206,13 +237,20 @@ app/
 │       └── page.tsx        # Admin login
 ├── layout.tsx              # Root layout
 ├── page.tsx                # Public homepage
+├── global-error.tsx        # Global error boundary
+├── not-found.tsx           # 404 page
+├── manifest.ts             # PWA manifest
 └── globals.css             # Tailwind + custom styles
 
 supabase/
 ├── migrations/
-│   └── 20260114155913_create_rsvps_table.sql
+│   ├── 20260114155913_create_rsvps_table.sql
+│   └── 20260116005051_add_children_and_pets_fields.sql
 ├── seed.sql
 └── config.toml
+
+instrumentation-client.ts   # Sentry client initialization
+next.config.ts              # Next.js config with Sentry integration
 ```
 
 ---
@@ -365,6 +403,270 @@ ScrollReveal component for viewport-triggered animations.
 
 ---
 
+## Monitoring & Error Tracking
+
+### Sentry Integration
+
+The app uses Sentry for comprehensive error tracking, performance monitoring, and session replay.
+
+**Configuration Files:**
+- `instrumentation-client.ts` - Client-side Sentry initialization with integrations
+- `next.config.ts` - Webpack plugin with source map upload for stack traces
+
+**Features:**
+- Error tracking with full stack traces
+- Session replays (10% sample rate, 100% on error)
+- Performance monitoring with transaction tracing
+- Console logging integration (log, warn, error levels)
+- Supabase integration for database operation tracing
+- User context tracking (PII enabled for better debugging)
+
+### Monitoring System (`app/lib/monitoring/`)
+
+A unified, modular monitoring system that consolidates logging, performance tracking, and metrics into a single import point. Recently refactored from scattered utility files into a clean, functional architecture.
+
+**Module Structure:**
+```
+app/lib/monitoring/
+├── index.ts                # Main entry point, unified exports
+├── types.ts                # Shared type definitions and enums
+├── dashboardMetrics.ts     # Dashboard-specific gauge metrics
+├── errorHandling.ts        # Supabase error handling utilities
+└── core/
+    ├── logger.ts          # Structured logging with Sentry
+    ├── metrics.ts         # Event tracking and business metrics
+    └── performance.ts     # Performance monitoring with spans
+```
+
+**Core Modules:**
+
+#### 1. Logger (`core/logger.ts`)
+
+Structured logging with automatic Sentry integration using a functional API:
+
+```typescript
+import { logger } from '@/app/lib/monitoring';
+
+// Available functions: debug(), info(), warn(), error()
+logger.info('RSVP submission started', {
+  component: 'RSVPForm',
+  operation: 'rsvp.submit',
+  metadata: { guestCount: 2 }
+});
+
+logger.error('Database error', error, {
+  component: 'useRsvpData',
+  operation: 'db.query'
+});
+
+logger.debug('Detailed debugging info', { data: someData });
+```
+
+**Behavior:**
+- All levels log to console with formatted output
+- `error()` → Captures to Sentry via `captureException()` or `captureMessage()`
+- `warn()` → Captures to Sentry with warning level
+- `info()` and `debug()` → Sentry breadcrumbs only (not captured as events)
+- Development mode: Full console logging
+- Production mode: Console + Sentry integration
+
+#### 2. Performance (`core/performance.ts`)
+
+Measure operation performance with Sentry spans using a functional API:
+
+```typescript
+import { performance, OperationType } from '@/app/lib/monitoring';
+
+// Async operations (most common)
+const result = await performance.measureAsync(
+  OperationType.RSVP_FETCH,
+  'fetch_all_rsvps',
+  async () => {
+    return await supabase.from('rsvps').select('*');
+  }
+);
+
+// Synchronous operations
+const value = performance.measure(
+  OperationType.RSVP_SUBMIT,
+  'validate_form',
+  () => {
+    return schema.parse(formData);
+  }
+);
+
+// Manual metrics recording
+performance.recordMetric('form.submission.time', 1234.56);
+performance.setGauge('rsvp.total', 42);
+```
+
+**Features:**
+
+- Automatic slow operation detection with configurable thresholds
+- Distribution metrics for performance analysis in Sentry
+- Automatic status setting (ok/internal_error)
+- Development mode: console.debug only (no Sentry overhead)
+- Production mode: Full Sentry span tracking with timing
+
+**Configurable Thresholds:**
+
+- `AUTH_LOGIN`: 3000ms
+- `AUTH_LOGOUT`: 500ms
+- `AUTH_CHECK`: 1000ms
+- `RSVP_SUBMIT`: 3000ms
+- `RSVP_FETCH`: 2000ms
+- `RSVP_UPDATE`: 2000ms
+- `RSVP_DELETE`: 1500ms
+
+#### 3. Metrics (`core/metrics.ts`)
+
+Event tracking and business metrics using a functional API:
+
+```typescript
+import {
+  metrics,
+  MetricEvent
+} from '@/app/lib/monitoring';
+
+// Generic event tracking
+metrics.track(MetricEvent.PAGE_VIEW, { path: '/admin' });
+metrics.track(MetricEvent.RSVP_FORM_STARTED);
+
+// Specific tracking functions (convenience wrappers)
+metrics.trackRsvpSubmission(true, { guestCount: 2, attending: 'yes' });
+metrics.trackValidationError('email', 'invalid_format', 'Neplatný email');
+metrics.trackFormAbandonment({
+  formName: 'rsvp',
+  lastField: 'accommodation',
+  completionPercentage: 60,
+  timeSpentMs: 45000
+});
+metrics.trackPageView('/admin', { userId: 'admin@example.com' });
+metrics.trackSectionView('hero');
+metrics.trackAdminOperation('delete_rsvp', true, { rsvpId: '123' });
+```
+
+**Available Functions:**
+
+- `track(event, data?)` - Generic event tracking with MetricEvent enum
+- `trackRsvpSubmission(success, data)` - RSVP form submissions
+- `trackValidationError(field, errorType, errorMessage)` - Form validation errors
+- `trackFormAbandonment(data)` - Form abandonment events with completion %
+- `trackPageView(path, metadata?)` - Page view tracking
+- `trackSectionView(sectionName)` - Section visibility tracking
+- `trackAdminOperation(operation, success, metadata?)` - Admin actions
+
+**MetricEvent Enum:**
+
+- `RSVP_FORM_STARTED` - User started filling RSVP form
+- `RSVP_FORM_SUBMITTED` - RSVP form submitted
+- `ADMIN_LOGIN_ATTEMPT` - Admin login attempt
+- `PAGE_VIEW` - Page view event
+- `SECTION_VIEWED` - Section scrolled into view
+
+#### 4. Dashboard Metrics (`dashboardMetrics.ts`)
+
+Gauge metrics for business analytics:
+
+```typescript
+import { updateDashboardMetrics } from '@/lib/monitoring';
+
+// Update all dashboard metrics after data fetch
+updateDashboardMetrics(rsvpData);
+```
+
+**Metrics Tracked:**
+- `rsvp.total` - Total submissions
+- `rsvp.attending` / `rsvp.not_attending` - Attendance counts
+- `rsvp.attendance_rate` - Percentage attending
+- `rsvp.total_guests` - Total guest count
+- `rsvp.dietary_restrictions` - Count with dietary needs
+- `rsvp.accommodation_needed` - Guests needing accommodation
+- `rsvp.children_count` / `rsvp.pets_count` - Children and pets
+- `rsvp.drink.[choice]` - Drink preference distribution
+- `rsvp.accommodation.[type]` - Accommodation type distribution
+
+#### 5. Error Handling (`errorHandling.ts`)
+
+Unified error handling for Supabase operations:
+
+```typescript
+import { handleSupabaseError } from '@/lib/monitoring';
+
+const { data, error } = await supabase.from('rsvps').select('*');
+if (error) {
+  const message = handleSupabaseError(error, 'useRsvpData', 'fetch_rsvps');
+  // Returns user-friendly Czech message
+}
+```
+
+### Global Error Boundary
+
+`app/global-error.tsx` catches unhandled errors:
+- Automatically logs to Sentry via `captureException()`
+- Displays user-friendly error page in Czech
+- Provides retry and page reload options
+
+### Usage in Components
+
+All monitoring functionality is imported from the unified `@/app/lib/monitoring` module:
+
+```typescript
+'use client';
+
+import {
+  logger,
+  performance,
+  metrics,
+  OperationType,
+  MetricEvent
+} from '@/app/lib/monitoring';
+
+export function RSVPForm() {
+  const handleSubmit = async (data: RSVPFormData) => {
+    // Log the operation start
+    logger.info('Starting RSVP submission', {
+      component: 'RSVPForm',
+      operation: 'rsvp.submit'
+    });
+
+    // Track form submission event
+    metrics.track(MetricEvent.RSVP_FORM_SUBMITTED);
+
+    // Measure performance with Sentry span
+    const result = await performance.measureAsync(
+      OperationType.RSVP_SUBMIT,
+      'submit_rsvp_form',
+      async () => {
+        return await supabase.rpc('submit_rsvp', data);
+      }
+    );
+
+    // Track submission success/failure
+    metrics.trackRsvpSubmission(!result.error, {
+      guestCount: data.names.length,
+      attending: data.attending
+    });
+
+    if (result.error) {
+      logger.error('RSVP submission failed', result.error, {
+        component: 'RSVPForm'
+      });
+    }
+  };
+}
+```
+
+**Best Practices:**
+
+- Import from `@/app/lib/monitoring` for all monitoring needs
+- Use namespace imports (`logger.info`, `performance.measureAsync`, `metrics.track`)
+- Use `OperationType` enum for performance tracking
+- Use `MetricEvent` enum for event tracking
+- Always log errors with context for better debugging
+
+---
+
 ## Deployment
 
 ### GitHub Actions Workflow
@@ -381,10 +683,18 @@ ScrollReveal component for viewport-triggered animations.
 4. **Deploy** - Deploy artifact to GitHub Pages
 
 **Required GitHub Secrets:**
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_ACCESS_TOKEN`
-- `SUPABASE_PROJECT_ID`
+- `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anon key
+- `NEXT_PUBLIC_ADMIN_USER` - Admin email for authentication
+- `SUPABASE_ACCESS_TOKEN` - Supabase access token for migrations
+- `SUPABASE_PROJECT_ID` - Supabase project ID
+- `SUPABASE_DB_PASSWORD` - Supabase DB password
+- `NEXT_PUBLIC_SENTRY_DSN` - Sentry DSN for error tracking
+- `SENTRY_AUTH_TOKEN` - Sentry auth token for source map upload
+
+**Required GitHub Variables:**
+- `NEXT_PUBLIC_SENTRY_ORG` - Your Sentry organization slug
+- `NEXT_PUBLIC_SENTRY_PROJECT_ID` - Your Sentry project ID
 
 ### Build Commands
 

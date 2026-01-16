@@ -18,9 +18,18 @@ A Czech wedding website with RSVP functionality and admin dashboard.
 
 - Password-protected admin panel
 - View all RSVP submissions
-- Statistics cards (attendance, drinks, accommodation)
+- Statistics cards (attendance, drinks, accommodation, children, pets)
 - Edit and delete RSVP entries
 - Real-time data updates
+
+### Monitoring & Analytics
+
+- Comprehensive error tracking with Sentry
+- Performance monitoring and slow operation detection
+- Session replay for debugging user issues
+- Business metrics tracking (RSVP stats, attendance, preferences)
+- Form abandonment tracking
+- Page and section view tracking
 
 ---
 
@@ -39,6 +48,10 @@ A Czech wedding website with RSVP functionality and admin dashboard.
 - [Supabase](https://supabase.com) - PostgreSQL database, authentication, RPC
 - PostgreSQL 17 - Database
 - Row-level security for data protection
+
+**Monitoring:**
+
+- [Sentry](https://sentry.io) - Error tracking, performance monitoring, session replay
 
 **Deployment:**
 
@@ -82,10 +95,19 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 Edit the `.env.local` file with:
 
 ```bash
+# Supabase (required)
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_ADMIN_USER=admin@example.com
+
+# Sentry (optional - for error tracking and monitoring)
+NEXT_PUBLIC_SENTRY_DSN=your_sentry_dsn
+NEXT_PUBLIC_SENTRY_ORG=your_sentry_org
+NEXT_PUBLIC_SENTRY_PROJECT_ID=your_sentry_project_id
+SENTRY_AUTH_TOKEN=your_sentry_auth_token
 ```
 
-For local development with `npx supabase start`, get credentials from `supabase status -o env`.
+For local development with `npx supabase start`, get Supabase credentials from `supabase status -o env`.
 
 ---
 
@@ -96,20 +118,29 @@ svatba/
 ├── app/
 │   ├── components/
 │   │   ├── admin/          # Admin dashboard components
-│   │   ├── forms/          # Form components
-│   │   ├── sections/       # Page sections (Hero, RSVP, etc.)
+│   │   ├── forms/          # Form components (RSVP form)
+│   │   ├── sections/       # Page sections (Hero, RSVP, FAQ, etc.)
 │   │   └── ui/             # Reusable UI components
-│   ├── hooks/              # React hooks
-│   ├── lib/                # Utilities, types, constants
-│   ├── admin/              # Admin pages
+│   ├── hooks/              # Custom React hooks (7 hooks)
+│   ├── lib/
+│   │   ├── monitoring/     # Monitoring system (Sentry integration)
+│   │   ├── errors/         # Error handling utilities
+│   │   ├── utils/          # Helper functions
+│   │   ├── supabase.ts     # Supabase client
+│   │   ├── types.ts        # TypeScript types
+│   │   ├── constants.ts    # Wedding data
+│   │   └── validations.ts  # Zod schemas
+│   ├── admin/              # Admin pages (dashboard, login)
 │   ├── layout.tsx          # Root layout
 │   ├── page.tsx            # Homepage
+│   ├── global-error.tsx    # Error boundary
 │   └── globals.css         # Global styles
 ├── supabase/
-│   ├── migrations/         # Database migrations
+│   ├── migrations/         # Database migrations (2 migrations)
 │   ├── seed.sql            # Test data
 │   └── config.toml         # Supabase config
-└── public/                 # Static assets
+├── public/                 # Static assets
+└── instrumentation-client.ts  # Sentry initialization
 ```
 
 ---
@@ -194,12 +225,24 @@ Automated deployment on push to `main` branch:
 
 Configure in repository settings → Secrets and variables → Actions:
 
+**Supabase:**
+
 - `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anon key
-- `NEXT_PUBLIC_ADMIN_USER` - Your Supabase admin user
-- `SUPABASE_ACCESS_TOKEN` - Supabase access token
+- `NEXT_PUBLIC_ADMIN_USER` - Admin email for authentication
+- `SUPABASE_ACCESS_TOKEN` - Supabase access token for migrations
 - `SUPABASE_PROJECT_ID` - Supabase project ID
 - `SUPABASE_DB_PASSWORD` - Supabase DB password
+
+**Sentry (optional but recommended):**
+
+- `NEXT_PUBLIC_SENTRY_DSN` - Sentry DSN for error tracking
+- `SENTRY_AUTH_TOKEN` - Sentry auth token for source map upload
+
+**Variables:**
+
+- `NEXT_PUBLIC_SENTRY_ORG` - Your Sentry organization slug
+- `NEXT_PUBLIC_SENTRY_PROJECT_ID` - Your Sentry project ID
 
 ### Manual Deployment
 
