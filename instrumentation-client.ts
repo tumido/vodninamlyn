@@ -9,9 +9,6 @@ import { supabase } from "./app/lib/supabase";
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
-  // Enable debug mode to see when data is sent to Sentry
-  debug: true,
-
   // Add optional integrations for additional features
   integrations: [
     Sentry.replayIntegration({
@@ -46,28 +43,6 @@ Sentry.init({
   // Enable sending user PII (Personally Identifiable Information)
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
   sendDefaultPii: true,
-
-  // Hook to log what's being sent to Sentry
-  beforeSend(event) {
-    console.log('[SENTRY DEBUG] Sending event to Sentry:', {
-      type: event.type,
-      level: event.level,
-      message: event.message,
-      exception: event.exception?.values?.[0]?.type,
-      timestamp: new Date(event.timestamp! * 1000).toISOString(),
-    });
-    return event;
-  },
-
-  // Hook to log breadcrumbs being added
-  beforeBreadcrumb(breadcrumb) {
-    console.log('[SENTRY DEBUG] Adding breadcrumb:', {
-      category: breadcrumb.category,
-      message: breadcrumb.message,
-      level: breadcrumb.level,
-    });
-    return breadcrumb;
-  },
 });
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
