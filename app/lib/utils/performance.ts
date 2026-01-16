@@ -4,6 +4,7 @@
  */
 
 import * as Sentry from '@sentry/nextjs';
+import { trackSlowOperation } from './metrics';
 
 export enum OperationType {
   // Database operations
@@ -38,11 +39,51 @@ export interface PerformanceContext {
   metadata?: Record<string, unknown>;
 }
 
+// Thresholds for slow operation detection (in milliseconds)
+const SLOW_OPERATION_THRESHOLDS: Record<string, number> = {
+  [OperationType.DB_QUERY]: 1000,
+  [OperationType.DB_INSERT]: 2000,
+  [OperationType.DB_UPDATE]: 2000,
+  [OperationType.DB_DELETE]: 1500,
+  [OperationType.AUTH_LOGIN]: 3000,
+  [OperationType.AUTH_LOGOUT]: 1000,
+  [OperationType.AUTH_CHECK]: 500,
+  [OperationType.RSVP_SUBMIT]: 3000,
+  [OperationType.RSVP_FETCH]: 2000,
+  [OperationType.RSVP_UPDATE]: 2000,
+  [OperationType.RSVP_DELETE]: 1500,
+  [OperationType.FORM_VALIDATE]: 500,
+  [OperationType.FORM_SUBMIT]: 3000,
+  [OperationType.PAGE_LOAD]: 3000,
+  [OperationType.PAGE_NAVIGATION]: 1000,
+};
+
+// Get metric name from operation type
+function getMetricName(operation: OperationType): string {
+  if (operation.startsWith('db.')) {
+    return 'db.duration';
+  }
+  if (operation.startsWith('auth.')) {
+    return 'auth.duration';
+  }
+  if (operation.startsWith('rsvp.')) {
+    return 'rsvp.duration';
+  }
+  if (operation.startsWith('form.')) {
+    return 'form.duration';
+  }
+  if (operation.startsWith('page.')) {
+    return 'page.duration';
+  }
+  return 'operation.duration';
+}
+
 class PerformanceMonitor {
   private isDevelopment = process.env.NODE_ENV === 'development';
 
   /**
    * Measure an async operation with Sentry span
+   * Automatically tracks slow operations and records distribution metrics
    */
   async measureAsync<T>(
     operation: OperationType,
@@ -50,8 +91,19 @@ class PerformanceMonitor {
     fn: () => Promise<T>,
     context?: PerformanceContext
   ): Promise<T> {
+    const startTime = performance.now();
+
     if (this.isDevelopment) {
-      return await fn();
+      try {
+        const result = await fn();
+        const duration = performance.now() - startTime;
+        console.debug(`[Performance] ${name} completed in ${Math.round(duration)}ms`);
+        return result;
+      } catch (error) {
+        const duration = performance.now() - startTime;
+        console.debug(`[Performance] ${name} failed after ${Math.round(duration)}ms`);
+        throw error;
+      }
     }
 
     return await Sentry.startSpan(
@@ -64,21 +116,42 @@ class PerformanceMonitor {
         },
       },
       async (span) => {
-        const startTime = performance.now();
-
         try {
           const result = await fn();
           const duration = performance.now() - startTime;
+          const durationMs = Math.round(duration);
 
-          span?.setAttribute('duration_ms', Math.round(duration));
+          span?.setAttribute('duration_ms', durationMs);
           span?.setStatus({ code: 1, message: 'ok' });
+
+          // Record distribution metric
+          const metricName = getMetricName(operation);
+          this.recordMetric(metricName, durationMs);
+
+          // Check for slow operation
+          const threshold = SLOW_OPERATION_THRESHOLDS[operation];
+          if (threshold && durationMs > threshold) {
+            const operationCategory = operation.split('.')[0] as 'db' | 'api';
+            trackSlowOperation(operationCategory, {
+              operation: name,
+              durationMs,
+              threshold,
+              component: context?.component,
+              ...context?.metadata,
+            });
+          }
 
           return result;
         } catch (error) {
           const duration = performance.now() - startTime;
+          const durationMs = Math.round(duration);
 
-          span?.setAttribute('duration_ms', Math.round(duration));
+          span?.setAttribute('duration_ms', durationMs);
           span?.setStatus({ code: 2, message: 'internal_error' });
+
+          // Still record metric for failed operations
+          const metricName = getMetricName(operation);
+          this.recordMetric(metricName, durationMs);
 
           throw error;
         }
@@ -88,6 +161,7 @@ class PerformanceMonitor {
 
   /**
    * Measure a synchronous operation with Sentry span
+   * Automatically tracks slow operations and records distribution metrics
    */
   measure<T>(
     operation: OperationType,
@@ -95,8 +169,19 @@ class PerformanceMonitor {
     fn: () => T,
     context?: PerformanceContext
   ): T {
+    const startTime = performance.now();
+
     if (this.isDevelopment) {
-      return fn();
+      try {
+        const result = fn();
+        const duration = performance.now() - startTime;
+        console.debug(`[Performance] ${name} completed in ${Math.round(duration)}ms`);
+        return result;
+      } catch (error) {
+        const duration = performance.now() - startTime;
+        console.debug(`[Performance] ${name} failed after ${Math.round(duration)}ms`);
+        throw error;
+      }
     }
 
     return Sentry.startSpan(
@@ -109,21 +194,42 @@ class PerformanceMonitor {
         },
       },
       (span) => {
-        const startTime = performance.now();
-
         try {
           const result = fn();
           const duration = performance.now() - startTime;
+          const durationMs = Math.round(duration);
 
-          span?.setAttribute('duration_ms', Math.round(duration));
+          span?.setAttribute('duration_ms', durationMs);
           span?.setStatus({ code: 1, message: 'ok' });
+
+          // Record distribution metric
+          const metricName = getMetricName(operation);
+          this.recordMetric(metricName, durationMs);
+
+          // Check for slow operation
+          const threshold = SLOW_OPERATION_THRESHOLDS[operation];
+          if (threshold && durationMs > threshold) {
+            const operationCategory = operation.split('.')[0] as 'db' | 'api';
+            trackSlowOperation(operationCategory, {
+              operation: name,
+              durationMs,
+              threshold,
+              component: context?.component,
+              ...context?.metadata,
+            });
+          }
 
           return result;
         } catch (error) {
           const duration = performance.now() - startTime;
+          const durationMs = Math.round(duration);
 
-          span?.setAttribute('duration_ms', Math.round(duration));
+          span?.setAttribute('duration_ms', durationMs);
           span?.setStatus({ code: 2, message: 'internal_error' });
+
+          // Still record metric for failed operations
+          const metricName = getMetricName(operation);
+          this.recordMetric(metricName, durationMs);
 
           throw error;
         }

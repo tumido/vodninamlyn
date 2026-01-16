@@ -9,7 +9,7 @@ import type { RSVPFormData } from "@/app/lib/types";
 import type { RsvpSubmission } from "@/app/lib/types";
 import { rsvpEditSchema } from "@/app/lib/validations";
 import { ZodError } from "zod";
-import { logger } from "@/app/lib/utils/logger";
+import { logInfo, logError } from "@/app/lib/utils/logger";
 import { measureAsync, OperationType } from "@/app/lib/utils/performance";
 import { trackAdminOperation } from "@/app/lib/utils/metrics";
 
@@ -141,7 +141,7 @@ export const useRsvpEditor = (onSuccess: () => void) => {
           "Chyba při ukládání"
         );
 
-        logger.error("Failed to update RSVP", updateError, {
+        logError("Failed to update RSVP", updateError, {
           component: 'useRsvpEditor',
           operation: 'handleEditSubmit',
           metadata: { attendeeId: editingRow.attendeeId },
@@ -159,7 +159,7 @@ export const useRsvpEditor = (onSuccess: () => void) => {
         // Re-throw Supabase errors so Sentry captures them
         throw new Error(errorMessage);
       } else {
-        logger.info("RSVP updated successfully", {
+        logInfo("RSVP updated successfully", {
           component: 'useRsvpEditor',
           operation: 'handleEditSubmit',
           metadata: {
@@ -180,7 +180,7 @@ export const useRsvpEditor = (onSuccess: () => void) => {
         setValidationErrors({});
       }
     } catch (error) {
-      logger.error("Network error during update", error instanceof Error ? error : new Error(String(error)), {
+      logError("Network error during update", error instanceof Error ? error : new Error(String(error)), {
         component: 'useRsvpEditor',
         operation: 'handleEditSubmit',
         metadata: { attendeeId: editingRow.attendeeId },

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import type { User } from "@supabase/supabase-js";
-import { logger } from "@/app/lib/utils/logger";
+import { logInfo, logError } from "@/app/lib/utils/logger";
 import { measureAsync, OperationType } from "@/app/lib/utils/performance";
 import { trackAdminOperation } from "@/app/lib/utils/metrics";
 
@@ -40,7 +40,7 @@ export const useAuth = () => {
     )
       .then((user) => {
         handleAuth(user);
-        logger.info("Auth check completed", {
+        logInfo("Auth check completed", {
           component: 'useAuth',
           operation: 'getUser',
           metadata: {
@@ -49,7 +49,7 @@ export const useAuth = () => {
         });
       })
       .catch((error) => {
-        logger.error("Failed to get user", error, {
+        logError("Failed to get user", error, {
           component: 'useAuth',
           operation: 'getUser',
         });
@@ -85,7 +85,7 @@ export const useAuth = () => {
         }
       );
 
-      logger.info("User logged out successfully", {
+      logInfo("User logged out successfully", {
         component: 'useAuth',
         operation: 'logout',
         metadata: {
@@ -101,7 +101,7 @@ export const useAuth = () => {
 
       router.replace("/admin/login");
     } catch (error) {
-      logger.error("Logout failed", error instanceof Error ? error : new Error(String(error)), {
+      logError("Logout failed", error instanceof Error ? error : new Error(String(error)), {
         component: 'useAuth',
         operation: 'logout',
         metadata: {

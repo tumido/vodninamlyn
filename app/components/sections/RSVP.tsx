@@ -11,7 +11,7 @@ import Icon from "@/app/components/ui/Icon";
 import { supabase } from "@/app/lib/supabase";
 import { RSVPForm } from "@/app/components/forms/RSVPForm";
 import { WEDDING_INFO } from "@/app/lib/constants";
-import { logger } from "@/app/lib/utils/logger";
+import { logInfo, logError, logWarn } from "@/app/lib/utils/logger";
 import { measureAsync, OperationType } from "@/app/lib/utils/performance";
 import { metrics, trackRsvpSubmission, trackValidationError, MetricEvent } from "@/app/lib/utils/metrics";
 
@@ -148,7 +148,7 @@ export const RSVP = () => {
       );
 
       if (error) {
-        logger.error("RSVP submission failed", error, {
+        logError("RSVP submission failed", error, {
           component: 'RSVP',
           operation: 'submit_rsvp',
         });
@@ -162,7 +162,7 @@ export const RSVP = () => {
         throw new Error(error.message);
       }
 
-      logger.info("RSVP submitted successfully", {
+      logInfo("RSVP submitted successfully", {
         component: 'RSVP',
         operation: 'submit_rsvp',
         metadata: {
@@ -211,7 +211,7 @@ export const RSVP = () => {
           );
         });
 
-        logger.warn("RSVP validation failed", {
+        logWarn("RSVP validation failed", {
           component: 'RSVP',
           metadata: {
             errorCount: Object.keys(parsedErrors).length,

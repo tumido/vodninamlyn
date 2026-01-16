@@ -5,9 +5,10 @@ import { supabase } from "@/app/lib/supabase";
 import { useErrorHandler } from "@/app/lib/errors/useErrorHandler";
 import { handleSupabaseError } from "@/app/lib/utils/errorHandling";
 import type { RsvpSubmission } from "@/app/lib/types";
-import { logger } from "@/app/lib/utils/logger";
+import { logInfo, logError } from "@/app/lib/utils/logger";
 import { measureAsync, OperationType } from "@/app/lib/utils/performance";
 import { trackAdminOperation } from "@/app/lib/utils/metrics";
+import { updateRsvpGauges, trackDrinkChoices, trackAccommodationTypes } from "@/app/lib/utils/dashboardMetrics";
 
 export const useRsvpData = () => {
   const [rsvps, setRsvps] = useState<RsvpSubmission[]>([]);
@@ -43,7 +44,7 @@ export const useRsvpData = () => {
           "Chyba při načítání RSVP odpovědí"
         );
 
-        logger.error("Failed to fetch RSVPs", fetchError, {
+        logError("Failed to fetch RSVPs", fetchError, {
           component: 'useRsvpData',
           operation: 'fetchRsvps',
         });
@@ -61,7 +62,7 @@ export const useRsvpData = () => {
       } else {
         setRsvps(data || []);
 
-        logger.info("RSVPs fetched successfully", {
+        logInfo("RSVPs fetched successfully", {
           component: 'useRsvpData',
           operation: 'fetchRsvps',
           metadata: {
@@ -74,10 +75,17 @@ export const useRsvpData = () => {
           component: 'useRsvpData',
           rsvpCount: data?.length || 0,
         });
+
+        // Update gauge metrics for dashboard analytics
+        if (data && data.length > 0) {
+          updateRsvpGauges(data);
+          trackDrinkChoices(data);
+          trackAccommodationTypes(data);
+        }
       }
     } catch (error) {
       // This catches both network errors and re-thrown Supabase errors
-      logger.error("Fetch operation failed", error instanceof Error ? error : new Error(String(error)), {
+      logError("Fetch operation failed", error instanceof Error ? error : new Error(String(error)), {
         component: 'useRsvpData',
         operation: 'fetchRsvps',
       });
@@ -122,7 +130,7 @@ export const useRsvpData = () => {
           "Chyba při mazání RSVP"
         );
 
-        logger.error("Failed to delete RSVP", deleteError, {
+        logError("Failed to delete RSVP", deleteError, {
           component: 'useRsvpData',
           operation: 'deleteRsvp',
           metadata: { rsvpId: id },
@@ -140,7 +148,7 @@ export const useRsvpData = () => {
         // Re-throw Supabase errors so Sentry captures them
         throw new Error(errorMessage);
       } else {
-        logger.info("RSVP deleted successfully", {
+        logInfo("RSVP deleted successfully", {
           component: 'useRsvpData',
           operation: 'deleteRsvp',
           metadata: { rsvpId: id },
@@ -156,7 +164,7 @@ export const useRsvpData = () => {
       }
     } catch (error) {
       // This catches both network errors and re-thrown Supabase errors
-      logger.error("Delete operation failed", error instanceof Error ? error : new Error(String(error)), {
+      logError("Delete operation failed", error instanceof Error ? error : new Error(String(error)), {
         component: 'useRsvpData',
         operation: 'deleteRsvp',
         metadata: { rsvpId: id },

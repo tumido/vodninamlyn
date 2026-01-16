@@ -6,7 +6,7 @@ import { supabase } from "@/app/lib/supabase";
 import { Input } from "@/app/components/ui/Input";
 import { Button } from "@/app/components/ui/Button";
 import { FormField } from "@/app/components/ui/FormField";
-import { logger } from "@/app/lib/utils/logger";
+import { logInfo, logError } from "@/app/lib/utils/logger";
 import { measureAsync, OperationType } from "@/app/lib/utils/performance";
 import { trackAdminOperation, MetricEvent, metrics } from "@/app/lib/utils/metrics";
 
@@ -30,7 +30,7 @@ export default function AdminLoginPage() {
           setIsCheckingAuth(false);
         }
       } catch (error) {
-        logger.error("Auth check failed", error instanceof Error ? error : new Error(String(error)), {
+        logError("Auth check failed", error instanceof Error ? error : new Error(String(error)), {
           component: 'AdminLoginPage',
           operation: 'checkAuth',
         });
@@ -59,7 +59,7 @@ export default function AdminLoginPage() {
         setError("Admin user is not configured");
         setIsSubmitting(false);
 
-        logger.error("Admin user not configured", undefined, {
+        logError("Admin user not configured", undefined, {
           component: 'AdminLoginPage',
           operation: 'handleLogin',
         });
@@ -87,7 +87,7 @@ export default function AdminLoginPage() {
         setError(error.message);
         setIsSubmitting(false);
 
-        logger.error("Login failed", error, {
+        logError("Login failed", error, {
           component: 'AdminLoginPage',
           operation: 'handleLogin',
         });
@@ -98,7 +98,7 @@ export default function AdminLoginPage() {
           errorMessage: error.message,
         });
       } else if (data.user) {
-        logger.info("Login successful", {
+        logInfo("Login successful", {
           component: 'AdminLoginPage',
           operation: 'handleLogin',
           metadata: {
@@ -115,7 +115,7 @@ export default function AdminLoginPage() {
         router.replace("/admin");
       }
     } catch (error) {
-      logger.error("Login failed", error instanceof Error ? error : new Error(String(error)), {
+      logError("Login failed", error instanceof Error ? error : new Error(String(error)), {
         component: 'AdminLoginPage',
         operation: 'handleLogin',
       });
