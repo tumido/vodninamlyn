@@ -13,6 +13,8 @@ const TABLE_HEADERS = [
   { label: "Účast", className: "px-6" },
   { label: "Ubytování", className: "px-6" },
   { label: "Nápoj", className: "px-6" },
+  { label: "Děti", className: "px-4 text-center" },
+  { label: "Zvířátka", className: "px-4 text-center" },
   { label: "Omezení", className: "px-4" },
   { label: "Zpráva", className: "px-4" },
   { label: "Datum", className: "px-6" },

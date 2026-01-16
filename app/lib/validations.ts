@@ -14,6 +14,8 @@ const baseRsvpSchema = z.object({
   }).or(z.literal('')),
   customDrink: z.string().max(100, 'Maximálně 100 znaků').optional(),
   dietaryRestrictions: z.string().max(500, 'Maximálně 500 znaků').optional(),
+  childrenCount: z.number().min(0, 'Počet dětí musí být alespoň 0').max(20, 'Maximálně 20 dětí'),
+  petsCount: z.number().min(0, 'Počet zvířátek musí být alespoň 0').max(20, 'Maximálně 20 zvířátek'),
 })
 .refine((data) => {
   if (data.attending === 'yes' && !data.accommodation) {

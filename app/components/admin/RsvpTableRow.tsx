@@ -56,6 +56,12 @@ export const RsvpTableRow = ({
           ? getDrinkLabel(rsvp.drinkChoice, rsvp.customDrink)
           : "-"}
       </td>
+      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
+        {rsvp.attending === "yes" ? rsvp.childrenCount : "-"}
+      </td>
+      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
+        {rsvp.attending === "yes" ? rsvp.petsCount : "-"}
+      </td>
       <td className="px-4 py-4 text-sm text-gray-600">
         {rsvp.dietaryRestrictions || "-"}
       </td>

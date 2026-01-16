@@ -11,10 +11,12 @@ export const RsvpStatsCards = ({ stats }: RsvpStatsCardsProps) => {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
       <StatCard
         title="Celkem přítomných"
-        stats={{ total: stats.totalAttending }}
-        getLabel={() => ""}
-        variant="total"
-        suffix="hostů"
+        stats={{
+          "Dospělí": stats.totalAttending,
+          "Děti": stats.totalChildren,
+          "Zvířátka": stats.totalPets
+        }}
+        getLabel={(key) => key}
       />
 
       <StatCard

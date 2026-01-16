@@ -33,6 +33,8 @@ export const useRsvpEditor = (onSuccess: () => void) => {
         drinkChoice: (rsvp.drinkChoice as RSVPFormData["drinkChoice"]) || "",
         customDrink: rsvp.customDrink || "",
         dietaryRestrictions: rsvp.dietaryRestrictions || "",
+        childrenCount: rsvp.childrenCount,
+        petsCount: rsvp.petsCount,
         message: "",
       },
     });
@@ -62,6 +64,8 @@ export const useRsvpEditor = (onSuccess: () => void) => {
         drinkChoice: editingRow.formData.drinkChoice || "",
         customDrink: editingRow.formData.customDrink,
         dietaryRestrictions: editingRow.formData.dietaryRestrictions,
+        childrenCount: editingRow.formData.childrenCount,
+        petsCount: editingRow.formData.petsCount,
       });
       return {};
     } catch (error) {
@@ -96,12 +100,14 @@ export const useRsvpEditor = (onSuccess: () => void) => {
     setIsSaving(true);
 
     try {
-      const updateData: Record<string, string | null> = {
+      const updateData: Record<string, string | number | null> = {
         attending: editingRow.formData.attending,
         accommodation: editingRow.formData.accommodation || null,
         drink_choice: editingRow.formData.drinkChoice || null,
         custom_drink: editingRow.formData.customDrink || null,
         dietary_restrictions: editingRow.formData.dietaryRestrictions || null,
+        children_count: editingRow.formData.childrenCount,
+        pets_count: editingRow.formData.petsCount,
       };
 
       // Update the base rsvps TABLE (not the view) using attendee_id

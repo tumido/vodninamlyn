@@ -6,6 +6,7 @@ import { Textarea } from "@/app/components/ui/Textarea";
 import { Select } from "@/app/components/ui/Select";
 import { Input } from "@/app/components/ui/Input";
 import { Button } from "@/app/components/ui/Button";
+import { NumberInput } from "@/app/components/ui/NumberInput";
 import {
   ATTENDING_OPTIONS,
   ACCOMMODATION_OPTIONS,
@@ -120,6 +121,43 @@ export const RSVPForm = ({
                 placeholder="Vyberte možnost ubytování"
               />
             </FormField>
+
+            {/* Children and Pets Count - Side by Side */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                label="Děti"
+                error={errors.childrenCount}
+                htmlFor="childrenCount"
+              >
+                <NumberInput
+                  id="childrenCount"
+                  value={formData.childrenCount}
+                  onChange={(value) =>
+                    onChange({ ...formData, childrenCount: value })
+                  }
+                  min={0}
+                  max={20}
+                  error={errors.childrenCount}
+                />
+              </FormField>
+
+              <FormField
+                label="Zvířátka"
+                error={errors.petsCount}
+                htmlFor="petsCount"
+              >
+                <NumberInput
+                  id="petsCount"
+                  value={formData.petsCount}
+                  onChange={(value) =>
+                    onChange({ ...formData, petsCount: value })
+                  }
+                  min={0}
+                  max={20}
+                  error={errors.petsCount}
+                />
+              </FormField>
+            </div>
 
             {/* Drink Choice */}
             <FormField

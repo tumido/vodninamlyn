@@ -42,6 +42,8 @@ export interface BaseRsvpData {
   drinkChoice: DrinkChoiceValue | null;
   customDrink: string | null;
   dietaryRestrictions: string | null;
+  childrenCount: number;
+  petsCount: number;
 }
 
 // RSVP Form Data - extends base with form-specific fields
@@ -52,6 +54,8 @@ export interface RSVPFormData {
   drinkChoice: DrinkChoiceValue | "";
   customDrink?: string;
   dietaryRestrictions?: string;
+  childrenCount: number;
+  petsCount: number;
   message?: string;
 }
 

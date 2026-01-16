@@ -105,7 +105,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <main className="max-w-8xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           {rsvpsLoading ? (
             <div className="text-center py-12">
@@ -140,6 +140,8 @@ export default function AdminPage() {
             drinkChoice: "",
             customDrink: "",
             dietaryRestrictions: "",
+            childrenCount: 0,
+            petsCount: 0,
             message: "",
           }
         }

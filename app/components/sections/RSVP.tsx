@@ -26,6 +26,8 @@ export const RSVP = () => {
     drinkChoice: "",
     customDrink: "",
     dietaryRestrictions: "",
+    childrenCount: 0,
+    petsCount: 0,
     message: "",
   });
 
@@ -60,6 +62,8 @@ export const RSVP = () => {
         drinkChoice: validated.drinkChoice || null,
         customDrink: validated.customDrink || null,
         dietaryRestrictions: validated.dietaryRestrictions || null,
+        childrenCount: validated.childrenCount,
+        petsCount: validated.petsCount,
         message: validated.message || null,
       });
 
@@ -83,6 +87,8 @@ export const RSVP = () => {
         drinkChoice: "",
         customDrink: "",
         dietaryRestrictions: "",
+        childrenCount: 0,
+        petsCount: 0,
         message: "",
       });
     } catch (error) {
