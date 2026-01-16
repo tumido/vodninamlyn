@@ -5,7 +5,10 @@
       "mcp__chrome-devtools__*",
       "mcp__eslint__*",
       "mcp__sentry__*",
-      "Bash(npm run dev)"
+      "Bash(npm run dev)",
+      "Bash(find:*)",
+      "Bash(npm run build:*)",
+      "Bash(grep:*)"
     ]
   },
   "enabledMcpjsonServers": [
