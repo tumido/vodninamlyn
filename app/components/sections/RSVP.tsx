@@ -16,10 +16,10 @@ import {
   performance,
   metrics,
   OperationType,
-  MetricEvent
+  MetricEvent,
 } from "@/app/lib/monitoring";
 
-const SUCCESS_ICONS = ["ufo", "fox", "clover"] as const;
+const SUCCESS_ICONS = ["wolf", "fox", "clover"] as const;
 
 const getRandomIcon = () => {
   return SUCCESS_ICONS[Math.floor(Math.random() * SUCCESS_ICONS.length)];
@@ -47,7 +47,9 @@ export const RSVP = () => {
   const [successIcon, setSuccessIcon] =
     useState<(typeof SUCCESS_ICONS)[number]>("fox");
   const [formStartTime, setFormStartTime] = useState<number | null>(null);
-  const [lastInteractedField, setLastInteractedField] = useState<string | null>(null);
+  const [lastInteractedField, setLastInteractedField] = useState<string | null>(
+    null
+  );
   const prevFormDataRef = useRef<RSVPFormData>(formData);
 
   useEffect(() => {
@@ -56,10 +58,13 @@ export const RSVP = () => {
 
   // Track form start when user first interacts
   useEffect(() => {
-    if (formStartTime === null && (formData.names.length > 0 || formData.attending)) {
+    if (
+      formStartTime === null &&
+      (formData.names.length > 0 || formData.attending)
+    ) {
       setFormStartTime(Date.now());
       metrics.track(MetricEvent.RSVP_FORM_STARTED, {
-        component: 'RSVP',
+        component: "RSVP",
       });
     }
   }, [formData, formStartTime]);
@@ -83,7 +88,7 @@ export const RSVP = () => {
   useEffect(() => {
     const handleBeforeUnload = () => {
       // Only track abandonment if form was started but not submitted
-      if (formStartTime !== null && submitStatus !== 'success') {
+      if (formStartTime !== null && submitStatus !== "success") {
         const totalFields = 5; // names, attending, accommodation, drinkChoice, dietaryRestrictions
         let filledFields = 0;
         if (formData.names.length > 0) filledFields++;
@@ -96,17 +101,17 @@ export const RSVP = () => {
         const timeSpentMs = Date.now() - formStartTime;
 
         metrics.trackFormAbandonment({
-          formName: 'RSVP',
+          formName: "RSVP",
           lastField: lastInteractedField || undefined,
           completionPercentage,
           timeSpentMs,
-          component: 'RSVP',
+          component: "RSVP",
         });
       }
     };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [formStartTime, submitStatus, formData, lastInteractedField]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -117,7 +122,7 @@ export const RSVP = () => {
 
     // Track form submission start
     metrics.track(MetricEvent.RSVP_FORM_SUBMITTED, {
-      component: 'RSVP',
+      component: "RSVP",
       attending: formData.attending,
     });
 
@@ -128,7 +133,7 @@ export const RSVP = () => {
       // Submit to Supabase with performance tracking
       const { data, error } = await performance.measureAsync(
         OperationType.RSVP_SUBMIT,
-        'submit_rsvp',
+        "submit_rsvp",
         async () => {
           return await supabase.rpc("submit_rsvp", {
             names: validated.names,
@@ -143,7 +148,7 @@ export const RSVP = () => {
           });
         },
         {
-          component: 'RSVP',
+          component: "RSVP",
           metadata: {
             attending: validated.attending,
             guestCount: validated.names.length,
@@ -153,13 +158,13 @@ export const RSVP = () => {
 
       if (error) {
         logger.error("RSVP submission failed", error, {
-          component: 'RSVP',
-          operation: 'submit_rsvp',
+          component: "RSVP",
+          operation: "submit_rsvp",
         });
 
         // Track failure
         metrics.trackRsvpSubmission(false, {
-          component: 'RSVP',
+          component: "RSVP",
           errorMessage: error.message,
         });
 
@@ -167,8 +172,8 @@ export const RSVP = () => {
       }
 
       logger.info("RSVP submitted successfully", {
-        component: 'RSVP',
-        operation: 'submit_rsvp',
+        component: "RSVP",
+        operation: "submit_rsvp",
         metadata: {
           primaryId: data,
           attending: validated.attending,
@@ -178,7 +183,7 @@ export const RSVP = () => {
 
       // Track success
       metrics.trackRsvpSubmission(true, {
-        component: 'RSVP',
+        component: "RSVP",
         attending: validated.attending,
         guestCount: validated.names.length,
       });
@@ -208,15 +213,11 @@ export const RSVP = () => {
 
         // Track validation errors
         Object.entries(parsedErrors).forEach(([field, message]) => {
-          metrics.trackValidationError(
-            field,
-            'validation_error',
-            message
-          );
+          metrics.trackValidationError(field, "validation_error", message);
         });
 
         logger.warn("RSVP validation failed", {
-          component: 'RSVP',
+          component: "RSVP",
           metadata: {
             errorCount: Object.keys(parsedErrors).length,
             fields: Object.keys(parsedErrors),

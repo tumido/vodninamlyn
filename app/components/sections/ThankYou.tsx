@@ -12,7 +12,11 @@ export const ThankYou = () => {
 
   return (
     <Section id="dekujeme">
-      <div className={`text-center mx-auto ${hasWeddingPassed ? 'max-w-3xl' : 'max-w-2xl'}`}>
+      <div
+        className={`text-center mx-auto ${
+          hasWeddingPassed ? "max-w-3xl" : "max-w-2xl"
+        }`}
+      >
         <div className="w-24 h-24 mb-8 mx-auto">
           <Icon icon="heart" />
         </div>
@@ -21,8 +25,8 @@ export const ThankYou = () => {
           <>
             <h2 className="mb-8">Děkujeme</h2>
             <p className="text-xl leading-relaxed mb-12">
-              Děkujeme všem, kteří s námi sdíleli náš výjimečný den. Vaše přítomnost
-              pro nás byla tím nejkrásnějším darem.
+              Děkujeme všem, kteří s námi sdíleli tento den. Vaše přítomnost pro
+              nás byla tím nejkrásnějším darem.
             </p>
 
             {/* Photo gallery placeholder - to be filled after the wedding */}
@@ -55,8 +59,8 @@ export const ThankYou = () => {
           <>
             <h2 className="mb-8">Těšíme se na vás</h2>
             <p className="text-xl leading-relaxed">
-              Jsme nadšení, že s námi budete sdílet tento výjimečný den. Po svatbě
-              zde najdete fotografie a vzpomínky z našeho velkého dne.
+              Jsme rádi, že jste se rozhodli s námi sdílet tento den. Po svatbě
+              zde najdete fotografie a další vzpomínky.
             </p>
           </>
         )}

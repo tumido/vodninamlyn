@@ -113,35 +113,30 @@ export const WEDDING_INFO: WeddingInfo = {
       title: "Malá rozlučka",
       description:
         "Pro kamarády, zahoříme, zazpíváme a třeba i svatbu nachystáme",
-      icon: "☕",
     },
     {
       time: "Sobota 11:00",
       title: "Příjezd hostů",
-      description: "",
-      icon: "💒",
     },
     {
       time: "13:00",
       title: "Obřad",
-      icon: "💒",
-      highlight: true,
+      description:
+        "Venkovní ceremonie bude následována gratulacemi a hromadným focením.",
     },
     {
-      time: "Po obřadu",
-      title: "Focení",
-      icon: "📷",
-    },
-    {
-      time: "16:00",
+      time: "15:00",
       title: "Raut",
-      icon: "🍽️",
+    },
+    {
+      time: "16:30",
+      title: "Novomanželský pokus o tanec",
+      description: "Doprovázený vámi na všechny vaše hudební nástroje.",
     },
     {
       time: "20:00",
       title: "Oheň",
-      description: "Budeme hořet, hrát a zpívat",
-      icon: "💃",
+      description: "Budeme hrát, zpívat, koukat do plamenů a mít se hezky.",
     },
   ],
 
@@ -185,6 +180,11 @@ export const WEDDING_INFO: WeddingInfo = {
       question: "Co když mám speciální dietu nebo alergii?",
       answer:
         "V dotazníku je pole pro dietní omezení. Pokud máte alergie nebo speciální požadavky, určitě nám dejte vědět a postaráme se o vás nebo se s vámi domluvíme individuálně.",
+    },
+    {
+      question: "Kde bude probíhat obřad?",
+      answer:
+        "Pokud nebudou padat trakaře, budeme zcela jistě venku. Bude si kam sednout, ale nepodceňte počasí. Obřad potrvá asi 30 minut.",
     },
     {
       question: "Můžu fotit během obřadu?",

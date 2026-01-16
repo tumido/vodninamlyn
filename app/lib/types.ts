@@ -100,8 +100,6 @@ export interface ScheduleItem {
   time: string;
   title: string;
   description?: string;
-  icon: string;
-  highlight?: boolean;
 }
 
 export interface FAQItem {
