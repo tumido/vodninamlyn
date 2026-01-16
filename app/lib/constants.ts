@@ -91,7 +91,13 @@ export const WEDDING_INFO: WeddingInfo = {
       name: "Táborák",
       icon: "flame",
       description:
-        "Večer hodláme zakončit u táboráku, proto buďte připraveni se všemi svými hudebními nástroji. Budeme rádi, když si společně zazpíváme a zahrajeme. Prosíme vás o jediné, pro dnešní den se vyvarujme písní, které se na svatbu úplně nehodí. Neradi bychom z toho měli cirkus.",
+        "Večer hodláme zakončit u táboráku, proto buďte připraveni jak ošacením, tak náladou. Bude možnost si něco opéct a nebo přiložit polínko.",
+    },
+    {
+      name: "Hudba",
+      icon: "guitar",
+      description:
+        "Máme na vás velikou prosbu, nenechte své hudební nástroje zahálet doma, vemte je s sebou. Budeme rádi, když si společně zazpíváme a zahrajeme. Prosíme vás o jediné, pro dnešní den se vyvarujme písní, které se na svatbu úplně nehodí. Neradi bychom z toho měli cirkus.",
     },
     {
       name: "Dary",
