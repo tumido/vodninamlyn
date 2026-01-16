@@ -68,8 +68,8 @@ jobs:
           SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
 
           NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
-          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
-          SENTRY_PROJECT_ID: ${{ vars.SENTRY_PROJECT_ID }}
+          NEXT_PUBLIC_SENTRY_ORG: ${{ vars.NEXT_PUBLIC_SENTRY_ORG }}
+          NEXT_PUBLIC_SENTRY_PROJECT_ID: ${{ vars.NEXT_PUBLIC_SENTRY_PROJECT_ID }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Add .nojekyll file

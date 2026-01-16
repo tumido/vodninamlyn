@@ -4,6 +4,7 @@ import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 import "./globals.css";
 import Icon from "./components/ui/Icon";
+import { logger } from "./lib/utils/logger";
 
 const GlobalError = ({
   error,
@@ -16,8 +17,14 @@ const GlobalError = ({
     // Log error to Sentry
     Sentry.captureException(error);
 
-    // Also log to console for development
-    console.error("GlobalError caught an error:", error);
+    // Also log using our logger
+    logger.error("GlobalError caught an error", error, {
+      component: 'GlobalError',
+      operation: 'error_boundary',
+      metadata: {
+        digest: error.digest,
+      },
+    });
   }, [error]);
 
   return (

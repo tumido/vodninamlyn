@@ -30,7 +30,10 @@ export default function AdminLoginPage() {
           setIsCheckingAuth(false);
         }
       } catch (error) {
-        console.error("Auth check failed:", error);
+        logger.error("Auth check failed", error instanceof Error ? error : new Error(String(error)), {
+          component: 'AdminLoginPage',
+          operation: 'checkAuth',
+        });
         // Re-throw so Sentry captures auth check failures
         throw error;
       }
