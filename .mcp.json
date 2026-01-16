@@ -23,6 +23,10 @@
       "args": [
         "@eslint/mcp@latest"
       ]
+    },
+    "sentry": {
+      "type": "http",
+      "url": "https://mcp.sentry.dev/mcp"
     }
   }
 }

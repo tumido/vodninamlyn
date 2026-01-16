@@ -3,11 +3,15 @@
     "allow": [
       "mcp__next-devtools-mcp__*",
       "mcp__chrome-devtools__*",
+      "mcp__eslint__*",
+      "mcp__sentry__*",
       "Bash(npm run dev)"
     ]
   },
   "enabledMcpjsonServers": [
     "next-devtools-mcp",
-    "chrome-devtools"
+    "chrome-devtools",
+    "eslint",
+    "sentry"
   ]
 }

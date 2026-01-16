@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import type { User } from "@supabase/supabase-js";
+import { logger } from "@/app/lib/utils/logger";
+import { measureAsync, OperationType } from "@/app/lib/utils/performance";
+import { trackAdminOperation } from "@/app/lib/utils/metrics";
 
 export const useAuth = () => {
   const router = useRouter();
@@ -24,10 +27,32 @@ export const useAuth = () => {
       }
     };
 
-    supabase.auth.getUser()
-      .then(({ data: { user } }) => handleAuth(user))
+    measureAsync(
+      OperationType.AUTH_CHECK,
+      'auth_get_user',
+      async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        return user;
+      },
+      {
+        component: 'useAuth',
+      }
+    )
+      .then((user) => {
+        handleAuth(user);
+        logger.info("Auth check completed", {
+          component: 'useAuth',
+          operation: 'getUser',
+          metadata: {
+            authenticated: !!user,
+          },
+        });
+      })
       .catch((error) => {
-        console.error("Failed to get user:", error);
+        logger.error("Failed to get user", error, {
+          component: 'useAuth',
+          operation: 'getUser',
+        });
         // Re-throw so Sentry captures auth failures
         throw error;
       });
@@ -46,10 +71,50 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
-      await supabase.auth.signOut();
+      await measureAsync(
+        OperationType.AUTH_LOGOUT,
+        'auth_sign_out',
+        async () => {
+          await supabase.auth.signOut();
+        },
+        {
+          component: 'useAuth',
+          metadata: {
+            userId: user?.id,
+          },
+        }
+      );
+
+      logger.info("User logged out successfully", {
+        component: 'useAuth',
+        operation: 'logout',
+        metadata: {
+          userId: user?.id,
+        },
+      });
+
+      // Track admin logout
+      trackAdminOperation('logout', true, {
+        component: 'useAuth',
+        userId: user?.id,
+      });
+
       router.replace("/admin/login");
     } catch (error) {
-      console.error("Logout failed:", error);
+      logger.error("Logout failed", error instanceof Error ? error : new Error(String(error)), {
+        component: 'useAuth',
+        operation: 'logout',
+        metadata: {
+          userId: user?.id,
+        },
+      });
+
+      // Track logout failure
+      trackAdminOperation('logout', false, {
+        component: 'useAuth',
+        userId: user?.id,
+      });
+
       // Re-throw so Sentry captures logout failures
       throw error;
     }

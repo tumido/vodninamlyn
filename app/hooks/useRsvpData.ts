@@ -5,6 +5,9 @@ import { supabase } from "@/app/lib/supabase";
 import { useErrorHandler } from "@/app/lib/errors/useErrorHandler";
 import { handleSupabaseError } from "@/app/lib/utils/errorHandling";
 import type { RsvpSubmission } from "@/app/lib/types";
+import { logger } from "@/app/lib/utils/logger";
+import { measureAsync, OperationType } from "@/app/lib/utils/performance";
+import { trackAdminOperation } from "@/app/lib/utils/metrics";
 
 export const useRsvpData = () => {
   const [rsvps, setRsvps] = useState<RsvpSubmission[]>([]);
@@ -17,10 +20,21 @@ export const useRsvpData = () => {
     clearError();
 
     try {
-      // Fetch from the rsvp_submissions VIEW for formatted display data
-      const { data, error: fetchError } = await supabase
-        .from("rsvp_submissions")
-        .select("*");
+      // Fetch from the rsvp_submissions VIEW for formatted display data with performance tracking
+      const result = await measureAsync(
+        OperationType.RSVP_FETCH,
+        'fetch_rsvp_submissions',
+        async () => {
+          return await supabase
+            .from("rsvp_submissions")
+            .select("*");
+        },
+        {
+          component: 'useRsvpData',
+        }
+      );
+
+      const { data, error: fetchError } = result;
 
       if (fetchError) {
         const errorMessage = handleSupabaseError(
@@ -28,15 +42,45 @@ export const useRsvpData = () => {
           "Error fetching RSVPs",
           "Chyba při načítání RSVP odpovědí"
         );
+
+        logger.error("Failed to fetch RSVPs", fetchError, {
+          component: 'useRsvpData',
+          operation: 'fetchRsvps',
+        });
+
         showError(errorMessage, "toast");
+
+        // Track admin operation failure
+        trackAdminOperation('view', false, {
+          component: 'useRsvpData',
+          errorMessage,
+        });
+
         // Re-throw Supabase errors so Sentry captures them
         throw new Error(errorMessage);
       } else {
         setRsvps(data || []);
+
+        logger.info("RSVPs fetched successfully", {
+          component: 'useRsvpData',
+          operation: 'fetchRsvps',
+          metadata: {
+            count: data?.length || 0,
+          },
+        });
+
+        // Track successful view
+        trackAdminOperation('view', true, {
+          component: 'useRsvpData',
+          rsvpCount: data?.length || 0,
+        });
       }
     } catch (error) {
       // This catches both network errors and re-thrown Supabase errors
-      console.error("Fetch operation failed:", error);
+      logger.error("Fetch operation failed", error instanceof Error ? error : new Error(String(error)), {
+        component: 'useRsvpData',
+        operation: 'fetchRsvps',
+      });
       throw error;
     } finally {
       setLoading(false);
@@ -52,12 +96,24 @@ export const useRsvpData = () => {
     clearError();
 
     try {
-      // Delete from the base rsvps TABLE (not the view)
+      // Delete from the base rsvps TABLE (not the view) with performance tracking
       // This will cascade delete all associated guests due to ON DELETE CASCADE
-      const { error: deleteError } = await supabase
-        .from("rsvps")
-        .delete()
-        .eq("id", id);
+      const result = await measureAsync(
+        OperationType.RSVP_DELETE,
+        'delete_rsvp',
+        async () => {
+          return await supabase
+            .from("rsvps")
+            .delete()
+            .eq("id", id);
+        },
+        {
+          component: 'useRsvpData',
+          metadata: { rsvpId: id },
+        }
+      );
+
+      const { error: deleteError } = result;
 
       if (deleteError) {
         const errorMessage = handleSupabaseError(
@@ -65,15 +121,46 @@ export const useRsvpData = () => {
           "Error deleting RSVP",
           "Chyba při mazání RSVP"
         );
+
+        logger.error("Failed to delete RSVP", deleteError, {
+          component: 'useRsvpData',
+          operation: 'deleteRsvp',
+          metadata: { rsvpId: id },
+        });
+
         showError(errorMessage, "toast");
+
+        // Track admin operation failure
+        trackAdminOperation('delete', false, {
+          component: 'useRsvpData',
+          rsvpId: id,
+          errorMessage,
+        });
+
         // Re-throw Supabase errors so Sentry captures them
         throw new Error(errorMessage);
       } else {
+        logger.info("RSVP deleted successfully", {
+          component: 'useRsvpData',
+          operation: 'deleteRsvp',
+          metadata: { rsvpId: id },
+        });
+
+        // Track successful delete
+        trackAdminOperation('delete', true, {
+          component: 'useRsvpData',
+          rsvpId: id,
+        });
+
         await fetchRsvps();
       }
     } catch (error) {
       // This catches both network errors and re-thrown Supabase errors
-      console.error("Delete operation failed:", error);
+      logger.error("Delete operation failed", error instanceof Error ? error : new Error(String(error)), {
+        component: 'useRsvpData',
+        operation: 'deleteRsvp',
+        metadata: { rsvpId: id },
+      });
       throw error;
     } finally {
       setDeletingId(null);

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Bilbo, Offside } from "next/font/google";
 import "./globals.css";
 import { WEDDING_INFO } from "./lib/constants";
+import { PageTracker } from "./components/PageTracker";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -76,7 +77,10 @@ export default function RootLayout({
       lang="cs"
       className={`${geistMono.variable} ${bilbo.variable} ${offside.variable} antialiased`}
     >
-      <body>{children}</body>
+      <body>
+        <PageTracker />
+        {children}
+      </body>
     </html>
   );
 }
