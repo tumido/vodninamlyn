@@ -109,7 +109,7 @@ export const WEDDING_INFO: WeddingInfo = {
 
   schedule: [
     {
-      time: "Pátek od 17:00",
+      time: "Pátek od 16:00",
       title: "Malá rozlučka",
       description:
         "Pro kamarády, zahoříme, zazpíváme a třeba i svatbu nachystáme",
