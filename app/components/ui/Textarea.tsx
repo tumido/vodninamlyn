@@ -10,8 +10,8 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 }
 
 export const Textarea = ({
-  error,
   className = "",
+  error,
   ...props
 }: TextareaProps) => {
   const errorClasses = error ? ERROR_CLASSES : NORMAL_CLASSES;

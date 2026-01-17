@@ -6,35 +6,39 @@
  * For logging, use the logger module.
  */
 
-import * as Sentry from '@sentry/nextjs';
-import type { OperationType, PerformanceContext } from '../types';
-import * as logger from './logger';
+import * as Sentry from "@sentry/nextjs";
+import type { OperationType, PerformanceContext } from "../types";
+import * as logger from "./logger";
 
-const isDevelopment = process.env.NODE_ENV === 'development';
+const isDevelopment = process.env.NODE_ENV === "development";
 
 // Thresholds for slow operation detection (in milliseconds)
 const SLOW_OPERATION_THRESHOLDS: Partial<Record<OperationType, number>> = {
-  'auth.login': 3000,
-  'auth.logout': 1000,
-  'auth.check': 500,
-  'rsvp.submit': 3000,
-  'rsvp.fetch': 2000,
-  'rsvp.update': 2000,
-  'rsvp.delete': 1500,
+  "auth.check": 500,
+  "auth.login": 3000,
+  "auth.logout": 1000,
+  "rsvp.delete": 1500,
+  "rsvp.fetch": 2000,
+  "rsvp.submit": 3000,
+  "rsvp.update": 2000,
 };
 
 /**
  * Get metric name from operation type for distribution metrics
  */
 function getMetricName(operation: OperationType): string {
-  const category = operation.split('.')[0];
+  const category = operation.split(".")[0];
   return `${category}.duration`;
 }
 
 /**
  * Record a distribution metric in Sentry
  */
-export function recordMetric(name: string, value: number, unit: string = 'millisecond'): void {
+export function recordMetric(
+  name: string,
+  value: number,
+  unit: string = "millisecond",
+): void {
   if (isDevelopment) return;
 
   Sentry.metrics.distribution(name, value, {
@@ -59,7 +63,7 @@ export async function measureAsync<T>(
   operation: OperationType,
   name: string,
   fn: () => Promise<T>,
-  context?: PerformanceContext
+  context?: PerformanceContext,
 ): Promise<T> {
   const startTime = performance.now();
 
@@ -67,23 +71,27 @@ export async function measureAsync<T>(
     try {
       const result = await fn();
       const duration = performance.now() - startTime;
-      console.debug(`[Performance] ${name} completed in ${Math.round(duration)}ms`);
+      console.debug(
+        `[Performance] ${name} completed in ${Math.round(duration)}ms`,
+      );
       return result;
     } catch (error) {
       const duration = performance.now() - startTime;
-      console.debug(`[Performance] ${name} failed after ${Math.round(duration)}ms`);
+      console.debug(
+        `[Performance] ${name} failed after ${Math.round(duration)}ms`,
+      );
       throw error;
     }
   }
 
   return await Sentry.startSpan(
     {
-      op: operation,
-      name,
       attributes: {
         ...context?.metadata,
         component: context?.component,
       },
+      name,
+      op: operation,
     },
     async (span) => {
       try {
@@ -91,8 +99,8 @@ export async function measureAsync<T>(
         const duration = performance.now() - startTime;
         const durationMs = Math.round(duration);
 
-        span?.setAttribute('duration_ms', durationMs);
-        span?.setStatus({ code: 1, message: 'ok' });
+        span?.setAttribute("duration_ms", durationMs);
+        span?.setStatus({ code: 1, message: "ok" });
 
         // Record distribution metric
         const metricName = getMetricName(operation);
@@ -102,13 +110,13 @@ export async function measureAsync<T>(
         const threshold = SLOW_OPERATION_THRESHOLDS[operation];
         if (threshold && durationMs > threshold) {
           logger.warn(`Slow ${operation}: ${name}`, {
-            operation: name,
+            component: context?.component,
             duration: durationMs,
             metadata: {
               threshold,
               ...context?.metadata,
             },
-            component: context?.component,
+            operation: name,
           });
         }
 
@@ -117,8 +125,8 @@ export async function measureAsync<T>(
         const duration = performance.now() - startTime;
         const durationMs = Math.round(duration);
 
-        span?.setAttribute('duration_ms', durationMs);
-        span?.setStatus({ code: 2, message: 'internal_error' });
+        span?.setAttribute("duration_ms", durationMs);
+        span?.setStatus({ code: 2, message: "internal_error" });
 
         // Still record metric for failed operations
         const metricName = getMetricName(operation);
@@ -126,7 +134,7 @@ export async function measureAsync<T>(
 
         throw error;
       }
-    }
+    },
   );
 }
 
@@ -138,7 +146,7 @@ export function measure<T>(
   operation: OperationType,
   name: string,
   fn: () => T,
-  context?: PerformanceContext
+  context?: PerformanceContext,
 ): T {
   const startTime = performance.now();
 
@@ -146,23 +154,27 @@ export function measure<T>(
     try {
       const result = fn();
       const duration = performance.now() - startTime;
-      console.debug(`[Performance] ${name} completed in ${Math.round(duration)}ms`);
+      console.debug(
+        `[Performance] ${name} completed in ${Math.round(duration)}ms`,
+      );
       return result;
     } catch (error) {
       const duration = performance.now() - startTime;
-      console.debug(`[Performance] ${name} failed after ${Math.round(duration)}ms`);
+      console.debug(
+        `[Performance] ${name} failed after ${Math.round(duration)}ms`,
+      );
       throw error;
     }
   }
 
   return Sentry.startSpan(
     {
-      op: operation,
-      name,
       attributes: {
         ...context?.metadata,
         component: context?.component,
       },
+      name,
+      op: operation,
     },
     (span) => {
       try {
@@ -170,8 +182,8 @@ export function measure<T>(
         const duration = performance.now() - startTime;
         const durationMs = Math.round(duration);
 
-        span?.setAttribute('duration_ms', durationMs);
-        span?.setStatus({ code: 1, message: 'ok' });
+        span?.setAttribute("duration_ms", durationMs);
+        span?.setStatus({ code: 1, message: "ok" });
 
         // Record distribution metric
         const metricName = getMetricName(operation);
@@ -181,13 +193,13 @@ export function measure<T>(
         const threshold = SLOW_OPERATION_THRESHOLDS[operation];
         if (threshold && durationMs > threshold) {
           logger.warn(`Slow ${operation}: ${name}`, {
-            operation: name,
+            component: context?.component,
             duration: durationMs,
             metadata: {
               threshold,
               ...context?.metadata,
             },
-            component: context?.component,
+            operation: name,
           });
         }
 
@@ -196,8 +208,8 @@ export function measure<T>(
         const duration = performance.now() - startTime;
         const durationMs = Math.round(duration);
 
-        span?.setAttribute('duration_ms', durationMs);
-        span?.setStatus({ code: 2, message: 'internal_error' });
+        span?.setAttribute("duration_ms", durationMs);
+        span?.setStatus({ code: 2, message: "internal_error" });
 
         // Still record metric for failed operations
         const metricName = getMetricName(operation);
@@ -205,6 +217,6 @@ export function measure<T>(
 
         throw error;
       }
-    }
+    },
   );
 }

@@ -9,20 +9,20 @@ export const Schedule = () => {
     <Section id="program" className="" animate={true}>
       <h2 className="text-4xl lg:mb-16">Tohle vše se stane</h2>
 
-      <div className="lg:grid grid-cols-[2fr_3fr] items-center">
-        <div className="lg:h-128 lg:w-lg lg:mr-0 aspect-square w-full md:w-1/2 mx-auto mb-24 md:mb-0">
+      <div className="grid-cols-[2fr_3fr] items-center lg:grid">
+        <div className="mx-auto mb-24 aspect-square w-full md:mb-0 md:w-1/2 lg:mr-0 lg:h-128 lg:w-lg">
           <Icon icon="mill" duration={3} />
         </div>
-        <div className="grid lg:grid-cols-[1fr_10px_4fr] grid-cols-[1fr_10px_3fr]">
-          <div className="row-start-1 row-end-10 col-start-2">
+        <div className="grid grid-cols-[1fr_10px_3fr] lg:grid-cols-[1fr_10px_4fr]">
+          <div className="col-start-2 row-start-1 row-end-10">
             <Icon icon="vertical-line" preserveAspectRatio={false} />
           </div>
           {WEDDING_INFO.schedule.map((item) => (
             <React.Fragment key={item.title}>
-              <div className="md:text-lg text-right pr-8 py-8 text-palette-green">
+              <div className="text-palette-green py-8 pr-8 text-right md:text-lg">
                 <ScrollReveal>{item.time}</ScrollReveal>
               </div>
-              <div className="space-y-2 pl-8 py-8 col-start-3 relative">
+              <div className="relative col-start-3 space-y-2 py-8 pl-8">
                 <ScrollReveal>
                   <h3 className="text-xl">{item.title}</h3>
                 </ScrollReveal>

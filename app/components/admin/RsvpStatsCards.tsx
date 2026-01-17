@@ -8,13 +8,13 @@ interface RsvpStatsCardsProps {
 
 export const RsvpStatsCards = ({ stats }: RsvpStatsCardsProps) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+    <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
       <StatCard
         title="Celkem přítomných"
         stats={{
-          "Dospělí": stats.totalAttending,
-          "Děti": stats.totalChildren,
-          "Zvířátka": stats.totalPets
+          Děti: stats.totalChildren,
+          Dospělí: stats.totalAttending,
+          Zvířátka: stats.totalPets,
         }}
         getLabel={(key) => key}
       />

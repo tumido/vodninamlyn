@@ -6,26 +6,26 @@
  * use the performance module.
  */
 
-import * as Sentry from '@sentry/nextjs';
-import type { LogLevel, LogContext } from '../types';
-import { LogLevel as LogLevelEnum } from '../types';
+import * as Sentry from "@sentry/nextjs";
+import type { LogLevel, LogContext } from "../types";
+import { LogLevel as LogLevelEnum } from "../types";
 
-const isDevelopment = process.env.NODE_ENV === 'development';
+const isDevelopment = process.env.NODE_ENV === "development";
 
 interface LogEntry {
+  context?: LogContext;
+  error?: Error;
   level: LogLevel;
   message: string;
-  context?: LogContext;
   timestamp: string;
-  error?: Error;
 }
 
 /**
  * Format log entry for console output
  */
 function formatLogEntry(entry: LogEntry): string {
-  const { timestamp, level, message, context } = entry;
-  const contextStr = context ? ` | ${JSON.stringify(context)}` : '';
+  const { context, level, message, timestamp } = entry;
+  const contextStr = context ? ` | ${JSON.stringify(context)}` : "";
   return `[${timestamp}] [${level.toUpperCase()}] ${message}${contextStr}`;
 }
 
@@ -35,15 +35,15 @@ function formatLogEntry(entry: LogEntry): string {
 function sendToSentry(entry: LogEntry): void {
   if (isDevelopment) return;
 
-  const { level, message, context, error } = entry;
+  const { context, error, level, message } = entry;
 
   // Add context as breadcrumb
   if (context) {
     Sentry.addBreadcrumb({
-      category: context.component || 'app',
-      message,
-      level: level as Sentry.SeverityLevel,
+      category: context.component || "app",
       data: context,
+      level: level as Sentry.SeverityLevel,
+      message,
     });
   }
 
@@ -53,7 +53,7 @@ function sendToSentry(entry: LogEntry): void {
   }
 
   if (context?.operation) {
-    Sentry.setTag('operation', context.operation);
+    Sentry.setTag("operation", context.operation);
   }
 
   // Send to Sentry based on level
@@ -67,19 +67,19 @@ function sendToSentry(entry: LogEntry): void {
         });
       } else {
         Sentry.captureMessage(message, {
-          level: 'error',
           contexts: {
             custom: context,
           },
+          level: "error",
         });
       }
       break;
     case LogLevelEnum.WARN:
       Sentry.captureMessage(message, {
-        level: 'warning',
         contexts: {
           custom: context,
         },
+        level: "warning",
       });
       break;
     case LogLevelEnum.INFO:
@@ -94,29 +94,34 @@ function sendToSentry(entry: LogEntry): void {
 /**
  * Core logging function
  */
-function log(level: LogLevel, message: string, context?: LogContext, error?: Error): void {
+function log(
+  level: LogLevel,
+  message: string,
+  context?: LogContext,
+  error?: Error,
+): void {
   const entry: LogEntry = {
+    context,
+    error,
     level,
     message,
-    context,
     timestamp: new Date().toISOString(),
-    error,
   };
 
   // Always log to console
   const formattedMessage = formatLogEntry(entry);
   switch (level) {
     case LogLevelEnum.DEBUG:
-      console.debug(formattedMessage, error || '');
+      console.debug(formattedMessage, error || "");
       break;
     case LogLevelEnum.INFO:
-      console.info(formattedMessage, error || '');
+      console.info(formattedMessage, error || "");
       break;
     case LogLevelEnum.WARN:
-      console.warn(formattedMessage, error || '');
+      console.warn(formattedMessage, error || "");
       break;
     case LogLevelEnum.ERROR:
-      console.error(formattedMessage, error || '');
+      console.error(formattedMessage, error || "");
       break;
   }
 
@@ -150,6 +155,10 @@ export function warn(message: string, context?: LogContext): void {
 /**
  * Log error message
  */
-export function error(message: string, err?: Error, context?: LogContext): void {
+export function error(
+  message: string,
+  err?: Error,
+  context?: LogContext,
+): void {
   log(LogLevelEnum.ERROR, message, context, err);
 }

@@ -12,14 +12,14 @@ import {
   OperationType,
   updateRsvpGauges,
   trackDrinkChoices,
-  trackAccommodationTypes
+  trackAccommodationTypes,
 } from "@/app/lib/monitoring";
 
 export const useRsvpData = () => {
   const [rsvps, setRsvps] = useState<RsvpSubmission[]>([]);
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const { error, showError, clearError } = useErrorHandler();
+  const { clearError, error, showError } = useErrorHandler();
 
   const fetchRsvps = useCallback(async () => {
     setLoading(true);
@@ -29,15 +29,13 @@ export const useRsvpData = () => {
       // Fetch from the rsvp_submissions VIEW for formatted display data with performance tracking
       const result = await performance.measureAsync(
         OperationType.RSVP_FETCH,
-        'fetch_rsvp_submissions',
+        "fetch_rsvp_submissions",
         async () => {
-          return await supabase
-            .from("rsvp_submissions")
-            .select("*");
+          return await supabase.from("rsvp_submissions").select("*");
         },
         {
-          component: 'useRsvpData',
-        }
+          component: "useRsvpData",
+        },
       );
 
       const { data, error: fetchError } = result;
@@ -46,19 +44,19 @@ export const useRsvpData = () => {
         const errorMessage = handleSupabaseError(
           fetchError,
           "Error fetching RSVPs",
-          "Chyba při načítání RSVP odpovědí"
+          "Chyba při načítání RSVP odpovědí",
         );
 
         logger.error("Failed to fetch RSVPs", fetchError, {
-          component: 'useRsvpData',
-          operation: 'fetchRsvps',
+          component: "useRsvpData",
+          operation: "fetchRsvps",
         });
 
         showError(errorMessage, "toast");
 
         // Track admin operation failure
-        metrics.trackAdminOperation('view', false, {
-          component: 'useRsvpData',
+        metrics.trackAdminOperation("view", false, {
+          component: "useRsvpData",
           errorMessage,
         });
 
@@ -68,16 +66,16 @@ export const useRsvpData = () => {
         setRsvps(data || []);
 
         logger.info("RSVPs fetched successfully", {
-          component: 'useRsvpData',
-          operation: 'fetchRsvps',
+          component: "useRsvpData",
           metadata: {
             count: data?.length || 0,
           },
+          operation: "fetchRsvps",
         });
 
         // Track successful view
-        metrics.trackAdminOperation('view', true, {
-          component: 'useRsvpData',
+        metrics.trackAdminOperation("view", true, {
+          component: "useRsvpData",
           rsvpCount: data?.length || 0,
         });
 
@@ -90,10 +88,14 @@ export const useRsvpData = () => {
       }
     } catch (error) {
       // This catches both network errors and re-thrown Supabase errors
-      logger.error("Fetch operation failed", error instanceof Error ? error : new Error(String(error)), {
-        component: 'useRsvpData',
-        operation: 'fetchRsvps',
-      });
+      logger.error(
+        "Fetch operation failed",
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          component: "useRsvpData",
+          operation: "fetchRsvps",
+        },
+      );
       throw error;
     } finally {
       setLoading(false);
@@ -113,17 +115,14 @@ export const useRsvpData = () => {
       // This will cascade delete all associated guests due to ON DELETE CASCADE
       const result = await performance.measureAsync(
         OperationType.RSVP_DELETE,
-        'delete_rsvp',
+        "delete_rsvp",
         async () => {
-          return await supabase
-            .from("rsvps")
-            .delete()
-            .eq("id", id);
+          return await supabase.from("rsvps").delete().eq("id", id);
         },
         {
-          component: 'useRsvpData',
+          component: "useRsvpData",
           metadata: { rsvpId: id },
-        }
+        },
       );
 
       const { error: deleteError } = result;
@@ -132,36 +131,36 @@ export const useRsvpData = () => {
         const errorMessage = handleSupabaseError(
           deleteError,
           "Error deleting RSVP",
-          "Chyba při mazání RSVP"
+          "Chyba při mazání RSVP",
         );
 
         logger.error("Failed to delete RSVP", deleteError, {
-          component: 'useRsvpData',
-          operation: 'deleteRsvp',
+          component: "useRsvpData",
           metadata: { rsvpId: id },
+          operation: "deleteRsvp",
         });
 
         showError(errorMessage, "toast");
 
         // Track admin operation failure
-        metrics.trackAdminOperation('delete', false, {
-          component: 'useRsvpData',
-          rsvpId: id,
+        metrics.trackAdminOperation("delete", false, {
+          component: "useRsvpData",
           errorMessage,
+          rsvpId: id,
         });
 
         // Re-throw Supabase errors so Sentry captures them
         throw new Error(errorMessage);
       } else {
         logger.info("RSVP deleted successfully", {
-          component: 'useRsvpData',
-          operation: 'deleteRsvp',
+          component: "useRsvpData",
           metadata: { rsvpId: id },
+          operation: "deleteRsvp",
         });
 
         // Track successful delete
-        metrics.trackAdminOperation('delete', true, {
-          component: 'useRsvpData',
+        metrics.trackAdminOperation("delete", true, {
+          component: "useRsvpData",
           rsvpId: id,
         });
 
@@ -169,16 +168,28 @@ export const useRsvpData = () => {
       }
     } catch (error) {
       // This catches both network errors and re-thrown Supabase errors
-      logger.error("Delete operation failed", error instanceof Error ? error : new Error(String(error)), {
-        component: 'useRsvpData',
-        operation: 'deleteRsvp',
-        metadata: { rsvpId: id },
-      });
+      logger.error(
+        "Delete operation failed",
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          component: "useRsvpData",
+          metadata: { rsvpId: id },
+          operation: "deleteRsvp",
+        },
+      );
       throw error;
     } finally {
       setDeletingId(null);
     }
   };
 
-  return { rsvps, loading, deletingId, error, fetchRsvps, deleteRsvp, clearError };
+  return {
+    clearError,
+    deleteRsvp,
+    deletingId,
+    error,
+    fetchRsvps,
+    loading,
+    rsvps,
+  };
 };

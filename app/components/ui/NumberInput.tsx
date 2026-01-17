@@ -5,32 +5,32 @@ import {
 } from "@/app/lib/utils/formStyles";
 
 interface NumberInputProps {
-  id: string;
-  value: number;
-  onChange: (value: number) => void;
-  min?: number;
-  max?: number;
   error?: string;
+  id: string;
+  max?: number;
+  min?: number;
+  onChange: (value: number) => void;
+  value: number;
 }
 
 interface StepButtonProps {
-  onClick: () => void;
-  disabled: boolean;
   ariaLabel: string;
   children: React.ReactNode;
+  disabled: boolean;
+  onClick: () => void;
 }
 
 const StepButton = ({
-  onClick,
-  disabled,
   ariaLabel,
   children,
+  disabled,
+  onClick,
 }: StepButtonProps) => (
   <button
     type="button"
     onClick={onClick}
     disabled={disabled}
-    className="w-8 h-8 flex items-center justify-center rounded-md bg-palette-dark-green text-palette-beige hover:bg-palette-green disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed transition-colors text-xl font-bold"
+    className="bg-palette-dark-green text-palette-beige hover:bg-palette-green flex h-8 w-8 items-center justify-center rounded-md text-xl font-bold transition-colors disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-400"
     aria-label={ariaLabel}
   >
     {children}
@@ -38,12 +38,12 @@ const StepButton = ({
 );
 
 export const NumberInput = ({
-  id,
-  value,
-  onChange,
-  min = 0,
-  max = 99,
   error,
+  id,
+  max = 99,
+  min = 0,
+  onChange,
+  value,
 }: NumberInputProps) => {
   const handleDecrement = () => {
     if (value > min) {
@@ -83,7 +83,7 @@ export const NumberInput = ({
         }}
         min={min}
         max={max}
-        className="flex-1 text-center text-lg bg-transparent border-none outline-none w-16 appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+        className="w-16 flex-1 appearance-none border-none bg-transparent text-center text-lg outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
         aria-label="Počet"
       />
       <StepButton

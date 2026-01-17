@@ -4,16 +4,16 @@ import { useState, ReactNode } from "react";
 import Icon from "./Icon";
 
 export interface AccordionItem {
-  title: string;
   content: ReactNode;
+  title: string;
 }
 
 interface AccordionProps {
-  items: AccordionItem[];
   className?: string;
+  items: AccordionItem[];
 }
 
-export const Accordion = ({ items, className = "" }: AccordionProps) => {
+export const Accordion = ({ className = "", items }: AccordionProps) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleItem = (index: number) => {
@@ -25,15 +25,15 @@ export const Accordion = ({ items, className = "" }: AccordionProps) => {
       {items.map((item, index) => (
         <div
           key={index}
-          className="border-b border-palette-green/20 pb-4 last:border-0"
+          className="border-palette-green/20 border-b pb-4 last:border-0"
         >
           <button
             onClick={() => toggleItem(index)}
-            className="w-full text-left flex justify-between items-center gap-4 group cursor-pointer"
+            className="group flex w-full cursor-pointer items-center justify-between gap-4 text-left"
           >
             <h3 className="text-xl">{item.title}</h3>
             <span
-              className={`text-2xl transition-transform shrink-0 w-8 ${
+              className={`w-8 shrink-0 text-2xl transition-transform ${
                 openIndex === index ? "rotate-180" : ""
               }`}
             >
@@ -49,7 +49,7 @@ export const Accordion = ({ items, className = "" }: AccordionProps) => {
             }`}
           >
             <div className="overflow-hidden">
-              <div className="mt-4 mb-8 text-lg leading-relaxed text-palette-dark-green">
+              <div className="text-palette-dark-green mt-4 mb-8 text-lg leading-relaxed">
                 {item.content}
               </div>
             </div>

@@ -5,6 +5,7 @@
 A Czech wedding website with RSVP functionality and admin dashboard. Built as a static site with client-side Supabase integration for data persistence.
 
 **Tech Stack:**
+
 - Next.js 16.1.1 (App Router, static export)
 - React 19.2.3
 - TypeScript 5
@@ -14,6 +15,7 @@ A Czech wedding website with RSVP functionality and admin dashboard. Built as a 
 - Sentry (error tracking, performance monitoring, session replay)
 
 **Architecture:**
+
 - Static export (`output: 'export'`)
 - No Next.js API routes
 - Direct client-to-Supabase communication
@@ -24,6 +26,7 @@ A Czech wedding website with RSVP functionality and admin dashboard. Built as a 
 ## Quick Start
 
 ### Prerequisites
+
 - Node.js 20+
 - Docker Desktop (for local Supabase)
 
@@ -45,6 +48,7 @@ Open [http://localhost:3000](http://localhost:3000)
 ### Environment Variables
 
 Create `.env.local`:
+
 ```bash
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=<your_supabase_url>
@@ -67,6 +71,7 @@ For local development with `supabase start`, use the credentials from `supabase 
 ### Static Export Model
 
 The app compiles to static HTML/CSS/JS (`next.config.ts` has `output: 'export'`). This means:
+
 - No server-side rendering at runtime
 - No Next.js API routes
 - All data fetching happens client-side via Supabase
@@ -85,6 +90,7 @@ PostgreSQL 17 Database
 ```
 
 All database operations go through:
+
 1. **RPC Functions** - `submit_rsvp()` for public RSVP submissions
 2. **REST API** - Direct table queries for admin dashboard (auth required)
 3. **Auth** - Password-based admin authentication
@@ -95,34 +101,37 @@ All database operations go through:
 
 ### Table: `rsvps`
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| `id` | UUID | PK | Auto-generated |
-| `created_at` | TIMESTAMPTZ | NOT NULL | Submission timestamp |
-| `updated_at` | TIMESTAMPTZ | NOT NULL | Auto-updated by trigger |
-| `name` | TEXT | NOT NULL, MIN 2 chars | Guest name |
-| `primary_rsvp_id` | UUID | FK → rsvps(id) | NULL for primary guest, references primary for additional guests |
-| `attending` | TEXT | NOT NULL, 'yes'\|'no' | Attendance status |
-| `accommodation` | TEXT | 'roof'\|'own-tent'\|'no-sleep' | Lodging preference |
-| `drink_choice` | TEXT | 'pivo'\|'vino'\|'nealko'\|'other' | Beverage choice |
-| `custom_drink` | TEXT | MAX 100 chars | Custom drink if `drink_choice='other'` |
-| `dietary_restrictions` | TEXT | MAX 500 chars | Dietary needs |
-| `children_count` | INTEGER | DEFAULT 0, 0-99 | Number of children |
-| `pets_count` | INTEGER | DEFAULT 0, 0-99 | Number of pets |
-| `message` | TEXT | MAX 1000 chars | Guest message |
+| Column                 | Type        | Constraints                       | Description                                                      |
+| ---------------------- | ----------- | --------------------------------- | ---------------------------------------------------------------- |
+| `id`                   | UUID        | PK                                | Auto-generated                                                   |
+| `created_at`           | TIMESTAMPTZ | NOT NULL                          | Submission timestamp                                             |
+| `updated_at`           | TIMESTAMPTZ | NOT NULL                          | Auto-updated by trigger                                          |
+| `name`                 | TEXT        | NOT NULL, MIN 2 chars             | Guest name                                                       |
+| `primary_rsvp_id`      | UUID        | FK → rsvps(id)                    | NULL for primary guest, references primary for additional guests |
+| `attending`            | TEXT        | NOT NULL, 'yes'\|'no'             | Attendance status                                                |
+| `accommodation`        | TEXT        | 'roof'\|'own-tent'\|'no-sleep'    | Lodging preference                                               |
+| `drink_choice`         | TEXT        | 'pivo'\|'vino'\|'nealko'\|'other' | Beverage choice                                                  |
+| `custom_drink`         | TEXT        | MAX 100 chars                     | Custom drink if `drink_choice='other'`                           |
+| `dietary_restrictions` | TEXT        | MAX 500 chars                     | Dietary needs                                                    |
+| `children_count`       | INTEGER     | DEFAULT 0, 0-99                   | Number of children                                               |
+| `pets_count`           | INTEGER     | DEFAULT 0, 0-99                   | Number of pets                                                   |
+| `message`              | TEXT        | MAX 1000 chars                    | Guest message                                                    |
 
 **Indexes:**
+
 - `idx_rsvps_created_at` - Submission date sorting
 - `idx_rsvps_attending` - Filter by attendance
 - `idx_rsvps_primary_id` - Group by submission
 
 **Row-Level Security:**
+
 - Public: INSERT (anyone can submit)
 - Authenticated: SELECT, UPDATE, DELETE (admin only)
 
 ### View: `rsvp_submissions`
 
 Formatted view for admin display. Each row is one attendee with computed fields:
+
 - `attendee_id`, `attendee_name`
 - `primary_rsvp_id`, `primary_name`, `is_primary`
 - All form data duplicated for each guest in a submission
@@ -132,6 +141,7 @@ Formatted view for admin display. Each row is one attendee with computed fields:
 Public RPC function for RSVP submission.
 
 **Parameters:**
+
 - `names` TEXT[] - Array of guest names
 - `attending` TEXT - 'yes' or 'no'
 - `accommodation` TEXT - Optional lodging choice
@@ -143,6 +153,7 @@ Public RPC function for RSVP submission.
 - `message` TEXT - Optional message
 
 **Logic:**
+
 1. Creates primary record for first name
 2. Creates additional guest records for remaining names
 3. All guests reference primary via `primary_rsvp_id`
@@ -150,12 +161,13 @@ Public RPC function for RSVP submission.
 5. Returns primary UUID
 
 **Usage:**
+
 ```typescript
-const { data, error } = await supabase.rpc('submit_rsvp', {
-  names: ['Jan Novák', 'Anna Nováková'],
-  attending: 'yes',
-  accommodation: 'roof',
-  drinkChoice: 'pivo',
+const { data, error } = await supabase.rpc("submit_rsvp", {
+  names: ["Jan Novák", "Anna Nováková"],
+  attending: "yes",
+  accommodation: "roof",
+  drinkChoice: "pivo",
   // ...
 });
 ```
@@ -258,38 +270,48 @@ next.config.ts              # Next.js config with Sentry integration
 ## Key Files
 
 ### [app/lib/types.ts](app/lib/types.ts)
+
 All TypeScript type definitions:
+
 - `AttendingStatus`, `AccommodationType`, `DrinkChoice` enums
 - `RSVPFormData` - Form submission data
 - `RsvpSubmission` - Database record from view
 - `WeddingInfo` - Wedding information structure
 
 ### [app/lib/constants.ts](app/lib/constants.ts)
+
 Wedding data constants:
+
 - Couple names, wedding date
 - Venue details with coordinates
 - Schedule timeline
 - Czech label mappings for UI
 
 ### [app/lib/validations.ts](app/lib/validations.ts)
+
 Zod validation schemas:
+
 - `baseRsvpSchema` - Shared validation with conditional logic
 - `rsvpSchema` - Public form (includes names array)
 - `rsvpEditSchema` - Admin editing (single record)
 
 ### [app/lib/supabase.ts](app/lib/supabase.ts)
+
 Supabase client initialization:
+
 ```typescript
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
 export const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 );
 ```
 
 ### [app/components/forms/RSVPForm.tsx](app/components/forms/RSVPForm.tsx)
+
 Main RSVP form component:
+
 - Conditional field rendering based on attendance
 - Dynamic drink field (custom option)
 - Name management via ChipInput
@@ -311,6 +333,7 @@ Main RSVP form component:
 ### Form Validation
 
 All forms use Zod schemas with TypeScript types inferred:
+
 ```typescript
 const schema = z.object({
   name: z.string().min(2, "Jméno musí mít alespoň 2 znaky"),
@@ -321,6 +344,7 @@ type FormData = z.infer<typeof schema>;
 ```
 
 Conditional validation example:
+
 ```typescript
 .refine(
   (data) => data.attending !== 'yes' || data.accommodation,
@@ -331,14 +355,15 @@ Conditional validation example:
 ### Error Handling
 
 Use `useErrorHandler` hook for consistent error display:
+
 ```typescript
 const { handleError, showSuccess } = useErrorHandler();
 
 try {
   // operation
-  showSuccess('Úspěch!');
+  showSuccess("Úspěch!");
 } catch (error) {
-  handleError(error, 'Chyba');
+  handleError(error, "Chyba");
 }
 ```
 
@@ -356,7 +381,9 @@ const { error } = await supabase.auth.signInWithPassword({
 });
 
 // Get current user
-const { data: { user } } = await supabase.auth.getUser();
+const {
+  data: { user },
+} = await supabase.auth.getUser();
 
 // Logout
 await supabase.auth.signOut();
@@ -375,12 +402,14 @@ Using `@tailwindcss/postcss` v4 with `@import "tailwindcss"` in [app/globals.css
 ### Custom Theme
 
 **Colors:**
+
 - Beige: `#ebe1d1` (primary background)
 - Green: `#41644a` (accent, buttons)
 - Orange: `#e9762b` (secondary accent)
 - Amber: `#fbbf24` (highlights)
 
 **Typography:**
+
 - Default Sans: `var(--font-offside)` (Offside Google Font)
 - Serif: `var(--font-bilbo)` (Bilbo)
 - Mono: `var(--font-geist-mono)` (Geist Mono)
@@ -389,13 +418,21 @@ Using `@tailwindcss/postcss` v4 with `@import "tailwindcss"` in [app/globals.css
 
 ```css
 @keyframes appear {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes draw-line {
-  from { stroke-dashoffset: 1000; }
-  to { stroke-dashoffset: 0; }
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 ```
 
@@ -410,10 +447,12 @@ ScrollReveal component for viewport-triggered animations.
 The app uses Sentry for comprehensive error tracking, performance monitoring, and session replay.
 
 **Configuration Files:**
+
 - `instrumentation-client.ts` - Client-side Sentry initialization with integrations
 - `next.config.ts` - Webpack plugin with source map upload for stack traces
 
 **Features:**
+
 - Error tracking with full stack traces
 - Session replays (10% sample rate, 100% on error)
 - Performance monitoring with transaction tracing
@@ -426,6 +465,7 @@ The app uses Sentry for comprehensive error tracking, performance monitoring, an
 A unified, modular monitoring system that consolidates logging, performance tracking, and metrics into a single import point. Recently refactored from scattered utility files into a clean, functional architecture.
 
 **Module Structure:**
+
 ```
 app/lib/monitoring/
 ├── index.ts                # Main entry point, unified exports
@@ -445,24 +485,25 @@ app/lib/monitoring/
 Structured logging with automatic Sentry integration using a functional API:
 
 ```typescript
-import { logger } from '@/app/lib/monitoring';
+import { logger } from "@/app/lib/monitoring";
 
 // Available functions: debug(), info(), warn(), error()
-logger.info('RSVP submission started', {
-  component: 'RSVPForm',
-  operation: 'rsvp.submit',
-  metadata: { guestCount: 2 }
+logger.info("RSVP submission started", {
+  component: "RSVPForm",
+  operation: "rsvp.submit",
+  metadata: { guestCount: 2 },
 });
 
-logger.error('Database error', error, {
-  component: 'useRsvpData',
-  operation: 'db.query'
+logger.error("Database error", error, {
+  component: "useRsvpData",
+  operation: "db.query",
 });
 
-logger.debug('Detailed debugging info', { data: someData });
+logger.debug("Detailed debugging info", { data: someData });
 ```
 
 **Behavior:**
+
 - All levels log to console with formatted output
 - `error()` → Captures to Sentry via `captureException()` or `captureMessage()`
 - `warn()` → Captures to Sentry with warning level
@@ -475,29 +516,29 @@ logger.debug('Detailed debugging info', { data: someData });
 Measure operation performance with Sentry spans using a functional API:
 
 ```typescript
-import { performance, OperationType } from '@/app/lib/monitoring';
+import { performance, OperationType } from "@/app/lib/monitoring";
 
 // Async operations (most common)
 const result = await performance.measureAsync(
   OperationType.RSVP_FETCH,
-  'fetch_all_rsvps',
+  "fetch_all_rsvps",
   async () => {
-    return await supabase.from('rsvps').select('*');
-  }
+    return await supabase.from("rsvps").select("*");
+  },
 );
 
 // Synchronous operations
 const value = performance.measure(
   OperationType.RSVP_SUBMIT,
-  'validate_form',
+  "validate_form",
   () => {
     return schema.parse(formData);
-  }
+  },
 );
 
 // Manual metrics recording
-performance.recordMetric('form.submission.time', 1234.56);
-performance.setGauge('rsvp.total', 42);
+performance.recordMetric("form.submission.time", 1234.56);
+performance.setGauge("rsvp.total", 42);
 ```
 
 **Features:**
@@ -523,27 +564,24 @@ performance.setGauge('rsvp.total', 42);
 Event tracking and business metrics using a functional API:
 
 ```typescript
-import {
-  metrics,
-  MetricEvent
-} from '@/app/lib/monitoring';
+import { metrics, MetricEvent } from "@/app/lib/monitoring";
 
 // Generic event tracking
-metrics.track(MetricEvent.PAGE_VIEW, { path: '/admin' });
+metrics.track(MetricEvent.PAGE_VIEW, { path: "/admin" });
 metrics.track(MetricEvent.RSVP_FORM_STARTED);
 
 // Specific tracking functions (convenience wrappers)
-metrics.trackRsvpSubmission(true, { guestCount: 2, attending: 'yes' });
-metrics.trackValidationError('email', 'invalid_format', 'Neplatný email');
+metrics.trackRsvpSubmission(true, { guestCount: 2, attending: "yes" });
+metrics.trackValidationError("email", "invalid_format", "Neplatný email");
 metrics.trackFormAbandonment({
-  formName: 'rsvp',
-  lastField: 'accommodation',
+  formName: "rsvp",
+  lastField: "accommodation",
   completionPercentage: 60,
-  timeSpentMs: 45000
+  timeSpentMs: 45000,
 });
-metrics.trackPageView('/admin', { userId: 'admin@example.com' });
-metrics.trackSectionView('hero');
-metrics.trackAdminOperation('delete_rsvp', true, { rsvpId: '123' });
+metrics.trackPageView("/admin", { userId: "admin@example.com" });
+metrics.trackSectionView("hero");
+metrics.trackAdminOperation("delete_rsvp", true, { rsvpId: "123" });
 ```
 
 **Available Functions:**
@@ -569,13 +607,14 @@ metrics.trackAdminOperation('delete_rsvp', true, { rsvpId: '123' });
 Gauge metrics for business analytics:
 
 ```typescript
-import { updateDashboardMetrics } from '@/lib/monitoring';
+import { updateDashboardMetrics } from "@/lib/monitoring";
 
 // Update all dashboard metrics after data fetch
 updateDashboardMetrics(rsvpData);
 ```
 
 **Metrics Tracked:**
+
 - `rsvp.total` - Total submissions
 - `rsvp.attending` / `rsvp.not_attending` - Attendance counts
 - `rsvp.attendance_rate` - Percentage attending
@@ -591,11 +630,11 @@ updateDashboardMetrics(rsvpData);
 Unified error handling for Supabase operations:
 
 ```typescript
-import { handleSupabaseError } from '@/lib/monitoring';
+import { handleSupabaseError } from "@/lib/monitoring";
 
-const { data, error } = await supabase.from('rsvps').select('*');
+const { data, error } = await supabase.from("rsvps").select("*");
 if (error) {
-  const message = handleSupabaseError(error, 'useRsvpData', 'fetch_rsvps');
+  const message = handleSupabaseError(error, "useRsvpData", "fetch_rsvps");
   // Returns user-friendly Czech message
 }
 ```
@@ -603,6 +642,7 @@ if (error) {
 ### Global Error Boundary
 
 `app/global-error.tsx` catches unhandled errors:
+
 - Automatically logs to Sentry via `captureException()`
 - Displays user-friendly error page in Czech
 - Provides retry and page reload options
@@ -612,22 +652,22 @@ if (error) {
 All monitoring functionality is imported from the unified `@/app/lib/monitoring` module:
 
 ```typescript
-'use client';
+"use client";
 
 import {
   logger,
   performance,
   metrics,
   OperationType,
-  MetricEvent
-} from '@/app/lib/monitoring';
+  MetricEvent,
+} from "@/app/lib/monitoring";
 
 export function RSVPForm() {
   const handleSubmit = async (data: RSVPFormData) => {
     // Log the operation start
-    logger.info('Starting RSVP submission', {
-      component: 'RSVPForm',
-      operation: 'rsvp.submit'
+    logger.info("Starting RSVP submission", {
+      component: "RSVPForm",
+      operation: "rsvp.submit",
     });
 
     // Track form submission event
@@ -636,21 +676,21 @@ export function RSVPForm() {
     // Measure performance with Sentry span
     const result = await performance.measureAsync(
       OperationType.RSVP_SUBMIT,
-      'submit_rsvp_form',
+      "submit_rsvp_form",
       async () => {
-        return await supabase.rpc('submit_rsvp', data);
-      }
+        return await supabase.rpc("submit_rsvp", data);
+      },
     );
 
     // Track submission success/failure
     metrics.trackRsvpSubmission(!result.error, {
       guestCount: data.names.length,
-      attending: data.attending
+      attending: data.attending,
     });
 
     if (result.error) {
-      logger.error('RSVP submission failed', result.error, {
-        component: 'RSVPForm'
+      logger.error("RSVP submission failed", result.error, {
+        component: "RSVPForm",
       });
     }
   };
@@ -683,6 +723,7 @@ export function RSVPForm() {
 4. **Deploy** - Deploy artifact to GitHub Pages
 
 **Required GitHub Secrets:**
+
 - `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anon key
 - `NEXT_PUBLIC_ADMIN_USER` - Admin email for authentication
@@ -693,6 +734,7 @@ export function RSVPForm() {
 - `SENTRY_AUTH_TOKEN` - Sentry auth token for source map upload
 
 **Required GitHub Variables:**
+
 - `NEXT_PUBLIC_SENTRY_ORG` - Your Sentry organization slug
 - `NEXT_PUBLIC_SENTRY_PROJECT_ID` - Your Sentry project ID
 
@@ -735,6 +777,7 @@ supabase db reset
 ```
 
 Local endpoints:
+
 - API: http://localhost:54321
 - DB: postgresql://postgres:postgres@localhost:54322/postgres
 - Studio: http://localhost:54323
@@ -781,6 +824,7 @@ Migration files: [supabase/migrations/](supabase/migrations/)
 ### Customizing Wedding Data
 
 Edit [app/lib/constants.ts](app/lib/constants.ts):
+
 - `WEDDING_INFO.couple` - Names
 - `WEDDING_INFO.date` - Date and time
 - `WEDDING_INFO.venue` - Ceremony and reception details
@@ -792,21 +836,25 @@ Edit [app/lib/constants.ts](app/lib/constants.ts):
 ## Troubleshooting
 
 ### Supabase Connection Issues
+
 - Check `.env.local` variables
 - Verify Supabase project is running
 - Check browser console for CORS errors
 
 ### Build Failures
+
 - Clear `.next`: `rm -rf .next`
 - Delete `node_modules` and reinstall: `rm -rf node_modules && npm install`
 - Check TypeScript errors: `npm run build`
 
 ### Database Migration Errors
+
 - Check migration SQL syntax
 - Verify local Supabase is running
 - Reset local DB: `supabase db reset`
 
 ### GitHub Actions Deployment Failures
+
 - Verify all secrets are set in GitHub
 - Check workflow logs for specific errors
 - Ensure Supabase project is accessible

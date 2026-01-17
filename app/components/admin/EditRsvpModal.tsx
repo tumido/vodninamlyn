@@ -3,27 +3,27 @@ import { RSVPForm } from "@/app/components/forms/RSVPForm";
 import type { RSVPFormData } from "@/app/lib/types";
 
 interface EditRsvpModalProps {
-  isOpen: boolean;
-  rsvpName: string;
-  formData: RSVPFormData;
   errors: Record<string, string>;
+  formData: RSVPFormData;
+  isOpen: boolean;
   isSaving: boolean;
+  onChange: (formData: RSVPFormData) => void;
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
-  onChange: (formData: RSVPFormData) => void;
   onValidate: () => boolean;
+  rsvpName: string;
 }
 
 export const EditRsvpModal = ({
-  isOpen,
-  rsvpName,
-  formData,
   errors,
+  formData,
+  isOpen,
   isSaving,
+  onChange,
   onClose,
   onSubmit,
-  onChange,
   onValidate,
+  rsvpName,
 }: EditRsvpModalProps) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

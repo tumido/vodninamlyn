@@ -27,15 +27,15 @@ const getRandomIcon = () => {
 
 export const RSVP = () => {
   const [formData, setFormData] = useState<RSVPFormData>({
-    names: [],
-    attending: "",
     accommodation: "",
-    drinkChoice: "",
+    attending: "",
+    childrenCount: 0,
     customDrink: "",
     dietaryRestrictions: "",
-    childrenCount: 0,
-    petsCount: 0,
+    drinkChoice: "",
     message: "",
+    names: [],
+    petsCount: 0,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -48,7 +48,7 @@ export const RSVP = () => {
     useState<(typeof SUCCESS_ICONS)[number]>("fox");
   const [formStartTime, setFormStartTime] = useState<number | null>(null);
   const [lastInteractedField, setLastInteractedField] = useState<string | null>(
-    null
+    null,
   );
   const prevFormDataRef = useRef<RSVPFormData>(formData);
 
@@ -101,11 +101,11 @@ export const RSVP = () => {
         const timeSpentMs = Date.now() - formStartTime;
 
         metrics.trackFormAbandonment({
+          completionPercentage,
+          component: "RSVP",
           formName: "RSVP",
           lastField: lastInteractedField || undefined,
-          completionPercentage,
           timeSpentMs,
-          component: "RSVP",
         });
       }
     };
@@ -122,8 +122,8 @@ export const RSVP = () => {
 
     // Track form submission start
     metrics.track(MetricEvent.RSVP_FORM_SUBMITTED, {
-      component: "RSVP",
       attending: formData.attending,
+      component: "RSVP",
     });
 
     try {
@@ -136,15 +136,15 @@ export const RSVP = () => {
         "submit_rsvp",
         async () => {
           return await supabase.rpc("submit_rsvp", {
-            names: validated.names,
-            attending: validated.attending,
             accommodation: validated.accommodation || null,
-            drinkChoice: validated.drinkChoice || null,
+            attending: validated.attending,
+            childrenCount: validated.childrenCount,
             customDrink: validated.customDrink || null,
             dietaryRestrictions: validated.dietaryRestrictions || null,
-            childrenCount: validated.childrenCount,
-            petsCount: validated.petsCount,
+            drinkChoice: validated.drinkChoice || null,
             message: validated.message || null,
+            names: validated.names,
+            petsCount: validated.petsCount,
           });
         },
         {
@@ -153,7 +153,7 @@ export const RSVP = () => {
             attending: validated.attending,
             guestCount: validated.names.length,
           },
-        }
+        },
       );
 
       if (error) {
@@ -173,18 +173,18 @@ export const RSVP = () => {
 
       logger.info("RSVP submitted successfully", {
         component: "RSVP",
-        operation: "submit_rsvp",
         metadata: {
-          primaryId: data,
           attending: validated.attending,
           guestCount: validated.names.length,
+          primaryId: data,
         },
+        operation: "submit_rsvp",
       });
 
       // Track success
       metrics.trackRsvpSubmission(true, {
-        component: "RSVP",
         attending: validated.attending,
+        component: "RSVP",
         guestCount: validated.names.length,
       });
 
@@ -195,15 +195,15 @@ export const RSVP = () => {
       setShowForm(false);
       // Reset form
       setFormData({
-        names: [],
-        attending: "",
         accommodation: "",
-        drinkChoice: "",
+        attending: "",
+        childrenCount: 0,
         customDrink: "",
         dietaryRestrictions: "",
-        childrenCount: 0,
-        petsCount: 0,
+        drinkChoice: "",
         message: "",
+        names: [],
+        petsCount: 0,
       });
     } catch (error) {
       if (error instanceof ZodError) {
@@ -262,15 +262,15 @@ export const RSVP = () => {
   return (
     <Section id="rsvp" animate={true}>
       <h2 className="pb-12">Přijdeš? Řekni nám to!</h2>
-      <p className="text-xl leading-relaxed mb-12 max-w-2x text-center">
+      <p className="max-w-2x mb-12 text-center text-xl leading-relaxed">
         Prosíme o potvrzení vaší účasti do {WEDDING_INFO.rsvpDeadline}. Pomůže
         nám to se připravit.
       </p>
 
       {submitStatus === "success" && !showForm ? (
-        <div className="max-w-2xl mx-auto p-8 text-center space-y-12">
+        <div className="mx-auto max-w-2xl space-y-12 p-8 text-center">
           <div
-            className={`h-24 mx-auto ${
+            className={`mx-auto h-24 ${
               successIcon === "fox" ? "aspect-20/9" : "w-24"
             }`}
           >

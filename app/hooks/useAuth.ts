@@ -8,7 +8,7 @@ import {
   logger,
   performance,
   metrics,
-  OperationType
+  OperationType,
 } from "@/app/lib/monitoring";
 
 export const useAuth = () => {
@@ -30,31 +30,34 @@ export const useAuth = () => {
       }
     };
 
-    performance.measureAsync(
-      OperationType.AUTH_CHECK,
-      'auth_get_user',
-      async () => {
-        const { data: { user } } = await supabase.auth.getUser();
-        return user;
-      },
-      {
-        component: 'useAuth',
-      }
-    )
+    performance
+      .measureAsync(
+        OperationType.AUTH_CHECK,
+        "auth_get_user",
+        async () => {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+          return user;
+        },
+        {
+          component: "useAuth",
+        },
+      )
       .then((user) => {
         handleAuth(user);
         logger.info("Auth check completed", {
-          component: 'useAuth',
-          operation: 'getUser',
+          component: "useAuth",
           metadata: {
             authenticated: !!user,
           },
+          operation: "getUser",
         });
       })
       .catch((error) => {
         logger.error("Failed to get user", error, {
-          component: 'useAuth',
-          operation: 'getUser',
+          component: "useAuth",
+          operation: "getUser",
         });
         // Re-throw so Sentry captures auth failures
         throw error;
@@ -63,7 +66,7 @@ export const useAuth = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) =>
-      handleAuth(session?.user ?? null)
+      handleAuth(session?.user ?? null),
     );
 
     return () => {
@@ -76,45 +79,49 @@ export const useAuth = () => {
     try {
       await performance.measureAsync(
         OperationType.AUTH_LOGOUT,
-        'auth_sign_out',
+        "auth_sign_out",
         async () => {
           await supabase.auth.signOut();
         },
         {
-          component: 'useAuth',
+          component: "useAuth",
           metadata: {
             userId: user?.id,
           },
-        }
+        },
       );
 
       logger.info("User logged out successfully", {
-        component: 'useAuth',
-        operation: 'logout',
+        component: "useAuth",
         metadata: {
           userId: user?.id,
         },
+        operation: "logout",
       });
 
       // Track admin logout
-      metrics.trackAdminOperation('logout', true, {
-        component: 'useAuth',
+      metrics.trackAdminOperation("logout", true, {
+        component: "useAuth",
         userId: user?.id,
       });
 
       router.replace("/admin/login");
     } catch (error) {
-      logger.error("Logout failed", error instanceof Error ? error : new Error(String(error)), {
-        component: 'useAuth',
-        operation: 'logout',
-        metadata: {
-          userId: user?.id,
+      logger.error(
+        "Logout failed",
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          component: "useAuth",
+          metadata: {
+            userId: user?.id,
+          },
+          operation: "logout",
         },
-      });
+      );
 
       // Track logout failure
-      metrics.trackAdminOperation('logout', false, {
-        component: 'useAuth',
+      metrics.trackAdminOperation("logout", false, {
+        component: "useAuth",
         userId: user?.id,
       });
 
@@ -123,5 +130,5 @@ export const useAuth = () => {
     }
   };
 
-  return { user, loading, logout };
+  return { loading, logout, user };
 };

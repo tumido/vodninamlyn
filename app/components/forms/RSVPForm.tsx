@@ -15,41 +15,41 @@ import {
 import type { RSVPFormData } from "@/app/lib/types";
 
 interface RSVPFormProps {
-  formData: RSVPFormData;
-  errors: Record<string, string>;
-  isSubmitting: boolean;
-  submitStatus: "idle" | "success" | "error";
-  onSubmit: (e: React.FormEvent) => void;
-  onChange: (formData: RSVPFormData) => void;
-  onValidate: () => boolean;
   editMode?: boolean; // If true, shows immutable name field and hides message field
   editModeRsvpName?: string; // Name to display in edit mode
+  errors: Record<string, string>;
+  formData: RSVPFormData;
+  isSubmitting: boolean;
   onCancel?: () => void; // Called when cancel is clicked in edit mode
+  onChange: (formData: RSVPFormData) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onValidate: () => boolean;
   submitLabel?: string; // Custom label for submit button
+  submitStatus: "idle" | "success" | "error";
 }
 
 export const RSVPForm = ({
-  formData,
-  errors,
-  isSubmitting,
-  submitStatus,
-  onSubmit,
-  onChange,
-  onValidate,
   editMode = false,
   editModeRsvpName,
+  errors,
+  formData,
+  isSubmitting,
   onCancel,
+  onChange,
+  onSubmit,
+  onValidate,
   submitLabel = "Odeslat",
+  submitStatus,
 }: RSVPFormProps) => {
   const handleFieldChange = (
     field: keyof RSVPFormData,
-    value: string | string[]
+    value: string | string[],
   ) => {
     onChange({ ...formData, [field]: value });
   };
 
   return (
-    <form onSubmit={onSubmit} className="max-w-2xl mx-auto md:p-8 p-4">
+    <form onSubmit={onSubmit} className="mx-auto max-w-2xl p-4 md:p-8">
       <div className="space-y-6">
         {/* Names - ChipInput (in regular mode) or immutable field (in edit mode) */}
         {!editMode ? (
@@ -66,7 +66,7 @@ export const RSVPForm = ({
               placeholder="Zadejte jméno"
               error={errors.names}
             />
-            <p className="text-xs text-neutral-500 mt-1">
+            <p className="mt-1 text-xs text-neutral-500">
               Můžete přidat více jmen - po každém jménu stiskněte Enter nebo
               napište čárku
             </p>
@@ -78,7 +78,7 @@ export const RSVPForm = ({
               type="text"
               value={editModeRsvpName || ""}
               disabled
-              className="bg-neutral-50 disabled:text-palette-green/80 disabled:hover:border-palette-green/20"
+              className="disabled:text-palette-green/80 disabled:hover:border-palette-green/20 bg-neutral-50"
             />
           </FormField>
         )}
@@ -123,7 +123,7 @@ export const RSVPForm = ({
             </FormField>
 
             {/* Children and Pets Count - Side by Side */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 label="Děti"
                 error={errors.childrenCount}
@@ -174,9 +174,9 @@ export const RSVPForm = ({
                     .value as RSVPFormData["drinkChoice"];
                   onChange({
                     ...formData,
-                    drinkChoice: newValue,
                     customDrink:
                       newValue !== "other" ? "" : formData.customDrink,
+                    drinkChoice: newValue,
                   });
                 }}
                 error={errors.drinkChoice}
@@ -245,7 +245,7 @@ export const RSVPForm = ({
         )}
 
         {/* Submit and Cancel Buttons */}
-        <div className="pt-4 flex gap-4">
+        <div className="flex gap-4 pt-4">
           <Button
             type="submit"
             isLoading={isSubmitting}
@@ -262,7 +262,7 @@ export const RSVPForm = ({
 
         {/* Error Message */}
         {submitStatus === "error" && (
-          <div className="p-4 bg-red-50 border-2 border-red-200 rounded-lg text-red-800">
+          <div className="rounded-lg border-2 border-red-200 bg-red-50 p-4 text-red-800">
             Něco se pokazilo. Zkontrolujte prosím formulář a zkuste to znovu.
           </div>
         )}

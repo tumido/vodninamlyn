@@ -11,28 +11,28 @@ import { RsvpTable } from "@/app/components/admin/RsvpTable";
 import { EditRsvpModal } from "@/app/components/admin/EditRsvpModal";
 
 export default function AdminPage() {
-  const { user, loading: authLoading, logout } = useAuth();
+  const { loading: authLoading, logout, user } = useAuth();
   const {
-    rsvps,
-    loading: rsvpsLoading,
+    clearError: clearDataError,
+    deleteRsvp,
     deletingId,
     error: dataError,
     fetchRsvps,
-    deleteRsvp,
-    clearError: clearDataError,
+    loading: rsvpsLoading,
+    rsvps,
   } = useRsvpData();
   const stats = useRsvpStats(rsvps);
   const {
-    editingRow,
-    isSaving,
-    validationErrors,
-    error: editorError,
-    startEditing,
     cancelEditing,
+    clearError: clearEditorError,
+    editingRow,
+    error: editorError,
+    handleEditSubmit,
+    isSaving,
+    startEditing,
     updateEditingRow,
     validateEditingRow,
-    handleEditSubmit,
-    clearError: clearEditorError,
+    validationErrors,
   } = useRsvpEditor(fetchRsvps);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function AdminPage() {
 
   if (authLoading || !user) {
     return (
-      <div className="min-h-screen hero-gradient flex items-center justify-center">
+      <div className="hero-gradient flex min-h-screen items-center justify-center">
         <div className="text-lg">Načítání...</div>
       </div>
     );
@@ -63,19 +63,19 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-palette-beige">
-      <nav className="flex justify-end ml-auto gap-4 py-2 pr-2 sm:pr-6 lg:pr-8">
-        <div className="justify-end h-16 items-center gap-4">
+    <div className="bg-palette-beige min-h-screen">
+      <nav className="ml-auto flex justify-end gap-4 py-2 pr-2 sm:pr-6 lg:pr-8">
+        <div className="h-16 items-center justify-end gap-4">
           <Button onClick={logout}>Odhlásit se</Button>
         </div>
       </nav>
 
       {currentError && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center justify-between">
+        <div className="mx-auto mb-4 max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 p-4">
             <div className="flex items-center gap-3">
               <svg
-                className="w-5 h-5 text-red-600"
+                className="h-5 w-5 text-red-600"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -91,9 +91,9 @@ export default function AdminPage() {
             </div>
             <button
               onClick={clearCurrentError}
-              className="text-red-600 hover:text-red-800 transition-colors"
+              className="text-red-600 transition-colors hover:text-red-800"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
                   d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -108,11 +108,11 @@ export default function AdminPage() {
       <main className="max-w-8xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           {rsvpsLoading ? (
-            <div className="text-center py-12">
+            <div className="py-12 text-center">
               <div className="text-lg">Načítání RSVP...</div>
             </div>
           ) : rsvps.length === 0 ? (
-            <div className="bg-white rounded-lg shadow p-6 text-center text-gray-600">
+            <div className="rounded-lg bg-white p-6 text-center text-gray-600 shadow">
               Zatím žádné RSVP odpovědi.
             </div>
           ) : (
@@ -134,15 +134,15 @@ export default function AdminPage() {
         rsvpName={getEditingRsvpName()}
         formData={
           editingRow?.formData || {
-            names: [],
-            attending: "",
             accommodation: "",
-            drinkChoice: "",
+            attending: "",
+            childrenCount: 0,
             customDrink: "",
             dietaryRestrictions: "",
-            childrenCount: 0,
-            petsCount: 0,
+            drinkChoice: "",
             message: "",
+            names: [],
+            petsCount: 0,
           }
         }
         errors={validationErrors}

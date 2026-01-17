@@ -15,17 +15,17 @@ interface TimeRemaining {
 }
 
 interface FlipDigitProps {
-  value: number;
   prevValue: number;
+  value: number;
 }
 
-const FlipDigit = ({ value, prevValue }: FlipDigitProps) => {
+const FlipDigit = ({ prevValue, value }: FlipDigitProps) => {
   const shouldAnimate = prevValue !== value;
   const digitClasses =
     "absolute inset-0 flex items-center justify-center text-4xl md:text-5xl font-bold text-palette-green";
 
   return (
-    <div className="relative w-8 h-16 overflow-hidden">
+    <div className="relative h-16 w-8 overflow-hidden">
       <div
         key={`new-${value}`}
         className={`${digitClasses} ${shouldAnimate ? "animate-slide-up" : ""}`}
@@ -68,10 +68,10 @@ export const Countdown = ({ targetDate }: CountdownProps) => {
       if (difference > 0) {
         const days = Math.floor(difference / (1000 * 60 * 60 * 24));
         const hours = Math.floor(
-          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
         );
         const minutes = Math.floor(
-          (difference % (1000 * 60 * 60)) / (1000 * 60)
+          (difference % (1000 * 60 * 60)) / (1000 * 60),
         );
         const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
@@ -100,30 +100,30 @@ export const Countdown = ({ targetDate }: CountdownProps) => {
 
   const timeUnits = [
     {
-      value: timeRemaining.days,
-      prevValue: prevTimeRemaining.days,
       label: "dní",
+      prevValue: prevTimeRemaining.days,
+      value: timeRemaining.days,
     },
     {
-      value: timeRemaining.hours,
-      prevValue: prevTimeRemaining.hours,
       label: "hodin",
+      prevValue: prevTimeRemaining.hours,
+      value: timeRemaining.hours,
     },
     {
-      value: timeRemaining.minutes,
-      prevValue: prevTimeRemaining.minutes,
       label: "minut",
+      prevValue: prevTimeRemaining.minutes,
+      value: timeRemaining.minutes,
     },
     {
-      value: timeRemaining.seconds,
-      prevValue: prevTimeRemaining.seconds,
       label: "sekund",
+      prevValue: prevTimeRemaining.seconds,
+      value: timeRemaining.seconds,
     },
   ];
 
   return (
-    <div className="flex flex-col items-center gap-6 max-w-2xl mx-auto">
-      <div className="grid grid-cols-4 md:gap-6 gap-0 w-full">
+    <div className="mx-auto flex max-w-2xl flex-col items-center gap-6">
+      <div className="grid w-full grid-cols-4 gap-0 md:gap-6">
         {timeUnits.map((unit, index) => {
           const digits = unit.value.toString().padStart(2, "0").split("");
           const prevDigits = unit.prevValue
@@ -133,9 +133,9 @@ export const Countdown = ({ targetDate }: CountdownProps) => {
           return (
             <div
               key={index}
-              className="flex flex-col items-center justify-center py-6 rounded-lg"
+              className="flex flex-col items-center justify-center rounded-lg py-6"
             >
-              <div className="flex gap-1 md:gap-2 mb-2">
+              <div className="mb-2 flex gap-1 md:gap-2">
                 {digits.map((digit, digitIndex) => (
                   <FlipDigit
                     key={digitIndex}
@@ -144,7 +144,7 @@ export const Countdown = ({ targetDate }: CountdownProps) => {
                   />
                 ))}
               </div>
-              <div className="text-sm md:text-base text-neutral-600 uppercase tracking-wider">
+              <div className="text-sm tracking-wider text-neutral-600 uppercase md:text-base">
                 {unit.label}
               </div>
             </div>
@@ -152,7 +152,7 @@ export const Countdown = ({ targetDate }: CountdownProps) => {
         })}
       </div>
       {isPast && (
-        <div className="w-80 h-24 mb-12">
+        <div className="mb-12 h-24 w-80">
           <Icon icon="arrow-heart" />
         </div>
       )}

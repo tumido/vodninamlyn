@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
-import { metrics } from '@/app/lib/monitoring';
+import { useEffect, useRef } from "react";
+import { metrics } from "@/app/lib/monitoring";
 
 /**
  * Hook to track when a section becomes visible (scroll tracking)
  */
-export const useSectionTracking = (sectionName: string, elementRef: React.RefObject<HTMLElement | null>) => {
+export const useSectionTracking = (
+  sectionName: string,
+  elementRef: React.RefObject<HTMLElement | null>,
+) => {
   const hasBeenViewedRef = useRef(false);
   const viewStartTimeRef = useRef<number | null>(null);
 
@@ -24,7 +27,7 @@ export const useSectionTracking = (sectionName: string, elementRef: React.RefObj
               viewStartTimeRef.current = Date.now();
 
               metrics.trackSectionView(sectionName, {
-                component: 'useSectionTracking',
+                component: "useSectionTracking",
                 visibility: entry.intersectionRatio,
               });
             }
@@ -36,9 +39,9 @@ export const useSectionTracking = (sectionName: string, elementRef: React.RefObj
               // Track time spent viewing if more than 1 second
               if (timeViewedMs > 1000) {
                 metrics.trackSectionView(sectionName, {
-                  component: 'useSectionTracking',
-                  timeViewed: timeViewedMs,
+                  component: "useSectionTracking",
                   leaving: true,
+                  timeViewed: timeViewedMs,
                 });
               }
 
@@ -48,9 +51,9 @@ export const useSectionTracking = (sectionName: string, elementRef: React.RefObj
         });
       },
       {
+        rootMargin: "0px",
         threshold: [0.1, 0.5, 0.9], // Track at 10%, 50%, and 90% visibility
-        rootMargin: '0px',
-      }
+      },
     );
 
     observer.observe(element);

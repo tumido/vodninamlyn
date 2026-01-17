@@ -4,21 +4,21 @@ import Icon from "./components/ui/Icon";
 
 export default function NotFound() {
   return (
-    <div className=" flex flex-col">
-      <div className="hero-gradient min-h-screen flex-1 flex items-center justify-center relative">
-        <div className="z-10 text-center px-6 max-w-2xl">
-          <div className="h-48 w-48 mx-auto mb-8">
+    <div className="flex flex-col">
+      <div className="hero-gradient relative flex min-h-screen flex-1 items-center justify-center">
+        <div className="z-10 max-w-2xl px-6 text-center">
+          <div className="mx-auto mb-8 h-48 w-48">
             <Icon icon="ufo" className="stroke-palette-beige" />
           </div>
-          <div className="text-2xl md:text-4xl font-semibold text-amber-200/90 mb-4 normal-case">
+          <div className="mb-4 text-2xl font-semibold text-amber-200/90 normal-case md:text-4xl">
             Stránka nebyla nalezena
           </div>
-          <p className="text-lg text-palette-beige/70 mb-8">
+          <p className="text-palette-beige/70 mb-8 text-lg">
             Omlouváme se, ale stránka, kterou hledáte, neexistuje.
           </p>
           <Link
             href="/"
-            className="inline-block bg-palette-green hover:bg-palette-dark-green text-white font-medium py-3 px-8 rounded transition-colors"
+            className="bg-palette-green hover:bg-palette-dark-green inline-block rounded px-8 py-3 font-medium text-white transition-colors"
           >
             Zpět na hlavní stránku
           </Link>

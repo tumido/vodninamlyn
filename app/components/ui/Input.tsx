@@ -9,7 +9,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
-export const Input = ({ error, className = "", ...props }: InputProps) => {
+export const Input = ({ className = "", error, ...props }: InputProps) => {
   const errorClasses = error ? ERROR_CLASSES : NORMAL_CLASSES;
 
   return (

@@ -5,13 +5,13 @@ import { WEDDING_INFO } from "@/app/lib/constants";
 export const AdditionalInfo = () => {
   return (
     <Section id="o-svatbe" className="flex flex-col" animate={true}>
-      <div className="grid md:grid-cols-2 gap-12 max-w-5xl">
+      <div className="grid max-w-5xl gap-12 md:grid-cols-2">
         {WEDDING_INFO.details.map((detail) => (
           <div
             key={detail.name}
-            className="flex flex-col items-center text-center gap-4"
+            className="flex flex-col items-center gap-4 text-center"
           >
-            <div className="w-24 h-24 m-4">
+            <div className="m-4 h-24 w-24">
               <Icon icon={detail.icon} />
             </div>
             <h3>{detail.name}</h3>

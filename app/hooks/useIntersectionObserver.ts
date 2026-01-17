@@ -3,8 +3,8 @@
 import { useEffect, useState, useRef } from "react";
 
 interface UseIntersectionObserverOptions {
-  threshold?: number;
   rootMargin?: string;
+  threshold?: number;
 }
 
 /**
@@ -12,9 +12,9 @@ interface UseIntersectionObserverOptions {
  * Returns a ref to attach to the element and a boolean indicating visibility
  */
 export const useIntersectionObserver = (
-  options: UseIntersectionObserverOptions = {}
+  options: UseIntersectionObserverOptions = {},
 ) => {
-  const { threshold = 0.1, rootMargin = "0px" } = options;
+  const { rootMargin = "0px", threshold = 0.1 } = options;
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -26,7 +26,7 @@ export const useIntersectionObserver = (
           observer.disconnect();
         }
       },
-      { threshold, rootMargin }
+      { rootMargin, threshold },
     );
 
     if (ref.current) {
@@ -36,5 +36,5 @@ export const useIntersectionObserver = (
     return () => observer.disconnect();
   }, [threshold, rootMargin]);
 
-  return { ref, isVisible };
+  return { isVisible, ref };
 };

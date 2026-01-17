@@ -4,12 +4,12 @@ import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 interface ModalProps {
+  children: React.ReactNode;
   isOpen: boolean;
   onClose: () => void;
-  children: React.ReactNode;
 }
 
-export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
+export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -40,17 +40,17 @@ export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={handleBackdropClick}
     >
       <div
         ref={modalRef}
-        className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-palette-beige rounded-lg shadow-xl"
+        className="bg-palette-beige relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-lg shadow-xl"
       >
-        <div className="sticky top-0 z-10 float-right items-center justify-between px-6 py-4 bg-palette-beige">
+        <div className="bg-palette-beige sticky top-0 z-10 float-right items-center justify-between px-6 py-4">
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 transition-colors hover:text-gray-600"
             aria-label="Close modal"
           >
             <svg
@@ -59,7 +59,7 @@ export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
               viewBox="0 0 24 24"
               strokeWidth={2}
               stroke="currentColor"
-              className="w-6 h-6"
+              className="h-6 w-6"
             >
               <path
                 strokeLinecap="round"
@@ -72,6 +72,6 @@ export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
         <div className="px-6 py-4">{children}</div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };

@@ -13,7 +13,7 @@ import {
   logger,
   performance,
   metrics,
-  OperationType
+  OperationType,
 } from "@/app/lib/monitoring";
 
 interface EditingRow {
@@ -27,21 +27,22 @@ export const useRsvpEditor = (onSuccess: () => void) => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
   >({});
-  const { error, showError, clearError } = useErrorHandler();
+  const { clearError, error, showError } = useErrorHandler();
 
   const startEditing = (rsvp: RsvpSubmission) => {
     setEditingRow({
       attendeeId: rsvp.attendee_id,
       formData: {
-        names: [],
+        accommodation:
+          (rsvp.accommodation as RSVPFormData["accommodation"]) || "",
         attending: rsvp.attending,
-        accommodation: (rsvp.accommodation as RSVPFormData["accommodation"]) || "",
-        drinkChoice: (rsvp.drinkChoice as RSVPFormData["drinkChoice"]) || "",
+        childrenCount: rsvp.childrenCount,
         customDrink: rsvp.customDrink || "",
         dietaryRestrictions: rsvp.dietaryRestrictions || "",
-        childrenCount: rsvp.childrenCount,
-        petsCount: rsvp.petsCount,
+        drinkChoice: (rsvp.drinkChoice as RSVPFormData["drinkChoice"]) || "",
         message: "",
+        names: [],
+        petsCount: rsvp.petsCount,
       },
     });
     setValidationErrors({});
@@ -65,12 +66,12 @@ export const useRsvpEditor = (onSuccess: () => void) => {
     if (!editingRow) return {};
     try {
       rsvpEditSchema.parse({
-        attending: editingRow.formData.attending,
         accommodation: editingRow.formData.accommodation || "",
-        drinkChoice: editingRow.formData.drinkChoice || "",
+        attending: editingRow.formData.attending,
+        childrenCount: editingRow.formData.childrenCount,
         customDrink: editingRow.formData.customDrink,
         dietaryRestrictions: editingRow.formData.dietaryRestrictions,
-        childrenCount: editingRow.formData.childrenCount,
+        drinkChoice: editingRow.formData.drinkChoice || "",
         petsCount: editingRow.formData.petsCount,
       });
       return {};
@@ -107,19 +108,19 @@ export const useRsvpEditor = (onSuccess: () => void) => {
 
     try {
       const updateData: Record<string, string | number | null> = {
-        attending: editingRow.formData.attending,
         accommodation: editingRow.formData.accommodation || null,
-        drink_choice: editingRow.formData.drinkChoice || null,
+        attending: editingRow.formData.attending,
+        children_count: editingRow.formData.childrenCount,
         custom_drink: editingRow.formData.customDrink || null,
         dietary_restrictions: editingRow.formData.dietaryRestrictions || null,
-        children_count: editingRow.formData.childrenCount,
+        drink_choice: editingRow.formData.drinkChoice || null,
         pets_count: editingRow.formData.petsCount,
       };
 
       // Update the base rsvps TABLE (not the view) using attendee_id with performance tracking
       const result = await performance.measureAsync(
         OperationType.RSVP_UPDATE,
-        'update_rsvp',
+        "update_rsvp",
         async () => {
           return await supabase
             .from("rsvps")
@@ -127,12 +128,12 @@ export const useRsvpEditor = (onSuccess: () => void) => {
             .eq("id", editingRow.attendeeId);
         },
         {
-          component: 'useRsvpEditor',
+          component: "useRsvpEditor",
           metadata: {
             attendeeId: editingRow.attendeeId,
             attending: editingRow.formData.attending,
           },
-        }
+        },
       );
 
       const { error: updateError } = result;
@@ -141,21 +142,21 @@ export const useRsvpEditor = (onSuccess: () => void) => {
         const errorMessage = handleSupabaseError(
           updateError,
           "Error updating RSVP",
-          "Chyba při ukládání"
+          "Chyba při ukládání",
         );
 
         logger.error("Failed to update RSVP", updateError, {
-          component: 'useRsvpEditor',
-          operation: 'handleEditSubmit',
+          component: "useRsvpEditor",
           metadata: { attendeeId: editingRow.attendeeId },
+          operation: "handleEditSubmit",
         });
 
         showError(errorMessage, "toast");
 
         // Track admin operation failure
-        metrics.trackAdminOperation('edit', false, {
-          component: 'useRsvpEditor',
+        metrics.trackAdminOperation("edit", false, {
           attendeeId: editingRow.attendeeId,
+          component: "useRsvpEditor",
           errorMessage,
         });
 
@@ -163,19 +164,19 @@ export const useRsvpEditor = (onSuccess: () => void) => {
         throw new Error(errorMessage);
       } else {
         logger.info("RSVP updated successfully", {
-          component: 'useRsvpEditor',
-          operation: 'handleEditSubmit',
+          component: "useRsvpEditor",
           metadata: {
             attendeeId: editingRow.attendeeId,
             attending: editingRow.formData.attending,
           },
+          operation: "handleEditSubmit",
         });
 
         // Track successful edit
-        metrics.trackAdminOperation('edit', true, {
-          component: 'useRsvpEditor',
+        metrics.trackAdminOperation("edit", true, {
           attendeeId: editingRow.attendeeId,
           attending: editingRow.formData.attending,
+          component: "useRsvpEditor",
         });
 
         onSuccess();
@@ -183,11 +184,15 @@ export const useRsvpEditor = (onSuccess: () => void) => {
         setValidationErrors({});
       }
     } catch (error) {
-      logger.error("Network error during update", error instanceof Error ? error : new Error(String(error)), {
-        component: 'useRsvpEditor',
-        operation: 'handleEditSubmit',
-        metadata: { attendeeId: editingRow.attendeeId },
-      });
+      logger.error(
+        "Network error during update",
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          component: "useRsvpEditor",
+          metadata: { attendeeId: editingRow.attendeeId },
+          operation: "handleEditSubmit",
+        },
+      );
       // Re-throw network errors so Sentry captures them
       throw error;
     } finally {
@@ -196,15 +201,15 @@ export const useRsvpEditor = (onSuccess: () => void) => {
   };
 
   return {
-    editingRow,
-    isSaving,
-    validationErrors,
-    error,
-    startEditing,
     cancelEditing,
+    clearError,
+    editingRow,
+    error,
+    handleEditSubmit,
+    isSaving,
+    startEditing,
     updateEditingRow,
     validateEditingRow,
-    handleEditSubmit,
-    clearError,
+    validationErrors,
   };
 };

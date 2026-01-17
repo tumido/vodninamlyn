@@ -5,27 +5,27 @@ export type ErrorType = "toast" | "inline";
 
 export interface AppError {
   message: string;
-  type: ErrorType;
   timestamp: number;
+  type: ErrorType;
 }
 
 // RSVP Enums - Single source of truth
 export const AttendingStatus = {
-  YES: "yes",
   NO: "no",
+  YES: "yes",
 } as const;
 
 export const AccommodationType = {
-  ROOF: "roof",
-  OWN_TENT: "own-tent",
   NO_SLEEP: "no-sleep",
+  OWN_TENT: "own-tent",
+  ROOF: "roof",
 } as const;
 
 export const DrinkChoice = {
-  PIVO: "pivo",
-  VINO: "vino",
   NEALKO: "nealko",
   OTHER: "other",
+  PIVO: "pivo",
+  VINO: "vino",
 } as const;
 
 // Derived types from enums
@@ -37,26 +37,26 @@ export type DrinkChoiceValue = (typeof DrinkChoice)[keyof typeof DrinkChoice];
 
 // Base RSVP data - shared fields between form and database
 export interface BaseRsvpData {
-  attending: AttendingStatusValue;
   accommodation: AccommodationTypeValue | null;
-  drinkChoice: DrinkChoiceValue | null;
+  attending: AttendingStatusValue;
+  childrenCount: number;
   customDrink: string | null;
   dietaryRestrictions: string | null;
-  childrenCount: number;
+  drinkChoice: DrinkChoiceValue | null;
   petsCount: number;
 }
 
 // RSVP Form Data - extends base with form-specific fields
 export interface RSVPFormData {
-  names: string[];
-  attending: AttendingStatusValue | "";
   accommodation: AccommodationTypeValue | "";
-  drinkChoice: DrinkChoiceValue | "";
+  attending: AttendingStatusValue | "";
+  childrenCount: number;
   customDrink?: string;
   dietaryRestrictions?: string;
-  childrenCount: number;
-  petsCount: number;
+  drinkChoice: DrinkChoiceValue | "";
   message?: string;
+  names: string[];
+  petsCount: number;
 }
 
 // Database view type - represents a single attendee from rsvp_submissions view
@@ -64,16 +64,16 @@ export interface RsvpSubmission extends BaseRsvpData {
   attendee_id: string;
   attendee_name: string;
   created_at: string;
-  primary_rsvp_id: string;
-  primary_name: string;
-  message: string | null;
   is_primary: boolean;
+  message: string | null;
+  primary_name: string;
+  primary_rsvp_id: string;
 }
 
 // Wedding Information
 export interface Address {
-  street: string;
   city: string;
+  street: string;
   zip: string;
 }
 
@@ -83,61 +83,61 @@ export interface Coordinates {
 }
 
 export interface Venue {
-  name: string;
   address: Address;
   coordinates: Coordinates;
   googleMapsUrl: string;
-  web: string;
+  name: string;
   text: string;
+  web: string;
 }
 export interface DetailItem {
-  name: string;
-  icon: IconProps["icon"];
   description: string;
+  icon: IconProps["icon"];
+  name: string;
 }
 
 export interface ScheduleItem {
+  description?: string;
   time: string;
   title: string;
-  description?: string;
 }
 
 export interface FAQItem {
-  question: string;
   answer: string;
+  question: string;
 }
 
 export interface AccommodationOption {
-  title: string;
-  content: string;
   beds?: number;
+  content: string;
+  title: string;
 }
 
 export interface WeddingInfo {
+  accommodation: {
+    heading: string;
+    description: string;
+    options: AccommodationOption[];
+  };
+  contact: {
+    email: string;
+    other: string;
+  };
   couple: {
     groom: string;
     bride: string;
     heading: string;
   };
-  leading: string;
   date: {
     full: Date;
     display: string;
     time: string;
     text: string;
   };
-  venue: Venue;
   details: DetailItem[];
-  schedule: ScheduleItem[];
   faq: FAQItem[];
-  accommodation: {
-    heading: string;
-    description: string;
-    options: AccommodationOption[];
-  };
+  leading: string;
   rsvpDeadline: string;
-  contact: {
-    email: string;
-    other: string;
-  };
+  schedule: ScheduleItem[];
+  venue: Venue;
 }

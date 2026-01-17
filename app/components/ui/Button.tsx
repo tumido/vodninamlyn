@@ -2,26 +2,26 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: "primary" | "secondary";
   isLoading?: boolean;
+  variant?: "primary" | "secondary";
 }
 
 export const Button = ({
   children,
-  isLoading = false,
   disabled,
+  isLoading = false,
   ...props
 }: ButtonProps) => {
   return (
     <button
-      className="w-full px-8 py-3 rounded-full font-medium cursor-pointer transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed bg-palette-dark-green text-palette-beige hover:bg-palette-green active:scale-95"
+      className="bg-palette-dark-green text-palette-beige hover:bg-palette-green w-full cursor-pointer rounded-full px-8 py-3 font-medium transition-all duration-200 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
       disabled={disabled || isLoading}
       {...props}
     >
       {isLoading ? (
         <span className="flex items-center justify-center gap-2">
           <svg
-            className="animate-spin h-5 w-5"
+            className="h-5 w-5 animate-spin"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

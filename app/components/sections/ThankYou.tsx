@@ -13,18 +13,18 @@ export const ThankYou = () => {
   return (
     <Section id="dekujeme">
       <div
-        className={`text-center mx-auto ${
+        className={`mx-auto text-center ${
           hasWeddingPassed ? "max-w-3xl" : "max-w-2xl"
         }`}
       >
-        <div className="w-24 h-24 mb-8 mx-auto">
+        <div className="mx-auto mb-8 h-24 w-24">
           <Icon icon="heart" />
         </div>
 
         {hasWeddingPassed ? (
           <>
             <h2 className="mb-8">Děkujeme</h2>
-            <p className="text-xl leading-relaxed mb-12">
+            <p className="mb-12 text-xl leading-relaxed">
               Děkujeme všem, kteří s námi sdíleli tento den. Vaše přítomnost pro
               nás byla tím nejkrásnějším darem.
             </p>
@@ -32,7 +32,7 @@ export const ThankYou = () => {
             {/* Photo gallery placeholder - to be filled after the wedding */}
             <div className="mt-16">
               <h3 className="mb-8">Fotografie ze svatby</h3>
-              <div className="bg-white/50 rounded-lg p-12 text-neutral-500">
+              <div className="rounded-lg bg-white/50 p-12 text-neutral-500">
                 <p>Brzy zde naleznete fotografie z našeho velkého dne.</p>
                 <p className="mt-4 text-sm">
                   Profesionální fotografie budou k dispozici v příštích týdnech.
@@ -41,7 +41,7 @@ export const ThankYou = () => {
             </div>
 
             {/* Contact info */}
-            <div className="mt-16 pt-8 border-t border-palette-green/20">
+            <div className="border-palette-green/20 mt-16 border-t pt-8">
               <p className="text-lg">
                 Máte fotografie nebo vzpomínky, které byste chtěli sdílet?
               </p>

@@ -8,10 +8,10 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 }
 
 export const Select = ({
+  className = "",
   error,
   options,
   placeholder,
-  className = "",
   ...props
 }: SelectProps) => {
   // Select has different padding (pr-10 for dropdown arrow) and needs appearance-none

@@ -1,19 +1,19 @@
 import type { ReactNode } from "react";
 
 interface FormFieldProps {
-  label: string;
-  error?: string;
   children: ReactNode;
-  required?: boolean;
+  error?: string;
   htmlFor?: string;
+  label: string;
+  required?: boolean;
 }
 
 export const FormField = ({
-  label,
-  error,
   children,
-  required,
+  error,
   htmlFor,
+  label,
+  required,
 }: FormFieldProps) => {
   return (
     <div className="space-y-2">
@@ -25,7 +25,7 @@ export const FormField = ({
         {required && <span className="text-palette-orange ml-1">*</span>}
       </label>
       {children}
-      {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );
 };

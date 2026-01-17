@@ -5,11 +5,11 @@ import type { RsvpSubmission } from "@/app/lib/types";
 import { countByField } from "@/app/lib/utils/stats";
 
 export interface RsvpStats {
+  accommodationCounts: Record<string, number>;
+  drinkCounts: Record<string, number>;
   totalAttending: number;
   totalChildren: number;
   totalPets: number;
-  drinkCounts: Record<string, number>;
-  accommodationCounts: Record<string, number>;
 }
 
 export const useRsvpStats = (rsvps: RsvpSubmission[]): RsvpStats => {
@@ -20,30 +20,30 @@ export const useRsvpStats = (rsvps: RsvpSubmission[]): RsvpStats => {
     // Sum up children and pets counts
     const totalChildren = attendingRsvps.reduce(
       (sum, rsvp) => sum + rsvp.childrenCount,
-      0
+      0,
     );
     const totalPets = attendingRsvps.reduce(
       (sum, rsvp) => sum + rsvp.petsCount,
-      0
+      0,
     );
 
     const drinkCounts = countByField(attendingRsvps, (rsvp) =>
       rsvp.drinkChoice === "other" && rsvp.customDrink
         ? rsvp.customDrink
-        : rsvp.drinkChoice
+        : rsvp.drinkChoice,
     );
 
     const accommodationCounts = countByField(
       attendingRsvps,
-      (rsvp) => rsvp.accommodation
+      (rsvp) => rsvp.accommodation,
     );
 
     return {
+      accommodationCounts,
+      drinkCounts,
       totalAttending,
       totalChildren,
       totalPets,
-      drinkCounts,
-      accommodationCounts,
     };
   }, [rsvps]);
 };

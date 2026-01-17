@@ -11,7 +11,7 @@ import {
   performance,
   metrics,
   OperationType,
-  MetricEvent
+  MetricEvent,
 } from "@/app/lib/monitoring";
 
 export default function AdminLoginPage() {
@@ -34,10 +34,14 @@ export default function AdminLoginPage() {
           setIsCheckingAuth(false);
         }
       } catch (error) {
-        logger.error("Auth check failed", error instanceof Error ? error : new Error(String(error)), {
-          component: 'AdminLoginPage',
-          operation: 'checkAuth',
-        });
+        logger.error(
+          "Auth check failed",
+          error instanceof Error ? error : new Error(String(error)),
+          {
+            component: "AdminLoginPage",
+            operation: "checkAuth",
+          },
+        );
         // Re-throw so Sentry captures auth check failures
         throw error;
       }
@@ -53,7 +57,7 @@ export default function AdminLoginPage() {
 
     // Track login attempt
     metrics.track(MetricEvent.ADMIN_LOGIN_ATTEMPT, {
-      component: 'AdminLoginPage',
+      component: "AdminLoginPage",
     });
 
     try {
@@ -64,8 +68,8 @@ export default function AdminLoginPage() {
         setIsSubmitting(false);
 
         logger.error("Admin user not configured", undefined, {
-          component: 'AdminLoginPage',
-          operation: 'handleLogin',
+          component: "AdminLoginPage",
+          operation: "handleLogin",
         });
 
         return;
@@ -73,7 +77,7 @@ export default function AdminLoginPage() {
 
       const result = await performance.measureAsync(
         OperationType.AUTH_LOGIN,
-        'auth_sign_in',
+        "auth_sign_in",
         async () => {
           return await supabase.auth.signInWithPassword({
             email: adminUser,
@@ -81,8 +85,8 @@ export default function AdminLoginPage() {
           });
         },
         {
-          component: 'AdminLoginPage',
-        }
+          component: "AdminLoginPage",
+        },
       );
 
       const { data, error } = result;
@@ -92,41 +96,45 @@ export default function AdminLoginPage() {
         setIsSubmitting(false);
 
         logger.error("Login failed", error, {
-          component: 'AdminLoginPage',
-          operation: 'handleLogin',
+          component: "AdminLoginPage",
+          operation: "handleLogin",
         });
 
         // Track login failure
-        metrics.trackAdminOperation('login', false, {
-          component: 'AdminLoginPage',
+        metrics.trackAdminOperation("login", false, {
+          component: "AdminLoginPage",
           errorMessage: error.message,
         });
       } else if (data.user) {
         logger.info("Login successful", {
-          component: 'AdminLoginPage',
-          operation: 'handleLogin',
+          component: "AdminLoginPage",
           metadata: {
             userId: data.user.id,
           },
+          operation: "handleLogin",
         });
 
         // Track successful login
-        metrics.trackAdminOperation('login', true, {
-          component: 'AdminLoginPage',
+        metrics.trackAdminOperation("login", true, {
+          component: "AdminLoginPage",
           userId: data.user.id,
         });
 
         router.replace("/admin");
       }
     } catch (error) {
-      logger.error("Login failed", error instanceof Error ? error : new Error(String(error)), {
-        component: 'AdminLoginPage',
-        operation: 'handleLogin',
-      });
+      logger.error(
+        "Login failed",
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          component: "AdminLoginPage",
+          operation: "handleLogin",
+        },
+      );
 
       // Track login failure
-      metrics.trackAdminOperation('login', false, {
-        component: 'AdminLoginPage',
+      metrics.trackAdminOperation("login", false, {
+        component: "AdminLoginPage",
       });
 
       // Re-throw so Sentry captures login failures
@@ -136,15 +144,15 @@ export default function AdminLoginPage() {
 
   if (isCheckingAuth) {
     return (
-      <div className="min-h-screen hero-gradient flex items-center justify-center">
+      <div className="hero-gradient flex min-h-screen items-center justify-center">
         <div className="text-lg">Načítání...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center hero-gradient">
-      <div className="max-w-md w-full space-y-8 p-8 bg-palette-beige rounded-lg shadow-md">
+    <div className="hero-gradient flex min-h-screen items-center justify-center">
+      <div className="bg-palette-beige w-full max-w-md space-y-8 rounded-lg p-8 shadow-md">
         <form className="space-y-6" onSubmit={handleLogin}>
           <FormField label="Heslo" error={error} required htmlFor="password">
             <Input

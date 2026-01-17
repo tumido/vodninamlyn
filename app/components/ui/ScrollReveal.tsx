@@ -13,7 +13,7 @@ export const ScrollReveal = ({ children }: React.PropsWithChildren) => {
           setIsVisible(true);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (ref.current) {
@@ -27,7 +27,7 @@ export const ScrollReveal = ({ children }: React.PropsWithChildren) => {
     <div
       ref={ref}
       className={`transition-all duration-700 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
       }`}
     >
       {children}

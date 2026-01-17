@@ -3,14 +3,14 @@ import Icon from "../ui/Icon";
 
 export const Footer = () => {
   return (
-    <footer className="bg-neutral-900 text-white py-16 overflow-hidden">
-      <div className="z-10 max-w-4xl mx-auto px-6 text-center">
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4 mx-auto">
+    <footer className="overflow-hidden bg-neutral-900 py-16 text-white">
+      <div className="z-10 mx-auto max-w-4xl px-6 text-center">
+        <div className="mx-auto flex flex-col items-center justify-center gap-4 md:flex-row">
           <div className="space-y-2">
             <h3>
-              <span className="text-amber-200/40 text-3xl font-semibold font-serif [word-spacing:.3em]">
+              <span className="font-serif text-3xl font-semibold text-amber-200/40 [word-spacing:.3em]">
                 {WEDDING_INFO.couple.groom}
-                <span className="text-xl text-palette-beige/50 align-middle">
+                <span className="text-palette-beige/50 align-middle text-xl">
                   {" "}
                   &{" "}
                 </span>
@@ -22,17 +22,17 @@ export const Footer = () => {
               {WEDDING_INFO.date.display}
             </div>
           </div>
-          <div className="w-32 h-32 m-4 shrink md:ml-20">
+          <div className="m-4 h-32 w-32 shrink md:ml-20">
             <Icon icon="clover" className="stroke-palette-beige/50" />
           </div>
-          <div className="space-y-2 max-w-3xs">
+          <div className="max-w-3xs space-y-2">
             <a
               href={`mailto:${WEDDING_INFO.contact.email}`}
-              className="hover:text-palette-orange text-palette-beige/50 transition-colors block"
+              className="hover:text-palette-orange text-palette-beige/50 block transition-colors"
             >
               {WEDDING_INFO.contact.email}
             </a>
-            <span className=" text-palette-beige/30">
+            <span className="text-palette-beige/30">
               {WEDDING_INFO.contact.other}
             </span>
           </div>

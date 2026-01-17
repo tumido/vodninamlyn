@@ -3,9 +3,7 @@
     "next-devtools-mcp": {
       "type": "stdio",
       "command": "npx",
-      "args": [
-        "next-devtools-mcp@latest"
-      ],
+      "args": ["next-devtools-mcp@latest"],
       "env": {}
     },
     "chrome-devtools": {
@@ -20,9 +18,7 @@
     "eslint": {
       "type": "stdio",
       "command": "npx",
-      "args": [
-        "@eslint/mcp@latest"
-      ]
+      "args": ["@eslint/mcp@latest"]
     }
   }
 }

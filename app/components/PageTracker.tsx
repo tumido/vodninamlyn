@@ -1,6 +1,6 @@
 "use client";
 
-import { usePageTracking } from '@/app/hooks/usePageTracking';
+import { usePageTracking } from "@/app/hooks/usePageTracking";
 
 /**
  * Client component to track page views and time on page

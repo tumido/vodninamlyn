@@ -2,10 +2,10 @@ import { ACCOMMODATION_LABELS, DRINK_LABELS } from "@/app/lib/constants";
 
 export const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleString("cs-CZ", {
-    month: "numeric",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    month: "numeric",
   });
 };
 
@@ -16,7 +16,10 @@ export const getAccommodationLabel = (accommodation: string | null) =>
       ] || accommodation
     : "-";
 
-export const getDrinkLabel = (drink: string | null, customDrink: string | null) => {
+export const getDrinkLabel = (
+  drink: string | null,
+  customDrink: string | null,
+) => {
   if (!drink) return "-";
   if (drink === "other") return customDrink || "Jiné";
   return DRINK_LABELS[drink as keyof typeof DRINK_LABELS] || drink;

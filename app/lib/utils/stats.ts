@@ -3,7 +3,7 @@
  */
 export function countByField<T>(
   items: T[],
-  fieldGetter: (item: T) => string | null | undefined
+  fieldGetter: (item: T) => string | null | undefined,
 ): Record<string, number> {
   const counts: Record<string, number> = {};
 

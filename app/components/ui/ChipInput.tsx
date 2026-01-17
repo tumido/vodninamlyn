@@ -3,23 +3,23 @@
 import { useState, useRef, KeyboardEvent } from "react";
 
 interface ChipInputProps {
-  values: string[];
-  onChange: (values: string[]) => void;
-  placeholder?: string;
   error?: string;
+  id?: string;
   maxChips?: number;
   maxLength?: number;
-  id?: string;
+  onChange: (values: string[]) => void;
+  placeholder?: string;
+  values: string[];
 }
 
 export const ChipInput = ({
-  values,
-  onChange,
-  placeholder = "Zadejte jméno",
   error,
+  id,
   maxChips = 10,
   maxLength = 50,
-  id,
+  onChange,
+  placeholder = "Zadejte jméno",
+  values,
 }: ChipInputProps) => {
   const [inputValue, setInputValue] = useState("");
   const [inlineError, setInlineError] = useState("");
@@ -148,7 +148,7 @@ export const ChipInput = ({
   return (
     <div>
       <div
-        className={`${baseClasses} ${errorClasses} flex flex-wrap gap-2 items-center`}
+        className={`${baseClasses} ${errorClasses} flex flex-wrap items-center gap-2`}
         role="group"
         aria-labelledby="names-label"
       >
@@ -157,20 +157,20 @@ export const ChipInput = ({
           <ul
             role="list"
             aria-label="Vybrané jména"
-            className="flex flex-wrap gap-2 m-0 p-0"
+            className="m-0 flex flex-wrap gap-2 p-0"
           >
             {values.map((name, index) => (
               <li
                 key={`${name}-${index}`}
                 role="listitem"
-                className="inline-flex items-center gap-1 px-3 py-1 bg-palette-green text-white rounded-full text-sm"
+                className="bg-palette-green inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm text-white"
               >
                 <span>{name}</span>
                 <button
                   type="button"
                   onClick={() => removeChip(index)}
                   aria-label={`Odstranit ${name}`}
-                  className="ml-1 hover:ring-2 hover:cursor-pointer transition-opacity focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-1 focus:ring-offset-palette-green rounded-full"
+                  className="focus:ring-offset-palette-green ml-1 rounded-full transition-opacity hover:cursor-pointer hover:ring-2 focus:ring-2 focus:ring-white focus:ring-offset-1 focus:outline-none"
                 >
                   <svg
                     width="14"
@@ -210,7 +210,7 @@ export const ChipInput = ({
           disabled={isMaxChips}
           aria-invalid={!!error}
           aria-describedby={error ? "names-error" : undefined}
-          className="flex-1 min-w-[120px] border-none outline-none bg-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+          className="min-w-[120px] flex-1 border-none bg-transparent outline-none disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
 
@@ -226,7 +226,7 @@ export const ChipInput = ({
       {/* Inline error message */}
       {inlineError && (
         <p
-          className="text-sm text-red-600 mt-1"
+          className="mt-1 text-sm text-red-600"
           role="alert"
           aria-live="assertive"
         >
@@ -236,7 +236,7 @@ export const ChipInput = ({
 
       {/* Max chips message */}
       {isMaxChips && !error && (
-        <p className="text-sm text-neutral-500 mt-1">
+        <p className="mt-1 text-sm text-neutral-500">
           Dosažen maximální počet jmen ({maxChips})
         </p>
       )}

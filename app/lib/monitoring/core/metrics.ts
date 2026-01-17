@@ -7,12 +7,17 @@
  * For logging, use the logger module.
  */
 
-import * as Sentry from '@sentry/nextjs';
-import type { MetricEvent, MetricData, ValidationErrorData, FormAbandonmentData } from '../types';
-import { MetricEvent as MetricEventEnum } from '../types';
-import * as logger from './logger';
+import * as Sentry from "@sentry/nextjs";
+import type {
+  MetricEvent,
+  MetricData,
+  ValidationErrorData,
+  FormAbandonmentData,
+} from "../types";
+import { MetricEvent as MetricEventEnum } from "../types";
+import * as logger from "./logger";
 
-const isDevelopment = process.env.NODE_ENV === 'development';
+const isDevelopment = process.env.NODE_ENV === "development";
 
 /**
  * Track a metric event
@@ -31,10 +36,10 @@ export function track(event: MetricEvent, data?: MetricData): void {
 
   // Add to Sentry breadcrumb for production
   Sentry.addBreadcrumb({
-    category: 'metric',
-    message: event,
-    level: 'info',
+    category: "metric",
     data: enrichedData,
+    level: "info",
+    message: event,
   });
 }
 
@@ -47,12 +52,12 @@ export function trackRsvpSubmission(success: boolean, data?: MetricData): void {
 
   // Record counter metrics
   if (!isDevelopment) {
-    Sentry.metrics.count('rsvp.submissions', 1);
+    Sentry.metrics.count("rsvp.submissions", 1);
 
     if (success) {
-      Sentry.metrics.count('rsvp.submissions.success', 1);
+      Sentry.metrics.count("rsvp.submissions.success", 1);
     } else {
-      Sentry.metrics.count('rsvp.submissions.failure', 1);
+      Sentry.metrics.count("rsvp.submissions.failure", 1);
     }
   }
 }
@@ -60,18 +65,22 @@ export function trackRsvpSubmission(success: boolean, data?: MetricData): void {
 /**
  * Track validation error
  */
-export function trackValidationError(field: string, errorType: string, errorMessage: string): void {
+export function trackValidationError(
+  field: string,
+  errorType: string,
+  errorMessage: string,
+): void {
   const data: ValidationErrorData = {
-    field,
-    errorType,
     errorMessage,
+    errorType,
+    field,
   };
 
-  track('rsvp.validation.error' as MetricEvent, data);
+  track("rsvp.validation.error" as MetricEvent, data);
 
   // Record counter for validation errors
   if (!isDevelopment) {
-    Sentry.metrics.count('rsvp.validation.errors', 1);
+    Sentry.metrics.count("rsvp.validation.errors", 1);
   }
 }
 
@@ -79,13 +88,13 @@ export function trackValidationError(field: string, errorType: string, errorMess
  * Track form abandonment
  */
 export function trackFormAbandonment(formData: FormAbandonmentData): void {
-  track('form.abandoned' as MetricEvent, formData);
+  track("form.abandoned" as MetricEvent, formData);
 
-  logger.info('Form abandoned', {
+  logger.info("Form abandoned", {
     component: formData.formName,
     metadata: {
-      lastField: formData.lastField,
       completionPercentage: formData.completionPercentage,
+      lastField: formData.lastField,
       timeSpentMs: formData.timeSpentMs,
     },
   });
@@ -104,7 +113,10 @@ export function trackPageView(path: string, metadata?: MetricData): void {
 /**
  * Track section viewed (scroll into view)
  */
-export function trackSectionView(sectionName: string, metadata?: MetricData): void {
+export function trackSectionView(
+  sectionName: string,
+  metadata?: MetricData,
+): void {
   track(MetricEventEnum.SECTION_VIEWED, {
     ...metadata,
     section: sectionName,
@@ -115,27 +127,27 @@ export function trackSectionView(sectionName: string, metadata?: MetricData): vo
  * Track admin operation
  */
 export function trackAdminOperation(
-  operation: 'login' | 'logout' | 'view' | 'edit' | 'delete',
+  operation: "login" | "logout" | "view" | "edit" | "delete",
   success: boolean,
-  metadata?: MetricData
+  metadata?: MetricData,
 ): void {
   let event: string;
 
   switch (operation) {
-    case 'login':
-      event = success ? 'admin.login.success' : 'admin.login.failure';
+    case "login":
+      event = success ? "admin.login.success" : "admin.login.failure";
       break;
-    case 'logout':
-      event = 'admin.logout';
+    case "logout":
+      event = "admin.logout";
       break;
-    case 'view':
-      event = 'admin.rsvp.viewed';
+    case "view":
+      event = "admin.rsvp.viewed";
       break;
-    case 'edit':
-      event = 'admin.rsvp.edited';
+    case "edit":
+      event = "admin.rsvp.edited";
       break;
-    case 'delete':
-      event = 'admin.rsvp.deleted';
+    case "delete":
+      event = "admin.rsvp.deleted";
       break;
   }
 

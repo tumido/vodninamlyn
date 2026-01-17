@@ -17,4 +17,5 @@ export const ERROR_CLASSES = "border-red-300 bg-red-50";
 /**
  * Normal state border and background
  */
-export const NORMAL_CLASSES = "border-palette-green/20 bg-white/40 hover:border-palette-green";
+export const NORMAL_CLASSES =
+  "border-palette-green/20 bg-white/40 hover:border-palette-green";

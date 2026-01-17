@@ -5,20 +5,20 @@ import { WEDDING_INFO } from "./lib/constants";
 import { PageTracker } from "./components/PageTracker";
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
+  variable: "--font-geist-mono",
 });
 
 const bilbo = Bilbo({
-  weight: "400",
-  variable: "--font-bilbo",
   subsets: ["latin"],
+  variable: "--font-bilbo",
+  weight: "400",
 });
 
 const offside = Offside({
-  weight: "400",
-  variable: "--font-offside",
   subsets: ["latin"],
+  variable: "--font-offside",
+  weight: "400",
 });
 
 export const viewport: Viewport = {
@@ -26,9 +26,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: WEDDING_INFO.couple.heading,
   description: `${WEDDING_INFO.couple.groom} & ${WEDDING_INFO.couple.bride} · ${WEDDING_INFO.date.display} · ${WEDDING_INFO.venue.name}`,
-  robots: "noindex, nofollow",
   icons: [
     {
       rel: "icon",
@@ -65,6 +63,8 @@ export const metadata: Metadata = {
     },
   ],
   manifest: "/manifest.webmanifest",
+  robots: "noindex, nofollow",
+  title: WEDDING_INFO.couple.heading,
 };
 
 export default function RootLayout({

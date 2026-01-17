@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
-import { usePathname } from 'next/navigation';
-import { metrics } from '@/app/lib/monitoring';
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
+import { metrics } from "@/app/lib/monitoring";
 
 /**
  * Hook to track page views and time spent on page
@@ -16,7 +16,7 @@ export const usePageTracking = () => {
     pageStartTimeRef.current = Date.now();
 
     metrics.trackPageView(pathname, {
-      component: 'usePageTracking',
+      component: "usePageTracking",
     });
 
     // Track time spent when leaving page
@@ -26,9 +26,9 @@ export const usePageTracking = () => {
       // Only track if user spent more than 1 second on page
       if (timeSpentMs > 1000) {
         metrics.trackPageView(pathname, {
-          component: 'usePageTracking',
-          timeSpentMs,
+          component: "usePageTracking",
           leaving: true,
+          timeSpentMs,
         });
       }
     };
