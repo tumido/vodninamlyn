@@ -117,7 +117,7 @@ export const WEDDING_INFO: WeddingInfo = {
     },
     {
       description:
-        "Netoužíme po věcných darech. Vaše přítomnost je pro nás dar největší. Pokud byste nás ale přece jen chtěli obdarovat, potěšíte nás obrázkem nebo třeba příspěvkem na rekonstrukci bytu.",
+        "Netoužíme po věcných darech. Vaše přítomnost je pro nás dar největší. Pokud na tom ale budete trvat, budeme rádi, když nás obdarujete obrázkem nebo nám třeba přispějete na rekonstrukci bytu.",
       icon: "present",
       name: "Dary",
     },
