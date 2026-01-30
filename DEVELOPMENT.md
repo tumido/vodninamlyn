@@ -58,7 +58,7 @@ NEXT_PUBLIC_ADMIN_USER=<admin_email>
 # Sentry (optional - for error tracking)
 NEXT_PUBLIC_SENTRY_DSN=<your_sentry_dsn>
 NEXT_PUBLIC_SENTRY_ORG=<your_sentry_org>
-NEXT_PUBLIC_SENTRY_PROJECT_ID=<your_sentry_project_id>
+NEXT_PUBLIC_SENTRY_PROJECT=<your_sentry_project_id>
 SENTRY_AUTH_TOKEN=<your_sentry_auth_token>
 ```
 
@@ -736,7 +736,7 @@ export function RSVPForm() {
 **Required GitHub Variables:**
 
 - `NEXT_PUBLIC_SENTRY_ORG` - Your Sentry organization slug
-- `NEXT_PUBLIC_SENTRY_PROJECT_ID` - Your Sentry project ID
+- `NEXT_PUBLIC_SENTRY_PROJECT` - Your Sentry project ID
 
 ### Build Commands
 
